@@ -61,276 +61,6 @@ static T_void StatsCalcClassStats (T_void);
 static T_void StatsUpdateCreateCharacterUI (T_void);
 static T_void StatsCalcPlayerMaxLoad (T_void);
 static T_void StatsReorientPlayerView (T_void);
-const T_byte8 *G_statsCharacterTypeNames[NUM_CLASSES]={"Citizen",
-                                                  "Knight",
-                                                  "Mage",
-                                                  "Warlock",
-                                                  "Priest",
-                                                  "Rogue",
-                                                  "Archer",
-                                                  "Sailor",
-                                                  "Paladin",
-                                                  "Mercenary",
-                                                  "Magician"};
-
-const T_byte8 G_statsCharacterAttributes[NUM_CLASSES][NUM_ATTRIBUTES]=
-                                                  {{25,25,25,25,25,25},
-                                                   {35,15,10,20,15,35},
-                                                   {10,25,35,25,20,15},
-                                                   {25,20,30,20,15,20},
-                                                   {15,20,35,15,20,25},
-                                                   {15,30,15,25,30,15},
-                                                   {20,20,15,35,20,20},
-                                                   {25,25,10,20,15,35},
-                                                   {30,20,25,15,10,30},
-                                                   {30,20,10,25,20,25},
-                                                   {15,30,30,20,20,15}};
-
-const T_byte8 G_statsCharacterAdvancements[NUM_CLASSES][NUM_ATTRIBUTES]=
-                                                  {{2,2,2,2,2,2},
-                                                   {3,2,1,2,1,3},
-                                                   {1,2,3,3,2,1},
-                                                   {2,2,2,2,2,2},
-                                                   {2,1,3,2,2,2},
-                                                   {2,2,1,2,3,2},
-                                                   {2,2,2,3,1,2},
-                                                   {2,2,1,2,2,3},
-                                                   {3,2,2,2,1,2},
-                                                   {2,2,2,2,2,2},
-                                                   {1,3,3,2,1,2}};
-
-
-const T_byte8 *G_statsLevelTitles[NUM_CLASSES][NUM_TITLES_PER_CLASS]=
-                                             {{"Serviceman",
-                                               "Color Bearer",
-                                               "King's Militia",
-                                               "Loyalist",
-                                               "Crown's Servant",
-                                               "Crown's Fighter",
-                                               "Warrior",
-                                               "Defender",
-                                               "Noble",
-                                               "Royal Courtsman",
-                                               "Brigade Elmore",
-                                               "Righteous Band",
-                                               "League of Aeneas",
-                                               "Esias's Servant",
-                                               "Exalted Guardian",
-                                               "Hero",
-                                               "Court Knight",
-                                               "Guard Commander",
-                                               "Supreme General",
-                                               "The Mighty"},
-
-                                               {"Page",
-                                               "Trainee",
-                                               "Squire",
-                                               "Swordsman",
-                                               "Enlisted Servant",
-                                               "Tactical Student",
-                                               "Swordsmaster",
-                                               "Court Guard",
-                                               "Armsmaster",
-                                               "Knight",
-                                               "Sect of Elmore",
-                                               "Royal Captain",
-                                               "Royal General",
-                                               "King's Guardian",
-                                               "Vanquisher",
-                                               "Sword of Titas",
-                                               "Glory of Aelia",
-                                               "Horn of Domitian",
-                                               "Title of Omega",
-                                               "Dragonslayer"},
-
-                                               {"Student",
-                                               "Apprentice",
-                                               "Spellcaster",
-                                               "Mage",
-                                               "Conjurer",
-                                               "Enchanter",
-                                               "Wizard",
-                                               "Lore Master",
-                                               "Dark Spirit",
-                                               "Black Art Scribe",
-                                               "Black Art Master",
-                                               "Magi of the Fire",
-                                               "Magi of the Star",
-                                               "Sorcerer",
-                                               "Order of Nu'ak",
-                                               "Order of Tul",
-                                               "Order of Ahnul",
-                                               "Order of Baal",
-                                               "Prophet of Baal",
-                                               "Ancient One"},
-
-                                               {"Disciple",
-                                               "Apprentice",
-                                               "Dark Artesian",
-                                               "Warlock",
-                                               "Mighty Sword",
-                                               "Vanquisher",
-                                               "Legion",
-                                               "Destroyer",
-                                               "Mystic Conquerer",
-                                               "1st Circle Order",
-                                               "2nd Circle Order",
-                                               "3rd Circle Order",
-                                               "Summoner",
-                                               "Seeker",
-                                               "Destructor",
-                                               "Desolator",
-                                               "Dragon Spirit",
-                                               "Ruiner",
-                                               "Death's Follower",
-                                               "Death Incarnate"},
-
-                                               {"Flock Tender",
-                                               "Student",
-                                               "Scribe",
-                                               "Teacher",
-                                               "Evangelist",
-                                               "Cleric",
-                                               "Elder",
-                                               "The Annointed",
-                                               "Parable Master",
-                                               "Master of Canon",
-                                               "Bishop",
-                                               "Minor Prophet",
-                                               "Cross Bearer",
-                                               "Disciple",
-                                               "Sacred Branch",
-                                               "Witness",
-                                               "Apostle",
-                                               "Saint",
-                                               "Herald of Glory",
-                                               "Illuminated One"},
-
-                                               {"Sneak",
-                                               "Shadow",
-                                               "Pickpocket",
-                                               "Rogue",
-                                               "Trickster",
-                                               "Contriver",
-                                               "Thief",
-                                               "Knave",
-                                               "Skilled Con",
-                                               "Scoundrel",
-                                               "Nighthawk",
-                                               "Teacher",
-                                               "1st Sect Member",
-                                               "2nd Sect Member",
-                                               "3rd Sect Member",
-                                               "Master of the Art",
-                                               "Stealth Master",
-                                               "The Upright",
-                                               "Master Thief",
-                                               "Legendary Delver"},
-
-                                               {"Fletcher",
-                                               "Journeyman",
-                                               "Page",
-                                               "Squire",
-                                               "Marksman",
-                                               "Targetman",
-                                               "Noble",
-                                               "Sharpshooter",
-                                               "Warrior",
-                                               "Acurate",
-                                               "Archer",
-                                               "Forest Arrow",
-                                               "CraftMaster",
-                                               "Ancient Arrow",
-                                               "Huntsman (1rd)",
-                                               "Huntsman (2nd)",
-                                               "Huntsman (3rd)",
-                                               "Divine Missile",
-                                               "Unerring One",
-                                               "The Mighty"},
-
-                                               {"Landlubber",
-                                               "Trainee",
-                                               "Galley Grunt",
-                                               "Seaman",
-                                               "Mate",
-                                               "First Mate",
-                                               "Sailor",
-                                               "Veteran",
-                                               "Captain",
-                                               "Degree Hellespont",
-                                               "Order of Salamis",
-                                               "Golden Horn",
-                                               "Seamaster",
-                                               "Sextant Lord",
-                                               "Admiral",
-                                               "Water Magician",
-                                               "Fury",
-                                               "Order of Ulysses",
-                                               "Prince of Havens",
-                                               "Poseidon's Guide"},
-
-                                               {"Page",
-                                               "Squire",
-                                               "Servant",
-                                               "Good Knight",
-                                               "The Annointed",
-                                               "Blood Knight",
-                                               "Warrior",
-                                               "Son of Thunder",
-                                               "Blessed Sword",
-                                               "Crusader",
-                                               "Champion",
-                                               "Disciple",
-                                               "Vanquisher",
-                                               "Illuminated",
-                                               "Cross Bearer",
-                                               "Saint of Steel",
-                                               "Soldier of God",
-                                               "Avenger of God",
-                                               "Wrath of God",
-                                               "Hand of God"},
-
-                                               {"Brawler",
-                                               "Fighter",
-                                               "Hireling",
-                                               "Ransacker",
-                                               "Wolf of War",
-                                               "Soldier Fortune",
-                                               "Destroyer",
-                                               "Valorian Vitorix",
-                                               "Legionaire",
-                                               "Asassin",
-                                               "Axe of Alesia",
-                                               "Avenger",
-                                               "Theo's Sword",
-                                               "Siege Master",
-                                               "Captain",
-                                               "Son of Sparta",
-                                               "The Janissary",
-                                               "Hero",
-                                               "ArmsMaster",
-                                               "Casca"},
-
-                                               {"Pupil",
-                                               "Student",
-                                               "Trickster",
-                                               "Showman",
-                                               "Charlatan",
-                                               "Magician",
-                                               "Deceiver",
-                                               "Charmer",
-                                               "Mystic",
-                                               "Illusionist",
-                                               "RuneMaster",
-                                               "Seer",
-                                               "Sage",
-                                               "Dark Oracle",
-                                               "Student of Rit",
-                                               "Keeper of Rit",
-                                               "Teacher of Rit",
-                                               "Tower Artesian",
-                                               "Master Sage",
-                                               "Dark Prophet"}};
 
 #define FLAG_ALLOW_TO_DIE
 
@@ -354,7 +84,7 @@ T_void StatsInit (T_void)
 
    /* intial attributes */
    for (i=0;i<NUM_ATTRIBUTES;i++)
-   G_activeStats->Attributes[i]=G_statsCharacterAttributes[G_activeStats->ClassType][i];
+	   G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
 
    G_activeStats->Food = 2000;
    G_activeStats->MaxFood=2000;
@@ -448,6 +178,7 @@ T_void StatsInit (T_void)
 
 T_void StatsCalcClassStats (T_void)
 {
+	int classtypeid = 0;
    DebugRoutine ("StatsCalcClassStats");
 
    /* calculated attributes */
@@ -478,87 +209,28 @@ T_void StatsCalcClassStats (T_void)
    G_activeStats->RegenMana = G_activeStats->Attributes[ATTRIBUTE_MAGIC]*
                               (G_activeStats->Level+5);
    /* set some class specific bonuses */
-   switch (G_activeStats->ClassType)
-   {
-        case CLASS_WARLOCK:
-			G_activeStats->RegenMana=(G_activeStats->RegenMana*3)/2;
-			break;
-
-        case CLASS_PRIEST:
-			G_activeStats->RegenMana*=3;
-			break;
-
-        case CLASS_ROGUE:
-			G_activeStats->JumpPower=(G_activeStats->JumpPower*3)/2;
-			break;
-
-        case CLASS_ARCHER:
-			break;
-
-        case CLASS_SAILOR:
-			break;
-
-        case CLASS_PALADIN:
-			break;
-
-        case CLASS_MERCENARY:
-			break;
-
-        case CLASS_MAGICIAN:
-			G_activeStats->RegenMana=(G_activeStats->RegenMana*3)/2;
-			break;
-
-        case CLASS_MAGE:
-			G_activeStats->RegenMana *= 3;
-			break;
-
-        case CLASS_CITIZEN:
-        case CLASS_UNKNOWN:
-			default:
-			break;
-   }
-
+   
+   classtypeid = StatsGetPlayerClassType();
+   G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[classtypeid]->RegenHealthModifier);
+   G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[classtypeid]->RegenManaModifier);
+   G_activeStats->JumpPower = (T_sword16)((float)G_activeStats->JumpPower * CreateClassDatas[classtypeid]->JumpModifier);
+   
    /* set class name / title */
-   strcpy (G_activeStats->ClassName,G_statsCharacterTypeNames[G_activeStats->ClassType]);
+   strcpy (G_activeStats->ClassName,CreateClassDatas[classtypeid]->Title);
 
    if (G_activeStats->Level < 21)
    {
-        strcpy (G_activeStats->ClassTitle,G_statsLevelTitles[G_activeStats->ClassType][G_activeStats->Level-1]);
+	   strcpy (G_activeStats->ClassTitle,CreateClassDatas[G_activeStats->ClassType]->LevelTitles[G_activeStats->Level-1]);
    }
 
    /* base for hand */
-   StatsSetWeaponBaseDamage (3);
+   StatsSetWeaponBaseDamage (CreateClassDatas[classtypeid]->BasePunchDamage);
+
    StatsSetWeaponBaseSpeed (0);
 
    /* init spell casting type available for classtype */
-   switch (G_activeStats->ClassType)
-   {
-        case CLASS_MAGE:
-        G_activeStats->SpellSystem=SPELL_SYSTEM_MAGE;
-        break;
-
-        case CLASS_WARLOCK:
-        G_activeStats->SpellSystem=SPELL_SYSTEM_MAGE;
-        break;
-
-        case CLASS_PRIEST:
-        G_activeStats->SpellSystem=SPELL_SYSTEM_CLERIC;
-        break;
-
-        case CLASS_PALADIN:
-        G_activeStats->SpellSystem=SPELL_SYSTEM_CLERIC;
-        break;
-
-        case CLASS_MAGICIAN:
-        G_activeStats->SpellSystem=SPELL_SYSTEM_MAGE;
-        break;
-
-        case CLASS_UNKNOWN:
-        default:
-        G_activeStats->SpellSystem = SPELL_SYSTEM_ARCANE;
-        break;
-    }
-
+   G_activeStats->SpellSystem = CreateClassDatas[classtypeid]->SpellSystem;
+   
    DebugEnd();
 }
 
@@ -1162,7 +834,7 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
 {
     T_word32 NextLevel;
     T_word16 i,j;
-    T_sbyte8 where;
+    T_sbyte8 randweight;
     T_byte8 old_attributes[ATTRIBUTE_UNKNOWN];
 
     DebugRoutine ("StatsChangePlayerExperience");
@@ -1203,15 +875,14 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
             {
                 /* add 6 points, distributed weighted randomly among */
                 /* player attributes */
-                where=rand()%13;
+                randweight=rand()%13;
                 for (j=0;j<6;j++)
                 {
                     /* subtract G_statsCharacterAdvancements value */
                     /* for this attribute from value */
-                    where -= G_statsCharacterAdvancements
-                          [G_activeStats->ClassType][j];
+					randweight -= CreateClassDatas[G_activeStats->ClassType]->Advancement[j];
 
-                    if (where <= 0)
+                    if (randweight <= 0)
                     {
                         /* found our slot, add one to this attrib */
                         StatsSetPlayerAttribute (j,G_activeStats->Attributes[j]+1);
@@ -1281,7 +952,7 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
             /* update title */
             if (G_activeStats->Level < 21)
             {
-                strcpy (G_activeStats->ClassTitle,G_statsLevelTitles[G_activeStats->ClassType][G_activeStats->Level-1]);
+				strcpy (G_activeStats->ClassTitle,CreateClassDatas[G_activeStats->ClassType]->LevelTitles[G_activeStats->Level-1]);
             }
         }
     }
@@ -1652,7 +1323,7 @@ T_void StatsUpdateCreateCharacterUI (T_void)
 
     sprintf (stmp,"UI/CREATEC/DESC%2.2d.TXT",StatsGetPlayerClassType());
     description=PictureLockData (stmp,&res);
-    TxtboxSetNData (TxtboxID,description,ResourceGetSize(res));
+	TxtboxSetNData (TxtboxID,CreateClassDatas[StatsGetPlayerClassType()]->Descr,ResourceGetSize(res));
     PictureUnlockAndUnfind (res);
 
     /* set up attribute fields */
@@ -2156,42 +1827,8 @@ T_void StatsCalcPlayerAttackDamage (T_void)
     weaponmod = G_activeStats->WeaponBaseDamage;
 
     damage=(StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH)*weaponmod)/2;
-    G_activeStats->AttackDamage = damage;
+	G_activeStats->AttackDamage = (T_word16)((float)damage * CreateClassDatas[G_activeStats->ClassType]->DamageModifier);
 
-    /* check for class bonuses */
-    switch (G_activeStats->ClassType)
-    {
-        case CLASS_KNIGHT:
-        /* 50% melee weapon bonus */
-        G_activeStats->AttackDamage+=(G_activeStats->AttackDamage/2);
-        break;
-
-        case CLASS_WARLOCK:
-        /* 25% melee weapon bonus */
-//        G_activeStats->AttackDamage+=(G_activeStats->AttackDamage/4);
-        break;
-
-        case CLASS_SAILOR:
-        /* 25% melee weapon bonus */
-        G_activeStats->AttackDamage+=(G_activeStats->AttackDamage/4);
-        break;
-
-        case CLASS_PALADIN:
-        /* 25% melee weapon bonus */
-//        G_activeStats->AttackDamage+=(G_activeStats->AttackDamage/4);
-        break;
-
-        case CLASS_MERCENARY:
-        /* 25% melee weapon bonus */
-        G_activeStats->AttackDamage+=(G_activeStats->AttackDamage/4);
-        break;
-
-        case CLASS_UNKNOWN:
-        default:
-        /* failed! */
-        DebugCheck (-1);
-        break;
-    }
     DebugEnd();
 }
 
@@ -2388,19 +2025,9 @@ T_void StatsCalcPlayerMovementSpeed (T_void)
     DebugRoutine ("StatsCalcPlayerMovementSpeed");
 
     G_activeStats->MaxVWalking = (StatsGetPlayerAttribute(ATTRIBUTE_SPEED)/5)+10;
-
-    /* apply class bonuses */
-    if (G_activeStats->ClassType == CLASS_ROGUE)
-    {
-        /* 25% movement speed bonus */
-        G_activeStats->MaxVWalking+=(G_activeStats->MaxVWalking>>2);
-    }
-    else if (G_activeStats->ClassType == CLASS_SAILOR)
-    {
-        /* 13% movement speed bonus */
-        G_activeStats->MaxVWalking+=(G_activeStats->MaxVWalking>>3);
-    }
-
+	/* apply class bonuses */
+	G_activeStats->MaxVWalking = (T_word16)((float)G_activeStats->MaxVWalking * CreateClassDatas[G_activeStats->ClassType]->MoveModifier);
+    
     /* apply encumberance */
     load=G_activeStats->Load;
     max=G_activeStats->MaxLoad;
@@ -2764,7 +2391,7 @@ T_void StatsSetSavedCharacterList(T_statsSavedCharArray *p_chars)
 
 E_Boolean StatsLoadCharacterUI (T_byte8 selection)
 {
-    E_Boolean success=FALSE;
+	E_Boolean success=FALSE;
 
     DebugRoutine ("StatsLoadCharacterUI");
     DebugCheck (selection < MAX_CHARACTERS_PER_SERVER);
@@ -2987,8 +2614,8 @@ T_void StatsCreateCharacterUIStart(T_void)
 //    G_charTypeSelected=StatsGetPlayerClassType();
     StatsInit();
 //    StatsSetPlayerClassType(CLASS_CITIZEN);
-    for (i=0;i<NUM_ATTRIBUTES;i++)
-    G_activeStats->Attributes[i]=G_statsCharacterAttributes[G_activeStats->ClassType][i];
+   for (i=0;i<NUM_ATTRIBUTES;i++)
+	   G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
     StatsCalcClassStats();
 
  	/* load the form for this page */
@@ -3039,10 +2666,11 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
             /* last character selected */
             curclass=StatsGetPlayerClassType();
             curclass--;
-            if (curclass >= CLASS_UNKNOWN) curclass=CLASS_MAGICIAN;
+            if (curclass >= CLASS_UNKNOWN) 
+				curclass=NUM_CLASSES - 1;
             StatsSetPlayerClassType (curclass);
-            for (i=0;i<NUM_ATTRIBUTES;i++)
-                G_activeStats->Attributes[i]=G_statsCharacterAttributes[G_activeStats->ClassType][i];
+			for (i=0;i<NUM_ATTRIBUTES;i++)
+				G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
             StatsUpdateCreateCharacterUI();
         }
         else if (objID==302)
@@ -3052,8 +2680,8 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
             curclass++;
             if (curclass >= CLASS_UNKNOWN) curclass=CLASS_CITIZEN;
             StatsSetPlayerClassType (curclass);
-            for (i=0;i<NUM_ATTRIBUTES;i++)
-                G_activeStats->Attributes[i]=G_statsCharacterAttributes[G_activeStats->ClassType][i];
+			for (i=0;i<NUM_ATTRIBUTES;i++)
+				G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
             StatsUpdateCreateCharacterUI();
         }
         else if (objID==303)

@@ -323,6 +323,9 @@
     <ClCompile Include="..\..\..\..\Source\SERVER.C">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\CreateClassData.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Include\3D_COLLI.H">
@@ -842,6 +845,9 @@
       <Filter>Source Files\Win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Include\PACKET.H">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Include\CreateClassData.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,6 +33,7 @@
 #include "TICKER.H"
 #include "VIEW.H"
 #include "UPDATE.H"
+#include "../Include/CreateClassData.h"
 
 static E_Boolean G_gameBegan = FALSE ;
 static E_Boolean G_mapBegan = FALSE ;
@@ -156,9 +157,14 @@ SyncTimeSet(1) ;
 //puts("Inventory init"); fflush (stdout);
     InventoryInit() ;
 
+	//Make sure class datas is loaded
+	if(!CreateClassDatasLoaded())
+		LoadCreateClassDatas();
+
 //puts("Stats init");fflush(stdout);
     StatsInit(); /* Init player statistics */
 
+	
 //puts("Client Init Mouse And Color") ; fflush(stdout) ;
     ClientInitMouseAndColor ();
 
@@ -177,7 +183,6 @@ SyncTimeSet(1) ;
 
     PeopleHereInitialize() ;
 
-
 //    G_musicChannel=SoundPlayLoopByNumber(1501,255);
 
     DebugEnd() ;
@@ -193,7 +198,12 @@ SyncTimeSet(1) ;
  *<!-----------------------------------------------------------------------*/
 T_void UpdateGameEnd(T_void)
 {
+	int i = 0;
+
     DebugRoutine("UpdateGameEnd") ;
+
+	if (CreateClassDatasLoaded())
+		DestroyCreateClassDatas();
 
     PeopleHereFinish() ;
 

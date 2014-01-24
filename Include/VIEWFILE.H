@@ -211,6 +211,8 @@ typedef struct T_3dObject_ {
 
     /* Keep track of the obj collision list number we are on. */
     T_word16 objCollisionGroup ;
+
+	T_word16 spawnType; //used to drop at explosion point for projectiles. I.E. throwing daggers
 } T_3dObject ;
 
 typedef struct  {

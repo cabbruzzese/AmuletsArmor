@@ -8,6 +8,7 @@
 #include "FORM.H"
 #include "GENERAL.H"
 #include "PACKET.H"
+#include "CreateClassData.h"
 
 /* UI items for Load/Display character UI form: */
 #define LOAD_CHARACTER_BEGIN_BUTTON                 300
@@ -18,9 +19,6 @@
 #define MIN_HEALTH -10
 #define MAX_DAMAGEAMT 1500
 #define MAX_ATTRIBUTES 50
-#define NUM_CLASSES 11
-#define NUM_TITLES_PER_CLASS 20
-#define NUM_ATTRIBUTES 6
 #define STATS_MAX_COINS 19999
 #define NUM_HOUSES 100
 #define MAX_NOTES 1024
@@ -38,24 +36,6 @@ typedef enum
     ATTRIBUTE_UNKNOWN
 } E_statsAttributeType;
 
-
-typedef enum
-{
-    CLASS_CITIZEN,
-    CLASS_KNIGHT,
-    CLASS_MAGE,
-    CLASS_WARLOCK,
-    CLASS_PRIEST,
-    CLASS_ROGUE,
-    CLASS_ARCHER,
-    CLASS_SAILOR,
-    CLASS_PALADIN,
-    CLASS_MERCENARY,
-    CLASS_MAGICIAN,
-    CLASS_UNKNOWN
-} E_statsClassType;
-
-
 typedef enum
 {
     ADVENTURE_NONE,
@@ -68,6 +48,7 @@ typedef enum
     ADVENTURE_7,
     ADVENTURE_UNKNOWN
 } E_statsAdventureNumber;
+
 
 /* saved character ID list to be loaded from server */
 #define MAX_CHARACTERS_PER_SERVER 5

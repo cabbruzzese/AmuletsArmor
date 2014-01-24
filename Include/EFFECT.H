@@ -24,7 +24,7 @@ typedef T_byte8 E_effectDamageType ;
 #define EFFECT_DAMAGE_MANA_DRAIN 64  /* 1 point mana loss per 1 pt damage */
 #define EFFECT_DAMAGE_SPECIAL 128
 #define EFFECT_DAMAGE_BAD 256
-#define EFFECT_NUMBER_OF_DAMAGE_TYPES 7
+#define EFFECT_NUMBER_OF_DAMAGE_TYPES 8
 #define EFFECT_DAMAGE_ALL (127)
 
 #define EFFECT_DAMAGE_SPECIAL_LOCK               0
@@ -37,7 +37,8 @@ typedef T_byte8 E_effectDamageType ;
 #define EFFECT_DAMAGE_SPECIAL_BERSERK            7
 #define EFFECT_DAMAGE_SPECIAL_SLOW               8
 #define EFFECT_DAMAGE_SPECIAL_PARALYZE           9
-#define EFFECT_DAMAGE_SPECIAL_UNKNOWN            10
+#define EFFECT_DAMAGE_SPECIAL_DAGGER			 10
+#define EFFECT_DAMAGE_SPECIAL_UNKNOWN            11
 
 typedef enum
 {
@@ -70,6 +71,7 @@ typedef enum
     EFFECT_BOLT_MANA_DRAIN,
     EFFECT_BOLT_ACID,
     EFFECT_MISSILE_PLASMA,
+	EFFECT_MISSILE_DAGGER,
     EFFECT_MISSILE_UNKNOWN
 } E_effectMissileType;
 
@@ -147,6 +149,7 @@ typedef enum
     EFFECT_IDENTIFY_ALL,
     EFFECT_ACTIVATE_THIEVING,
     EFFECT_MOD_PLAYER_WEALTH,
+	EFFECT_THROWING_DAGGER,
     EFFECT_UNKNOWN
 } E_effectType;
 

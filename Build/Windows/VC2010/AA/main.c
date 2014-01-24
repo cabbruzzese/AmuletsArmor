@@ -237,10 +237,11 @@ extern T_void game_main(T_word16 argc, char *argv[]);
 
 int SDL_main(int argc, char *argv[])
 {
-    char *pixels;
+	char *pixels;
     int x, y;
     SDL_Color black = { 0, 0, 0, 0 };
     SDL_Color white = { 255, 255, 255, 0 };
+
     //SDL_Surface* icon;
 
     if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0)

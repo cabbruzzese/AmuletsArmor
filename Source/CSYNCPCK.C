@@ -646,7 +646,8 @@ static T_void IClientSyncDoPlayerAction(
                 angle,
                 p_actionData[0], /* type of missile */
                 50, /* initial speed */
-                (p_actionData[1] != 0) ? ObjectFind(p_actionData[1]) : NULL) ;
+                (p_actionData[1] != 0) ? ObjectFind(p_actionData[1]) : NULL,
+				p_actionData[2]) ;
             ObjectSetStance(p_playerObj, STANCE_ATTACK);
 
             /* Alert creatures of my attack. */
@@ -716,7 +717,8 @@ static T_void IClientSyncDoPlayerAction(
                         p_actionData[1], /* angle */
                         p_actionData[0], /* type of object */
                         p_actionData[2], /* throw speed */
-                        NULL) ;          /* no aimed target. */
+                        NULL,
+						0) ;          /* no aimed target. */
             ObjectSetStance(p_playerObj, STANCE_ATTACK);
             ObjectSetAccData(p_obj, p_actionData[3]) ;
             break ;
@@ -742,8 +744,22 @@ static T_void IClientSyncDoPlayerAction(
                             item = CreatureStolenFrom(p_target) ;
                             if (item != 0)  {
                                 SoundDing() ;
-                                MessagePrintf("Stole item!", item) ;
-                                if (InventoryCreateObjectInHand(item) == FALSE)  {
+                                
+								if (item == 206)//special case for bolts
+								{
+									MessagePrintf("Stole bolts!", item) ;
+									Effect(EFFECT_TAKE_AMMO,
+										EFFECT_TRIGGER_NONE,
+										0,
+										(rand() % 11) + 1,
+										0,
+										NULL);
+								}
+								else
+								{
+									MessagePrintf("Stole item!", item) ;
+								}
+								if (InventoryCreateObjectInHand(item) == FALSE)  {
                                     MessageAdd("Stolen item dropped.") ;
                                     ClientSyncSendActionDropAt(
                                         item,
@@ -1035,7 +1051,8 @@ T_void ClientSyncSendActionMeleeAttack(
 
 T_void ClientSyncSendActionMissileAttack(
            T_word16 missileType,
-           T_word16 target)
+           T_word16 target,
+		   T_word16 knifetype)
 {
     DebugRoutine("ClientSyncSendActionMissileAttack") ;
 
@@ -1043,7 +1060,7 @@ T_void ClientSyncSendActionMissileAttack(
         PLAYER_ACTION_MISSILE_ATTACK,
         missileType,
         target,
-        0,
+        knifetype,
         0) ;
 
     DebugEnd() ;

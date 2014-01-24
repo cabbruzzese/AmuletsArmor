@@ -9,6 +9,7 @@
 
 typedef T_void *T_creaturesHandle ;
 #define CREATURES_HANDLE_BAD NULL
+#define NUM_JUNK_ITEMS 40
 
 T_void CreaturesInitialize(T_void) ;
 

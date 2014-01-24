@@ -287,6 +287,7 @@ T_3dObject *ObjectCreate(T_void)
     p_obj->inWorld = FALSE ;
     p_obj->elementInObjCollisionList = DOUBLE_LINK_LIST_ELEMENT_BAD ;
     p_obj->objCollisionGroup = OBJ_COLLISION_GROUP_NONE ;
+	p_obj->spawnType = 0;
 
 //printf ("** ObjectCreate: ID %d by %s\n", p_obj->objServerId, DebugGetCallerName());
 

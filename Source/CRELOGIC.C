@@ -3424,6 +3424,7 @@ static E_Boolean ITargetExplodeOnCollision(
             p_creature->markedForDestroy = TRUE ;
             isGone = TRUE ;
         }
+
 /* Because missiles don't destroy themselves, we must do it ourself. */
 /* !!! This should be changed in the resource file so that missiles */
 /* have a nice disappearing explosion. */
@@ -3658,7 +3659,8 @@ static T_void IShootAtTarget(
                     p_creature->targetAngle,
                     p_logic->missileType,
                     30,
-                    p_target) ;
+                    p_target,
+					p_obj->spawnType) ;
             }
         }
         /* Set up the "wait" time for the next missile. */
@@ -4069,6 +4071,8 @@ static T_void IExplodeSelf(
                   T_word16 damage)
 {
     E_Boolean isGone = FALSE ;
+	T_3dObject *spawnobj;
+
 
     DebugRoutine("IExplodeSelf") ;
 
@@ -4101,6 +4105,14 @@ static T_void IExplodeSelf(
         p_creature->markedForDestroy = TRUE ;
         isGone = TRUE ;
     }
+
+	//If spawn type exists, drop it
+	if (p_obj->spawnType != 0)
+	{
+		spawnobj = ServerCreateObjectGlobal(p_obj->spawnType, ObjectGetX16(p_obj), ObjectGetY16(p_obj), ObjectGetZ16(p_obj));
+		ObjectNormalGravity(spawnobj);
+	}
+	
 
 /* NOTE: Since missiles don't destroy themselves, this routine */
 /* will have to do it for now. */
@@ -4708,6 +4720,49 @@ static T_void CreatureDropTreasure(
     DebugEnd() ;
 }
 
+T_word16 G_JunkItems[NUM_JUNK_ITEMS] = 
+	{
+		104, //gold
+		102, //silver
+		100, //copper 1 peice
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		100,
+		101, //coppy 5 peice
+		101,
+		101,
+		101,
+		101,
+		101,
+		101,
+		101,
+		101,
+		248, //grapes
+		248,
+		200, //iron dagger
+		206, //bolts (special case)
+		206,
+		206,
+		206,
+		206,
+		243, //berry
+		244, //carrot
+		800, //healing potion
+		362, //mana scroll
+		246, //water gourd
+		246,
+		806, //reduce poison potion
+		827, //potion of pain
+		4296, //wooden dagger
+		8395, //rusty shortsword
+		12990, //leather glove
+		25278, //steel glove
+	};
 T_word16 CreatureStolenFrom(T_3dObject *p_obj)
 {
     T_word16 item = 0 ;  /* No item */
@@ -4822,9 +4877,16 @@ T_word16 CreatureStolenFrom(T_3dObject *p_obj)
                     break ;
             }
 
-            /* No further stealing allowed */
-            p_creature->wasStolenFrom = TRUE ;
         }
+
+		if (item == 0 || p_creature->wasStolenFrom == TRUE)
+		{
+			item = G_JunkItems[rand() % (NUM_JUNK_ITEMS - 1)];
+		}
+
+        /* Main item gone. Mark for random junk */
+        p_creature->wasStolenFrom = TRUE ;
+
     }
 
     DebugEnd() ;

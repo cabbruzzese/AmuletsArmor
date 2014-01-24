@@ -3331,7 +3331,7 @@ static T_word16 ICommandObjectShootObject(
         T_word16 objectType = value2.ns.number;
         T_word16 angle = ObjectGetAngle(p_obj) ;
         T_word16 velocity = value3.ns.number;
-        ServerShootProjectile(p_obj, angle, objectType, velocity, 0);
+        ServerShootProjectile(p_obj, angle, objectType, velocity, 0, 0);
     }
 
     DebugEnd() ;

@@ -1,0 +1,8 @@
+[title]
+[Description]
+~
+[Str],[Spd],[Mgc],[Acc],[Stl],[Con]~ (Starting)
+[Str],[Spd],[Mgc],[Acc],[Stl],[Con]~ (Advancement)
+[Level Titles], ... ~
+[Magik Type], [Can Use Flag]~
+[Health Regen],[Mana Regen],[Jump Mod],[Dmg Mod],[Move Mod],[Thieving Tools],[Punch Dmg]~

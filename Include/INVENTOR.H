@@ -131,6 +131,10 @@ T_3dObject* InventoryCheckObjectInInventoryArea(T_word16 x, T_word16 y);
 T_3dObject* InventoryCheckObjectInEquipmentArea(T_word16 x, T_word16 y);
 T_inventoryItemStruct* InventoryCheckItemInInventoryArea(T_word16 x, T_word16 y);
 E_Boolean InventoryCanUseItemInReadyHand(T_void);
+E_Boolean InventoryContainsItem (T_word32 type);
+T_inventoryItemStruct *GetFirstItemFromInventory(T_word32 type);
+T_void InventoryUseAlternativeItem(T_buttonID buttonID);
+T_void InventoryUseItemInMouseHand(T_buttonID buttonID);
 T_void InventoryUseItemInReadyHand(T_buttonID buttonID);
 E_Boolean InventoryCanUseItem(T_inventoryItemStruct *p_inv);
 T_void InventoryUseItem(T_inventoryItemStruct *p_inv);
@@ -252,6 +256,10 @@ E_Boolean InventoryWeaponIsBow(T_void);
 E_Boolean InventoryDoEffect(
         E_effectTriggerType trigger,
         E_equipLocations location);
+E_Boolean InventoryDoEffect_Load(
+        E_effectTriggerType trigger,
+        E_equipLocations location,
+		E_Boolean playerLoad);
 
 #endif
 

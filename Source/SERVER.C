@@ -133,7 +133,8 @@ T_3dObject *ServerProjectileAdd(
         T_sword16 z,
         T_sword16 vz,
         T_word16 target,
-        T_word16 ownerObjID)
+        T_word16 ownerObjID,
+		T_word16 daggertype)
 {
     T_3dObject *p_obj;
     T_sword32 startX, startY;
@@ -144,6 +145,8 @@ T_3dObject *ServerProjectileAdd(
 
     /** Create a new object in my world. **/
     p_obj = ObjectCreate ();
+
+	p_obj->spawnType = daggertype;
 
     /** Set its type according to the packet instructions. **/
     ObjectSetType (p_obj, objectType);
@@ -207,7 +210,8 @@ T_3dObject *ServerShootProjectile(
           T_word16 angle,
           T_word16 typeObj,
           T_word16 initSpeed,
-          T_3dObject *p_target)
+          T_3dObject *p_target,
+		  T_word16 daggertype)
 {
     T_sword32 distance ;
     T_sword32 x, y ;
@@ -302,7 +306,8 @@ T_3dObject *ServerShootProjectile(
                 obj_z,
                 obj_vz,
                 obj_target,
-                obj_ownerObjID) ;
+                obj_ownerObjID,
+				daggertype) ;
 
     DebugEnd() ;
 
@@ -888,7 +893,7 @@ T_void ServerShootBasicProjectile(
 
     /* This is a cheat, send it to ourself! */
     ServerProjectileAdd(objectType, (T_byte8)initialSpeed, angle, obj_x, obj_y, obj_z, obj_vz,
-            obj_target, obj_ownerObjID);
+            obj_target, obj_ownerObjID, 0);
 
     DebugEnd() ;
 }

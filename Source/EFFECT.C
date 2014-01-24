@@ -120,7 +120,6 @@ T_void EffectFinish (T_void)
     DebugEnd();
 }
 
-
 /*-------------------------------------------------------------------------*
  * Routine:  Effect
  *-------------------------------------------------------------------------*/
@@ -137,7 +136,7 @@ E_Boolean Effect(E_effectType effecttype,
 {
     E_Boolean retvalue=TRUE;
     T_3dObject *p_object;
-    T_word16 subtype,duration,power;
+    T_word16 subtype,duration,power,dmg;
     T_byte8 bolttype;
     T_3dObject *p_obj;
     T_inventoryItemStruct *p_inv;
@@ -149,9 +148,49 @@ E_Boolean Effect(E_effectType effecttype,
     subtype=data1;
     duration=data2;
     power=data3;
+	dmg = 0;
 
     switch (effecttype)
     {
+		case EFFECT_THROWING_DAGGER:
+			//sound
+	        ClientSyncSendActionAreaSound(SOUND_SHEATH_DAGGER,500, FALSE);
+			
+			
+			//base weapon damage (accuracy * damage / 2) * dmg mod
+			dmg = (T_sword16)(G_activeStats->Attributes[ATTRIBUTE_ACCURACY] * (T_word16)((float)data2 / 2));
+			power = (T_word16)((float)dmg * CreateClassDatas[G_activeStats->ClassType]->DamageModifier);
+
+			if (p_owner!=NULL)
+				p_object=(T_3dObject *)p_owner;
+
+			p_object->spawnType = p_object->objectType;
+
+			data1 = EFFECT_BOLT_NORMAL;
+
+			//apply one magical damage effect
+			// (Limited to 1 based on how arrows work)
+			if (EffectPlayerEffectIsActive(PLAYER_EFFECT_FIRE_ATTACK))
+				data1 = EFFECT_BOLT_FIRE;
+			else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_ACID_ATTACK))
+				data1 = EFFECT_BOLT_ACID;
+			else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_POISON_ATTACK))
+				data1 = EFFECT_BOLT_POISON;
+			else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_ELECTRICITY_ATTACK))
+				data1 = EFFECT_BOLT_ELECTRICITY;
+			else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_PIERCING_ATTACK))
+				data1 = EFFECT_BOLT_PIERCING;
+			else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_MANA_DRAIN_ATTACK))
+				data1 = EFFECT_BOLT_MANA_DRAIN;
+
+			Effect (EFFECT_CREATE_PROJECTILE,
+					EFFECT_TRIGGER_USE,
+					data1,
+					data2,
+					power,
+					p_object);
+
+			break;
         case EFFECT_READY_WEAPON:
 //        OverlaySetAnimation (data1);
         if (data2==0) StatsSetWeaponBaseDamage (2);
@@ -269,7 +308,10 @@ E_Boolean Effect(E_effectType effecttype,
         case EFFECT_CREATE_PROJECTILE:
             //* will be something like */
             // ClientCreateProjectile (E_effectMissileType type, duration, power);
-            ClientCreateProjectile(data1, data2, data3) ;
+			if (p_owner!=NULL)
+				p_object=(T_3dObject *)p_owner;
+
+            ClientCreateProjectile(data1, data2, data3, p_owner) ;
 
         /* add a proper color effect */
         switch (data1)
@@ -640,9 +682,7 @@ E_Boolean Effect(E_effectType effecttype,
         break;
 
         case EFFECT_ACTIVATE_THIEVING:
-        if (StatsGetPlayerClassType() == CLASS_ROGUE ||
-            StatsGetPlayerClassType() == CLASS_MAGICIAN ||
-            StatsGetPlayerClassType() == CLASS_MERCENARY)
+			if (CreateClassDatas[StatsGetPlayerClassType()]->ThiefModifier > 0)
         {
             /* stealing or door opening code here */
             /* note: check for CLASS_MERCENARY when determining whether */

@@ -25,7 +25,8 @@ T_void ClientSyncSendActionMeleeAttack(
 
 T_void ClientSyncSendActionMissileAttack(
            T_word16 missileType,
-           T_word16 target) ;
+           T_word16 target,
+		   T_word16 knifetype) ;
 
 T_void ClientSyncSendActionActivateForward(T_void) ;
 

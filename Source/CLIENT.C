@@ -71,6 +71,7 @@
 #define PLAYER_ATTACK_RADIUS      10
 
 #define CLIENT_NUM_TALK_MODES 3
+#define TIME_BETWEEN_QUICKUSE    35   /* 0.5 seconds */
 #define TIME_BETWEEN_STEALS      140   /* 2 seconds */
 #define TIME_BETWEEN_PICK_LOCKS  140   /* 2 seconds */
 
@@ -82,6 +83,9 @@
  * Globals:
  *--------------------------------------------------------------------------*/
 T_word32 G_syncCount = 0 ;
+
+//Timer for quick use / Mouse Hand Use / Alernative Use functions
+T_word32 LastQuickUse = 0;
 
 /* General flag noting if we are initilized. */
 static E_Boolean G_clientInit = FALSE ;
@@ -378,19 +382,29 @@ static T_word16 G_missileToObjectType[EFFECT_MISSILE_UNKNOWN] = {
 T_void ClientCreateProjectile (
            E_effectMissileType type,
            T_word16 duration,
-           T_word16 power)
+           T_word16 power,
+		   T_void* p_owner)
 {
     T_word16 objectType ;
     T_3dObject *p_target ;
     T_word16 target ;
+	T_3dObject *p_object;
+	T_word16 daggertype = 0;
 
     DebugRoutine("ClientCreateProjectile") ;
     DebugCheck(type < EFFECT_MISSILE_UNKNOWN) ;
 
+	if (p_owner!=NULL)
+		p_object=(T_3dObject *)p_owner;
+
     if (ClientIsInView())
     {
         G_attackComplete = FALSE ;
-        objectType = G_missileToObjectType[type] ;
+
+		objectType = G_missileToObjectType[type];
+
+		daggertype = p_object->spawnType;
+
         /* See if there is a target in view. */
         p_target = ViewGetMiddleTarget() ;
         /* If we have a target and it is passable, don't target it. */
@@ -407,7 +421,8 @@ T_void ClientCreateProjectile (
 
         ClientSyncSendActionMissileAttack(
             objectType,
-            target) ;
+            target,
+			daggertype) ;
     }
     DebugEnd() ;
 }
@@ -1280,9 +1295,34 @@ T_void ClientUpdate(T_void)
                 }
             }
 
+			// Look mode
             if (MouseIsRelativeMode()) {
-                // Look mode
-                if (MouseGetButtonStatus() & MOUSE_BUTTON_LEFT) {
+				//Alternative attacks
+				if (MouseGetButtonStatus() & MOUSE_BUTTON_MIDDLE)
+				{
+					
+					if (LastQuickUse > TickerGet())
+						LastQuickUse = TickerGet();
+					if ((LastQuickUse+TIME_BETWEEN_QUICKUSE) < TickerGet())  
+					{
+						LastQuickUse = TickerGet();
+						G_pressedUseButton = TRUE;
+						if (InventoryCanUseItemInReadyHand())
+						{
+							if (InventoryObjectIsInMouseHand())
+							{
+								InventoryUseItemInMouseHand(NULL);
+							}
+							else
+							{
+								InventoryUseAlternativeItem(NULL);
+							}
+						}
+					}
+				}
+				//regular attacks
+				else if(MouseGetButtonStatus() & MOUSE_BUTTON_LEFT)
+				{
                     // Player clicked left mouse button.  Use item in hand
                     if (InventoryCanUseItemInReadyHand()) {
                         InventoryUseItemInReadyHand(NULL);
@@ -3285,15 +3325,14 @@ T_void ClientDoSteal(T_void)
     E_wallActivation type ;
     T_word16 doorSector ;
     T_word16 doorLock ;
+	float tmod;
 
     DebugRoutine("ClientDoSteal") ;
 
-    /* Stealing/Picking skill for mercenary and magician is half chance. */
-    stealPickSkill = StatsGetPlayerStealth() ;
-    if ((StatsGetPlayerClassType() == CLASS_MERCENARY) ||
-        (StatsGetPlayerClassType() == CLASS_MAGICIAN))  {
-        stealPickSkill >>= 1 ;
-    }
+    /* Apply class based modifier. */
+	tmod = CreateClassDatas[StatsGetPlayerClassType()]->ThiefModifier;
+    stealPickSkill = (T_word16)((float)StatsGetPlayerStealth() * tmod);
+	
 
     /* Look at the position ahead and try to hit anything */
     /* that is there. */
@@ -3334,12 +3373,15 @@ T_void ClientDoSteal(T_void)
                     if ((rand() % 100) < stealPickSkill)  {
                         /* Is the door absolutely locked? */
                         if (doorLock == DOOR_ABSOLUTE_LOCK)  {
-                            /* Give a 1% chance to open door without key. */
-                            if ((rand() % 100) == 0)  {
+                            /* Give a 4% chance to open door without key. */
+                            if ((rand() % 100) > 4)  {
                                 MessageAdd("Picking lock ... ") ;
                                 ClientSyncSendActionPickLock(
                                     doorSector,
                                     ObjectGetServerId(PlayerGetObject())-100) ;
+								//grant xp
+								StatsChangePlayerExperience((T_sword16) stealPickSkill * 50);
+
                             } else {
                                 MessageAdd("^005Door appears to have a superior lock") ;
                             }
@@ -3347,7 +3389,10 @@ T_void ClientDoSteal(T_void)
                             MessageAdd("Picking lock ... ") ;
                             ClientSyncSendActionPickLock(
                                 doorSector,
-                                ObjectGetServerId(PlayerGetObject())-100) ;
+                                ObjectGetServerId(PlayerGetObject())-100);
+
+							//grant xp
+							StatsChangePlayerExperience((T_sword16) stealPickSkill * 35);
                         }
                     } else {
                         MessageAdd("^005You failed to pick the lock") ;
@@ -3357,12 +3402,18 @@ T_void ClientDoSteal(T_void)
         } else {
             MessageAdd("^006No door to unlock or person to steal.") ;
         }
-    } else {
+	} else {
         /* Don't allow stealing when item is in mouse hand. */
         if (InventoryObjectIsInMouseHand() == TRUE)  {
             SoundDing() ;
             MessageAdd("^026Cannot steal with item in mouse hand!") ;
-        } else {
+        } 
+		else if (G_stealFromObject->attributes & CHARACTER_STATUS_DEAD)
+		{
+			SoundDing() ;
+            MessageAdd("^026Cannot steal from the dead!") ;
+		}
+		else {
             if (lastTime > TickerGet())
                 lastTime = TickerGet() ;
             if ((lastTime+TIME_BETWEEN_STEALS) > TickerGet())  {
@@ -3376,9 +3427,11 @@ T_void ClientDoSteal(T_void)
                         ObjectGetServerId(G_stealFromObject),
                         ObjectGetServerId(PlayerGetObject())-100,
                         FALSE) ;
+					//Add Exp
+					StatsChangePlayerExperience((T_sword16) stealPickSkill * 35);
                 } else {
                     /* See if we failed badly. */
-                    if (((rand() % 100)*4) < (120-stealPickSkill))  {
+                    if ((rand() % 100) - stealPickSkill > 25)  {
                         /* Failed badly. */
                         ClientSyncSendActionSteal(
                             ObjectGetServerId(G_stealFromObject),

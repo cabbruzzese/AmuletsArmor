@@ -22,6 +22,7 @@
 #include "SERVER.H"
 #include "SERVERSH.H"
 #include "STATS.H"
+#include "MESSAGE.H"
 
 /* Module:  Server Shared Routines (between client server and game server) */
 extern T_sword32 G_sourceX, G_sourceY, G_sourceZ ;

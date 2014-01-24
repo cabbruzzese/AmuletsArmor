@@ -155,6 +155,7 @@
     <ClCompile Include="..\..\..\..\Source\COMWIN.C" />
     <ClCompile Include="..\..\..\..\Source\CONFIG.C" />
     <ClCompile Include="..\..\..\..\Source\CONTROL.C" />
+    <ClCompile Include="..\..\..\..\Source\CreateClassData.c" />
     <ClCompile Include="..\..\..\..\Source\CRELOGIC.C" />
     <ClCompile Include="..\..\..\..\Source\CSYNCPCK.C" />
     <ClCompile Include="..\..\..\..\Source\DBLLINK.C" />
@@ -259,6 +260,7 @@
     <ClInclude Include="..\..\..\..\Include\COMWIN.H" />
     <ClInclude Include="..\..\..\..\Include\CONFIG.H" />
     <ClInclude Include="..\..\..\..\Include\CONTROL.H" />
+    <ClInclude Include="..\..\..\..\Include\CreateClassData.h" />
     <ClInclude Include="..\..\..\..\Include\CREDATA.H" />
     <ClInclude Include="..\..\..\..\Include\CREDATAO.H" />
     <ClInclude Include="..\..\..\..\Include\CRELOGIC.H" />

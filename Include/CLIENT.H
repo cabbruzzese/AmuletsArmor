@@ -82,7 +82,8 @@ T_void ClientThrowObject(
 T_void ClientCreateProjectile(
         E_effectMissileType type,
         T_word16 duration,
-        T_word16 power);
+        T_word16 power,
+		T_void* p_owner);
 
 T_void ClientAttack(T_void);
 

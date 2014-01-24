@@ -28,6 +28,7 @@
 #include "SPELLS.H"
 #include "STATS.H"
 #include "TXTBOX.H"
+#include "TICKER.H"
 
 //static T_word16  G_inventoryWindowX1=213;
 //static T_word16  G_inventoryWindowX2=315;
@@ -428,7 +429,6 @@ E_Boolean InventoryEquipmentWindowIsAt (T_word16 locx, T_word16 locy)
     return (retvalue);
 }
 
-
 E_Boolean InventoryObjectIsInMouseHand (T_void)
 {
     E_Boolean retvalue=FALSE;
@@ -442,7 +442,6 @@ E_Boolean InventoryObjectIsInMouseHand (T_void)
     return (retvalue);
 }
 
-
 E_Boolean InventoryObjectIsInReadyHand (T_void)
 {
     E_Boolean retvalue=FALSE;
@@ -455,7 +454,6 @@ E_Boolean InventoryObjectIsInReadyHand (T_void)
     DebugEnd();
     return (retvalue);
 }
-
 
 E_Boolean InventoryCanUseItemInReadyHand (T_void)
 {
@@ -484,6 +482,157 @@ E_Boolean InventoryCanUseItem (T_inventoryItemStruct *p_inv)
     return (canUse);
 }
 
+E_Boolean InventoryContainsItem (T_word32 type)
+{
+	E_Boolean retvalue = FALSE;
+	T_inventoryItemStruct *testInv=NULL;
+	T_doubleLinkListElement element;
+
+    DebugRoutine ("InventoryContainsItem");
+
+	//get first item
+    element=DoubleLinkListGetFirst(G_inventories[INVENTORY_PLAYER].itemslist);
+
+	//traverse whole list
+    while (element!=DOUBLE_LINK_LIST_BAD)
+    {
+		//get current item
+        testInv=(T_inventoryItemStruct *)DoubleLinkListElementGetData(element);
+
+		//test if it is of type
+		if (testInv->objecttype == type)
+		{
+			//success
+			retvalue = TRUE;
+			break;
+		}
+
+		//find next item
+        element=DoubleLinkListElementGetNext(element);
+    }
+
+	DebugEnd();
+
+	//not found
+	return retvalue;
+}
+
+T_inventoryItemStruct *GetFirstItemFromInventory(T_word32 type)
+{
+	T_inventoryItemStruct *retvalue=NULL;
+	T_inventoryItemStruct *testInv=NULL;
+	T_doubleLinkListElement element;
+
+    DebugRoutine ("InventoryContainsItem");
+
+	//get first item
+    element=DoubleLinkListGetFirst(G_inventories[INVENTORY_PLAYER].itemslist);
+
+	//traverse whole list
+    while (element!=DOUBLE_LINK_LIST_BAD)
+    {
+		//get current item
+        testInv=(T_inventoryItemStruct *)DoubleLinkListElementGetData(element);
+
+		//test if it is of type
+		if (testInv->objecttype == type)
+		{
+			//success
+			retvalue = testInv;
+			break;
+		}
+
+		//find next item
+        element=DoubleLinkListElementGetNext(element);
+    }
+
+	DebugEnd();
+
+	//not found
+	return retvalue;
+}
+
+T_void InventoryUseAlternativeItem (T_buttonID buttonID)
+{
+	T_inventoryItemStruct *p_inv=NULL;
+	int i = 0;
+	T_sword16 type = 0;
+
+	DebugRoutine ("InventoryUseAlternativeItem");
+
+	if ((!ClientIsPaused()) && (!ClientIsDead()))  
+	{
+		//thief tools
+		p_inv = GetFirstItemFromInventory(143);
+		if (p_inv != NULL)
+		{
+			/* scan through triggers to see if we find a match */
+			for (i=0;i<MAX_ITEM_EFFECTS;i++)
+			{
+				if (p_inv->itemdesc.effectTriggerOn[i]==EFFECT_TRIGGER_USE)
+				{
+					if (p_inv->itemdesc.effectType[i]==EFFECT_SET_ARMOR)
+					{
+						/* store location in effect data */
+						p_inv->itemdesc.effectData[i][1]=EQUIP_LOCATION_READY_HAND;
+					}
+
+					type=p_inv->itemdesc.effectType[i];
+				}
+			}
+
+			Effect(type,
+				   EFFECT_TRIGGER_USE,
+				   p_inv->itemdesc.effectData[i][0],
+				   p_inv->itemdesc.effectData[i][1],
+				   p_inv->itemdesc.effectData[i][2],
+				   (T_void *)ObjectGetType(p_inv->object));
+		}
+	}
+
+	DebugEnd();
+}
+
+T_void InventoryUseItemInMouseHand (T_buttonID buttonID)
+{
+	T_inventoryItemStruct *p_inv=NULL;
+
+	DebugRoutine ("InventoryUseItemInMouseHand");
+
+	if ((!ClientIsPaused()) && (!ClientIsDead()))  
+	{
+		if (InventoryObjectIsInMouseHand())
+		{
+			p_inv=(T_inventoryItemStruct *)DoubleLinkListElementGetData
+				(G_inventoryLocations[EQUIP_LOCATION_MOUSE_HAND]);
+
+			DebugCheck (p_inv != NULL);
+
+			//weapons
+			if (ObjectIsWeapon(p_inv->object))
+			{
+				//throwing daggers
+				if (p_inv->itemdesc.subtype == EQUIP_WEAPON_TYPE_DAGGER)
+				{
+					/* make sure there's not an animation already in progress */
+					if (ClientIsInView() && OverlayIsDone() && G_useResetNeeded==FALSE)
+					{
+						/* create the effect use */
+						InventoryDoEffect  (EFFECT_TRIGGER_READY, EQUIP_LOCATION_MOUSE_HAND);
+
+						//remove dagger
+						InventoryDestroyItemInMouseHand();
+
+	                    /* fist attack sound */
+		                SoundPlayByNumber (SOUND_SWING_SET4+(rand()%3),200);
+					}
+				}
+			}
+		}
+	}
+
+	DebugEnd();
+}
 
 /* calls use effect for item currently in ready area */
 /* buttonID = buttonID of caller */
@@ -1100,7 +1249,9 @@ T_inventoryItemStruct* InventoryTakeObject (E_inventoryType which, T_3dObject *i
                         ourclass==CLASS_PRIEST ||
                         ourclass==CLASS_PALADIN ||
                         ourclass==CLASS_WARLOCK ||
-                        ourclass==CLASS_MAGICIAN) destroyme=TRUE;
+                        ourclass==CLASS_MAGICIAN ||
+						ourclass==CLASS_BARBARIAN ||
+						ourclass==CLASS_MONK) destroyme=TRUE;
                 }
 
                 if (destroyme==TRUE)
@@ -1520,6 +1671,7 @@ E_Boolean InventoryThrowObjectIntoWorld (T_word16 x, T_word16 y)
                     InventoryDoEffect(EFFECT_TRIGGER_DROP,EQUIP_LOCATION_MOUSE_HAND);
 
                     retvalue=TRUE;
+
                     /** We need to send a projectile packet to the server. **/
                     ClientThrowObject(p_object, throwspeed, throwangle) ;
 
@@ -2781,11 +2933,26 @@ static E_Boolean InventoryDoItemEffect (T_inventoryItemStruct *p_inv, E_effectTr
 
 E_Boolean InventoryDoEffect  (E_effectTriggerType trigger, E_equipLocations location)
 {
+	E_Boolean retvalue = FALSE;
+	DebugRoutine ("InventoryDoEffect");
+	retvalue = InventoryDoEffect_Load (trigger, location, FALSE);
+    DebugEnd();
+
+	return retvalue;
+}
+
+#define LASTTHROWNDAGGERTIMEOUT 16
+T_word32 LastThrownDagger = 0;
+
+/* Perform inventory effect based on type and activation type */
+E_Boolean InventoryDoEffect_Load  (E_effectTriggerType trigger, E_equipLocations location,  E_Boolean playerLoad)
+{
     E_Boolean retvalue=FALSE;
+	E_Boolean doeffect=FALSE;
     T_inventoryItemStruct *p_inv;
     T_word16 i;
     T_word16 type;
-    DebugRoutine ("InventoryDoEffect");
+	DebugRoutine ("InventoryDoEffect_Load");
 
     if (G_inventoryLocations[location] != DOUBLE_LINK_LIST_ELEMENT_BAD)
     {
@@ -2811,27 +2978,55 @@ E_Boolean InventoryDoEffect  (E_effectTriggerType trigger, E_equipLocations loca
                 DebugCheck(ObjectIsValid(p_inv->object)) ;
 
                 /* we triggered an effect */
-                /* we triggered an effect */
-                if ((p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_POTION ||
-                    p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_SCROLL) &&
-                    (type != EFFECT_ADD_JOURNAL_PAGE_BY_OBJECT))
-                {
-                    Effect(type,
-                       trigger,
-                       p_inv->itemdesc.effectData[i][0],
-                       p_inv->itemdesc.effectData[i][1],
-                       p_inv->itemdesc.effectData[i][2],
-                       (T_void *)ObjectGetType(p_inv->object));
-                }
-                else
-                {
-                    Effect(type,
-                       trigger,
-                       p_inv->itemdesc.effectData[i][0],
-                       p_inv->itemdesc.effectData[i][1],
-                       p_inv->itemdesc.effectData[i][2],
-                       (T_void *)p_inv->object);
-                }
+                if (!(playerLoad && type == EFFECT_TAKE_ELECTRICITY_DAMAGE))
+				{
+					if ((p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_POTION ||
+						p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_SCROLL) &&
+						(type != EFFECT_ADD_JOURNAL_PAGE_BY_OBJECT))
+					{
+						Effect(type,
+						   trigger,
+						   p_inv->itemdesc.effectData[i][0],
+						   p_inv->itemdesc.effectData[i][1],
+						   p_inv->itemdesc.effectData[i][2],
+						   (T_void *)ObjectGetType(p_inv->object));
+					}
+					else
+					{
+						doeffect = TRUE;
+
+						//throwing knives
+						if (location == EQUIP_LOCATION_MOUSE_HAND &&
+							ObjectIsWeapon(p_inv->object) &&
+							p_inv->itemdesc.subtype == EQUIP_WEAPON_TYPE_DAGGER)
+						{
+							//debug can run this line twice, so prevent it from running twice in a row
+							doeffect = FALSE;
+
+							if (LastThrownDagger > TickerGet())
+								LastThrownDagger = 0;
+
+							if ((LastThrownDagger+LASTTHROWNDAGGERTIMEOUT) < TickerGet())
+							{
+								LastThrownDagger = TickerGet();
+								type = EFFECT_THROWING_DAGGER;
+								doeffect = TRUE;
+							}
+						}
+
+						if (doeffect == 1)
+						{
+							Effect(type,
+								trigger,
+								p_inv->itemdesc.effectData[i][0],
+								p_inv->itemdesc.effectData[i][1],
+								p_inv->itemdesc.effectData[i][2],
+								(T_void *)p_inv->object);
+						}
+					
+
+					}
+				}
 
                 /* test to see if we should identify this item */
                 if ((trigger==EFFECT_TRIGGER_USE) &&
@@ -3138,7 +3333,7 @@ E_Boolean InventoryIsUseableByClass (T_inventoryItemStruct *p_inv)
     DebugRoutine ("InventoryIsUseableByClass");
 
     DebugCheck (p_inv != NULL);
-    ourclass=1<<StatsGetPlayerClassType();
+	ourclass = CreateClassDatas[StatsGetPlayerClassType()]->CanUseFlag;
     if (ourclass&p_inv->itemdesc.useable)
     {
         retvalue=TRUE;
@@ -4271,7 +4466,7 @@ T_void InventoryRemoveEquippedEffects (T_void)
 }
 
 /* restores all player effects associated with equipped inventory items */
-T_void InventoryRestoreEquippedEffects (T_void)
+T_void InventoryRestoreEquippedEffects ()
 {
     T_word16 i;
     DebugRoutine ("InventoryRestoreEquippedEffects");
@@ -4287,14 +4482,13 @@ T_void InventoryRestoreEquippedEffects (T_void)
         EffectSoundOff();
         for (i=EQUIP_LOCATION_READY_HAND;i<EQUIP_LOCATION_UNKNOWN;i++)
         {
-            InventoryDoEffect (EFFECT_TRIGGER_READY,i);
+            InventoryDoEffect_Load (EFFECT_TRIGGER_READY,i,TRUE);
         }
         EffectSoundOn();
     }
 
     DebugEnd();
 }
-
 
 /* returns the number of objectType found in the inventory.  If there */
 /* aren't any, it returns 0 */
@@ -4622,7 +4816,7 @@ T_void InventorySetDefaultInventoryForClass(T_void)
              /* rogue's tools */
              InventoryAddObjectToInventory (INVENTORY_PLAYER,143,1);
              /* dagger */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,1);
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,3);
 
              /* leather armor */
 //           InventoryAddObjectToInventory (INVENTORY_PLAYER,700,1);
@@ -4716,6 +4910,7 @@ T_void InventorySetDefaultInventoryForClass(T_void)
              InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
              InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
 
+		
 #ifdef COMPILE_OPTION_SHAREWARE_DEMO
              /* Give player extra cleric  runes necessary for demo */
              InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
@@ -4731,6 +4926,68 @@ T_void InventorySetDefaultInventoryForClass(T_void)
 //             InventoryAddObjectToInventory (INVENTORY_PLAYER,706,2);
 //             InventoryAddObjectToInventory (INVENTORY_PLAYER,707,1);
              /* Leather armor */
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
+        break;
+
+		case CLASS_BARBARIAN:
+			/* healing potions */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
+			/*Strength potions */
+			InventoryAddObjectToInventory (INVENTORY_PLAYER,818,2);
+
+            /* Mage runes */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,304,1);
+			InventoryAddObjectToInventory (INVENTORY_PLAYER,306,1);
+
+			/* bronze axe */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,12493,1);
+
+			/* Leather armor */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
+			break;
+
+		case CLASS_MONK:
+			/* healing potions */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
+            /* gain mana */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,362,2);
+
+			/* Leather armor */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
+
+			/* Cleric runes */
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
+            InventoryAddObjectToInventory (INVENTORY_PLAYER,314,1);
+			break;
+
+		case CLASS_NINJA:
+             /* speed */
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,814,1);
+             /* healing potions */
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,1);
+
+             /* rogue's tools */
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,143,1);
+
+             /* short sword */
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,203,1);
+             /* dagger */
+             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,2);
+
+             /* leather armor */
              InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
              InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
              InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
@@ -4927,7 +5184,13 @@ T_void InventorySetDefaultInventoryForClass(T_void)
 
 #ifndef COMPILE_OPTION_SHAREWARE_DEMO
     /* spells for regular version */
-    if (StatsGetPlayerSpellSystem() == SPELL_SYSTEM_MAGE)
+	if (StatsGetPlayerSpellSystem() == SPELL_SYSTEM_MAGE && StatsGetPlayerClassType() == CLASS_BARBARIAN)
+	{
+		StatsAddPlayerNotePage(100); /* Deflect */
+        StatsAddPlayerNotePage(125); /* Wolf Speed */
+        StatsAddPlayerNotePage(131); /* Giant Strength */
+	}
+	else if (StatsGetPlayerSpellSystem() == SPELL_SYSTEM_MAGE)
     {
         StatsAddPlayerNotePage(100); /* Deflect */
         StatsAddPlayerNotePage(101); /* Magic Dart */
@@ -5191,8 +5454,19 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
 
     switch (p_inv->itemdesc.subtype)
     {
+		case EQUIP_WEAPON_TYPE_STAFF:
+        if (ourclass==CLASS_BARBARIAN ||
+			ourclass==CLASS_NINJA)
+        {
+            if (showMessage==TRUE) MessageAdd ("You aren't allowed to use staffs.");
+            canUse=FALSE;
+        }
+		break;
+
         case EQUIP_WEAPON_TYPE_DAGGER:
-        if (ourclass==CLASS_PRIEST)
+        if (ourclass==CLASS_PRIEST ||
+			ourclass==CLASS_BARBARIAN ||
+			ourclass==CLASS_MONK)
         {
             if (showMessage==TRUE) MessageAdd ("You aren't allowed to use daggers.");
             canUse=FALSE;
@@ -5203,7 +5477,9 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
         if (ourclass==CLASS_MAGE ||
             ourclass==CLASS_PRIEST ||
             ourclass==CLASS_MAGICIAN ||
-            ourclass==CLASS_ROGUE)
+            ourclass==CLASS_ROGUE ||
+			ourclass==CLASS_MONK ||
+			ourclass==CLASS_NINJA)
         {
             if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with axes.");
             canUse=FALSE;
@@ -5212,7 +5488,9 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
 
         case EQUIP_WEAPON_TYPE_LONGSWORD:
         if (ourclass==CLASS_ROGUE ||
-            ourclass==CLASS_MAGICIAN)
+            ourclass==CLASS_MAGICIAN ||
+			ourclass==CLASS_BARBARIAN ||
+			ourclass==CLASS_MONK)
         {
             if (showMessage==TRUE) MessageAdd("^005You aren't proficient with longswords.");
             canUse=FALSE;
@@ -5220,7 +5498,9 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
 
         case EQUIP_WEAPON_TYPE_SHORTSWORD:
         if (ourclass==CLASS_MAGE ||
-            ourclass==CLASS_PRIEST)
+            ourclass==CLASS_PRIEST ||
+			ourclass==CLASS_BARBARIAN ||
+			ourclass==CLASS_MONK)
         {
             if (showMessage==TRUE) MessageAdd("^005You aren't proficient with swords.");
             canUse=FALSE;
@@ -5230,7 +5510,9 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
         case EQUIP_WEAPON_TYPE_MACE:
         if (ourclass==CLASS_MAGE ||
             ourclass==CLASS_MERCENARY ||
-            ourclass==CLASS_MAGICIAN)
+            ourclass==CLASS_MAGICIAN ||
+			ourclass==CLASS_MONK ||
+			ourclass==CLASS_NINJA)
         {
             if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with maces.");
             canUse=FALSE;
@@ -5242,7 +5524,9 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
             ourclass==CLASS_WARLOCK ||
             ourclass==CLASS_PRIEST ||
             ourclass==CLASS_PALADIN ||
-            ourclass==CLASS_MAGICIAN)
+            ourclass==CLASS_MAGICIAN ||
+            ourclass==CLASS_BARBARIAN ||
+			ourclass==CLASS_MONK)
         {
             if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with bows.");
             canUse=FALSE;
@@ -5287,7 +5571,10 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
                 ourclass==CLASS_SAILOR ||
                 ourclass==CLASS_MAGE ||
                 ourclass==CLASS_ROGUE ||
-                ourclass==CLASS_MAGICIAN)
+                ourclass==CLASS_MAGICIAN ||
+				ourclass==CLASS_BARBARIAN||
+				ourclass==CLASS_MONK ||
+			ourclass==CLASS_NINJA)
             {
                 if (showMessage==TRUE) MessageAdd ("^005You can't wear heavy armor");
                 canUse=FALSE;
@@ -5300,7 +5587,10 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
             case EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN:
             if (ourclass==CLASS_MAGE ||
                 ourclass==CLASS_ROGUE ||
-                ourclass==CLASS_MAGICIAN)
+                ourclass==CLASS_MAGICIAN ||
+				ourclass==CLASS_BARBARIAN||
+				ourclass==CLASS_MONK ||
+				ourclass==CLASS_NINJA)
             {
                 if (showMessage==TRUE) MessageAdd ("^005That armor is too heavy for you to wear.");
                 canUse=FALSE;
