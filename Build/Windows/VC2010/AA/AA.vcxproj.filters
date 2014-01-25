@@ -326,6 +326,9 @@
     <ClCompile Include="..\..\..\..\Source\CreateClassData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\BitmapLoader.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Include\3D_COLLI.H">
@@ -848,6 +851,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Include\CreateClassData.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Include\BitmapLoader.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

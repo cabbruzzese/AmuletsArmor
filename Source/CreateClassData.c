@@ -1,5 +1,7 @@
 #include "CreateClassData.h"
+#include "BitmapLoader.h"
 #include "STATS.H"
+#include "GRAPHICS.H"
 
 CreateClassData* NewCreateClassData (T_byte8 classnum)
 {
@@ -26,6 +28,104 @@ E_Boolean CreateClassDatasLoaded()
 	return TRUE;
 }
 
+T_bitmap* LoadImageFromRes(T_byte8 classnum)
+{
+	T_resource res;
+    T_byte8 stmp[64];
+    T_byte8 *p_data;
+
+    DebugRoutine ("LoadImageFromRes");
+
+    sprintf (stmp,"UI/CREATEC/CHAR%02d", classnum);
+    if (PictureExist (stmp))
+    {
+        res=PictureFind(stmp);
+        p_data=PictureLockQuick (res);
+        PictureUnlockAndUnfind (res);
+	}
+	else
+	{
+		p_data = NULL;
+	}
+
+	DebugEnd();
+
+	return PictureToBitmap(p_data);
+}
+
+T_bitmap* LoadImage(T_byte8 classnum)
+{
+	/*long fsize = 0;
+	T_byte8* data;
+	char filename[32];
+	FILE *fp;
+
+	DebugRoutine ("LoadImage");
+
+	sprintf(filename, "./classes/%i.bmp", (int)classnum);
+	if (fp = fopen(filename, "r"))
+	{
+		fsize = ftell(fp);
+		data = (T_byte8*) malloc (sizeof(char)*fsize);
+		fread(data, 1, fsize, fp);
+		fclose(fp);
+	}
+	else
+	{
+		data = NULL;
+	}
+	DebugEnd();
+	return data;*/
+
+	BITMAPINFOHEADER bmpheader;
+	T_byte8 *p_data, *f_data, *tempptr;
+	T_bitmap *bmp_data = (T_bitmap*)malloc(sizeof(T_bitmap));
+	T_bitmap *retval;
+	int i = 0;
+
+	char filename[32];
+
+	DebugRoutine("LoadImage");
+
+	sprintf(filename, "./classes/%i.bmp", (int)classnum);
+
+	p_data = LoadBitmapFile(filename, &bmpheader);
+	if (p_data != NULL)
+	{
+		bmp_data->sizex = (T_word16)bmpheader.biWidth;
+		bmp_data->sizey = (T_word16)bmpheader.biHeight;
+		f_data = (T_byte8*)malloc(bmpheader.biSizeImage + 2);
+		tempptr = f_data;
+		f_data[0] = (int)bmpheader.biWidth;
+		f_data[1] = 0;
+		f_data[2] = (int)bmpheader.biHeight;
+		f_data[3] = 0;
+		f_data+=4;
+		for (i = bmpheader.biHeight; i > 0; i--)
+		{
+			memcpy(&f_data[(bmpheader.biHeight-i)*bmpheader.biWidth], 
+				   &p_data[i*bmpheader.biWidth], 
+				   bmpheader.biWidth);
+		}
+		retval = (T_bitmap *)tempptr;
+
+		//for (i = 0; i < bmp_data->sizey; i++)
+		//{
+			//bmp_data->data[i] = (T_byte8)p_data + (i * bmp_data->sizex);
+		//}
+
+		
+	}
+	else
+	{
+		retval = NULL;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
 T_void ReadClassData(T_byte8 classnum)
 {
 	FILE *fp;
@@ -39,8 +139,11 @@ T_void ReadClassData(T_byte8 classnum)
 	int adv[NUM_ATTRIBUTES];
 	int i, j;
 	int magic, canUseFlag;
+	T_bitmap *pictureData;
 	float hmod, manamod, jmod, dmod, movemod, tmod, pdmg;
 	float num;
+
+	DebugRoutine ("ReadClassData");
 
 	sprintf(filename, "./classes/%i.dat", (int)classnum);
 	if (fp = fopen(filename, "r"))
@@ -169,6 +272,14 @@ T_void ReadClassData(T_byte8 classnum)
 	CreateClassDatas[classnum]->MoveModifier = movemod;
 	CreateClassDatas[classnum]->ThiefModifier = tmod;
 	CreateClassDatas[classnum]->BasePunchDamage = (int)pdmg;
+
+	pictureData = LoadImage(classnum);
+	if (pictureData == NULL)
+		pictureData = LoadImageFromRes(classnum);
+
+	CreateClassDatas[classnum]->Picture = pictureData;
+
+	DebugEnd();
 }
 
 T_void LoadCreateClassDatas(T_void)

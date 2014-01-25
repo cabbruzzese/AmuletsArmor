@@ -50,6 +50,7 @@ typedef struct {
 	T_byte8 Attributes[NUM_ATTRIBUTES];
 	T_byte8 Advancement[NUM_ATTRIBUTES];
 	T_byte8 *LevelTitles[NUM_TITLES_PER_CLASS];
+	T_bitmap *Picture;
 
 }CreateClassData;
 

@@ -1859,27 +1859,19 @@ T_word16 StatsGetPlayerAttackDamage (T_void)
 
 T_void StatsDrawCharacterPortrait (T_word16 x1, T_word16 y1)
 {
-    T_resource res;
-    T_byte8 stmp[64];
-    T_byte8 *p_data;
+    //T_byte8 *p_data;
 
     DebugRoutine ("StatsDrawCharacterPortrait");
 
     ViewSetPalette(VIEW_PALETTE_STANDARD);
-    sprintf (stmp,"UI/CREATEC/CHAR%02d",StatsGetPlayerClassType());
-//    printf ("Searching for %s\n",stmp);
     fflush (stdout);
 
     GrScreenSet (GRAPHICS_ACTUAL_SCREEN);
     GrDrawRectangle (x1,y1,x1+115,y1+102,0);
-    if (PictureExist (stmp))
+	if (CreateClassDatas[StatsGetPlayerClassType()]->Picture != NULL)
     {
-        res=PictureFind(stmp);
-        p_data=PictureLockQuick (res);
-        DebugCheck (p_data != NULL);
         ColorUpdate(0) ;
-        GrDrawBitmap (PictureToBitmap(p_data),x1,y1);
-        PictureUnlockAndUnfind (res);
+        GrDrawBitmap (CreateClassDatas[StatsGetPlayerClassType()]->Picture,x1,y1);
     } else
     {
         /* clear area */
