@@ -354,48 +354,6 @@ T_void StatsChangePlayerHealth (T_sword16 amt)
             }
             else G_playNextHurtSound=TRUE;
 
-/*
-            switch (G_activeStats->ClassType)
-            {
-                case CLASS_CITIZEN:
-                case CLASS_PRIEST:
-                case CLASS_ARCHER:
-                SoundPlayByNumber(SOUND_CITIZEN_HURT_SET+num,255);
-                break;
-
-                case CLASS_KNIGHT:
-                case CLASS_PALADIN:
-                SoundPlayByNumber(SOUND_PALADIN_HURT_SET+num,255);
-                break;
-
-                case CLASS_MAGE:
-                case CLASS_MAGICIAN:
-                case CLASS_WARLOCK:
-                SoundPlayByNumber(SOUND_MAGE_HURT_SET+num,255);
-                break;
-
-                case CLASS_ROGUE:
-                case CLASS_SAILOR:
-                case CLASS_MERCENARY:
-                SoundPlayByNumber(SOUND_ROGUE_HURT_SET+num,255);
-                break;
-
-                default:
-                DebugCheck(0);
-                break;
-            }
-*/
-//            if (num==0) SoundPlayByNumber (2000,255);
-//            else if (num==1) SoundPlayByNumber (2003,255);
-//            else if (num==2) SoundPlayByNumber (2004,255);
-//            else SoundPlayByNumber (1001,255);
-
-//            if (rand() & 2)
-//  		        SoundPlayByName("ImHit1", 170);
-//            else
-//  		        SoundPlayByName("ImHit2", 170);
-
-
             if (G_activeStats->Health >= real_damage)
             {
 		        if (EffectPlayerEffectIsActive (PLAYER_EFFECT_GOD_MODE)==FALSE)
@@ -920,22 +878,9 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
 
             G_activeStats->RegenMana = G_activeStats->Attributes[ATTRIBUTE_MAGIC]*
                                        (G_activeStats->Level+5);
-            /* set some class specific bonuses */
-            switch (G_activeStats->ClassType)
-            {
-                 case CLASS_WARLOCK:
-                 case CLASS_MAGICIAN:
-					 G_activeStats->RegenMana = (G_activeStats->RegenMana*3)/2;
-					 break;
+            G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[G_activeStats->ClassType]->RegenHealthModifier);
+		    G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[G_activeStats->ClassType]->RegenManaModifier);
 
-                 case CLASS_PRIEST:
-                 case CLASS_MAGE:
-					 G_activeStats->RegenMana *= 3;
-					 break;
-
-                 default:
-					 break;
-            }
 
             /* update max load */
             StatsCalcPlayerMaxLoad();

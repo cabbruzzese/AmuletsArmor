@@ -6,6 +6,8 @@
 [Level Titles], ... ~
 [Magik Type], [Can Use Flag]~
 [Health Regen],[Mana Regen],[Jump Mod],[Dmg Mod],[Move Mod],[Thieving Tools],[Punch Dmg]~
+[Equip Fists],[Equip Axe],[Equip Dagger],[Equip Longsword],[Equip Shortsword],[Equip Mace],[Equip Staff],[Equip Crossbow]~
+[Equip Leather], [Equip Chain], [Equip Plate]~
 [itename] [count], 
 [itemname] [count], 
 ... ~

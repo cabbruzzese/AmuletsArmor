@@ -14,6 +14,7 @@
 #define NUM_CLASSES 14
 #define NUM_ATTRIBUTES 6 //Str, Spd, Mgc, Acc, Stl, Con
 #define NUM_TITLES_PER_CLASS 20
+#define NUM_ARMOR_TYPES 3
 
 typedef enum
 {
@@ -34,6 +35,12 @@ typedef enum
     CLASS_UNKNOWN
 } E_statsClassType;
 
+typedef enum
+{
+	ARMOR_TYPE_LEATHER,
+	ARMOR_TYPE_CHAIN,
+	ARMOR_TYPE_PLATE
+} E_ArmorTypes;
 
 typedef struct {
 	char *name;
@@ -66,7 +73,8 @@ typedef struct {
 	T_bitmap *Picture;
 	StartingItemData* StartingItems;
 	int	StartingItemsCount;
-
+	E_Boolean CanUseWeapon[EQUIP_WEAPON_TYPE_UNKNOWN - 1];//(No restrictions on wands)
+	E_Boolean CanUseArmor[NUM_ARMOR_TYPES];
 }CreateClassData;
 
 CreateClassData *CreateClassDatas[NUM_CLASSES];

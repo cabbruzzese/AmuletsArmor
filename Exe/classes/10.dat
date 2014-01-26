@@ -9,6 +9,8 @@ Magik System: Mage
 Pupil,Student,Trickster,Showman,Charlatan,Magician,Deceiver,Charmer,Mystic,Illusionist,RuneMaster,Seer,Sage,Dark Oracle,Student of Rit,Keeper of Rit,Teacher of Rit,Tower Artesian,Master Sage,Dark Prophet~
 1,0~
 1,1.5,1,1,1,0.5,3~
+1,0,1,1,1,0,1,0~
+1,0,0~
 speedpotion 1,
 healingpotion 2,
 manascroll 2,

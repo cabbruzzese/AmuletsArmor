@@ -210,8 +210,8 @@ T_void ReadClassData(T_byte8 classnum)
 	int i, j;
 	int magic, canUseFlag;
 	T_bitmap *pictureData;
-	float hmod, manamod, jmod, dmod, movemod, tmod, pdmg;
 	float num;
+	float  hmod, manamod, jmod, dmod, movemod, tmod, pdmg;
 
 	DebugRoutine ("ReadClassData");
 
@@ -317,10 +317,27 @@ T_void ReadClassData(T_byte8 classnum)
 		//Base Punch Damage
 		fscanf(fp, "%f", &num);
 		pdmg = num;
-		fseek(fp, 1, SEEK_CUR);
+		fseek(fp, 3, SEEK_CUR);
+
+		//canuse weapons
+		for (i = 0; i < (EQUIP_WEAPON_TYPE_UNKNOWN - 1); i++)
+		{
+			fscanf(fp, "%f", &num);
+			CreateClassDatas[classnum]->CanUseWeapon[i] = (E_Boolean)num;
+			fseek(fp, 1, SEEK_CUR);
+		}
+		fseek(fp, 2, SEEK_CUR);
+
+		//canuse armor
+		for (i = 0; i < NUM_ARMOR_TYPES; i++)
+		{
+			fscanf(fp, "%f", &num);
+			CreateClassDatas[classnum]->CanUseArmor[i] = (E_Boolean)num;
+			fseek(fp, 1, SEEK_CUR);
+		}
+		fseek(fp, 2, SEEK_CUR);
 
 		//Starting Items List
-		fseek(fp, 2, SEEK_CUR);
 		{
 			//get total number of weapons to be used
 			temppos = ftell(fp);

@@ -1245,13 +1245,8 @@ T_inventoryItemStruct* InventoryTakeObject (E_inventoryType which, T_3dObject *i
                 else if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_BOLT ||
                          p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_QUIVER)
                 {
-                    if (ourclass==CLASS_MAGE ||
-                        ourclass==CLASS_PRIEST ||
-                        ourclass==CLASS_PALADIN ||
-                        ourclass==CLASS_WARLOCK ||
-                        ourclass==CLASS_MAGICIAN ||
-						ourclass==CLASS_BARBARIAN ||
-						ourclass==CLASS_MONK) destroyme=TRUE;
+					if (CreateClassDatas[ourclass]->CanUseWeapon[EQUIP_WEAPON_TYPE_CROSSBOW] == 0)
+						destroyme=TRUE;
                 }
 
                 if (destroyme==TRUE)
@@ -3394,36 +3389,6 @@ T_void   InventoryPlayWeaponAttackSound(T_void)
             if (rand()%10==1 && p_inv->itemdesc.subtype!=EQUIP_WEAPON_TYPE_CROSSBOW)
             {
                 SoundPlayByNumber(SOUND_PLAYER_WAR_CRY_SET+(rand()%3),255);
-/*               switch (StatsGetPlayerClassType())
-                {
-                    case CLASS_CITIZEN:
-                    case CLASS_PRIEST:
-                    case CLASS_ARCHER:
-                    SoundPlayByNumber(SOUND_CITIZEN_WAR_CRY,255);
-                    break;
-
-                    case CLASS_KNIGHT:
-                    case CLASS_PALADIN:
-                    SoundPlayByNumber(SOUND_PALADIN_WAR_CRY,255);
-                    break;
-
-                    case CLASS_MAGE:
-                    case CLASS_MAGICIAN:
-                    case CLASS_WARLOCK:
-                    SoundPlayByNumber(SOUND_MAGE_WAR_CRY,255);
-                    break;
-
-                    case CLASS_ROGUE:
-                    case CLASS_SAILOR:
-                    case CLASS_MERCENARY:
-                    SoundPlayByNumber(SOUND_ROGUE_WAR_CRY,255);
-                    break;
-
-                    default:
-                    DebugCheck(0);
-                    break;
-                }
-*/
             }
 
             /* play an attack sound */
@@ -5092,79 +5057,55 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
     switch (p_inv->itemdesc.subtype)
     {
 		case EQUIP_WEAPON_TYPE_STAFF:
-        if (ourclass==CLASS_BARBARIAN ||
-			ourclass==CLASS_NINJA)
-        {
-            if (showMessage==TRUE) MessageAdd ("You aren't allowed to use staffs.");
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
+			if (showMessage==TRUE) MessageAdd ("You aren't allowed to use staffs.");
             canUse=FALSE;
-        }
+		}
 		break;
 
         case EQUIP_WEAPON_TYPE_DAGGER:
-        if (ourclass==CLASS_PRIEST ||
-			ourclass==CLASS_BARBARIAN ||
-			ourclass==CLASS_MONK)
-        {
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
             if (showMessage==TRUE) MessageAdd ("You aren't allowed to use daggers.");
             canUse=FALSE;
         }
         break;
 
         case EQUIP_WEAPON_TYPE_AXE:
-        if (ourclass==CLASS_MAGE ||
-            ourclass==CLASS_PRIEST ||
-            ourclass==CLASS_MAGICIAN ||
-            ourclass==CLASS_ROGUE ||
-			ourclass==CLASS_MONK ||
-			ourclass==CLASS_NINJA)
-        {
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
             if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with axes.");
             canUse=FALSE;
         }
         break;
 
         case EQUIP_WEAPON_TYPE_LONGSWORD:
-        if (ourclass==CLASS_ROGUE ||
-            ourclass==CLASS_MAGICIAN ||
-			ourclass==CLASS_BARBARIAN ||
-			ourclass==CLASS_MONK)
-        {
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
             if (showMessage==TRUE) MessageAdd("^005You aren't proficient with longswords.");
             canUse=FALSE;
         }
 
         case EQUIP_WEAPON_TYPE_SHORTSWORD:
-        if (ourclass==CLASS_MAGE ||
-            ourclass==CLASS_PRIEST ||
-			ourclass==CLASS_BARBARIAN ||
-			ourclass==CLASS_MONK)
-        {
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
             if (showMessage==TRUE) MessageAdd("^005You aren't proficient with swords.");
             canUse=FALSE;
         }
         break;
 
         case EQUIP_WEAPON_TYPE_MACE:
-        if (ourclass==CLASS_MAGE ||
-            ourclass==CLASS_MERCENARY ||
-            ourclass==CLASS_MAGICIAN ||
-			ourclass==CLASS_MONK ||
-			ourclass==CLASS_NINJA)
-        {
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
             if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with maces.");
             canUse=FALSE;
         }
         break;
 
         case EQUIP_WEAPON_TYPE_CROSSBOW:
-        if (ourclass==CLASS_MAGE ||
-            ourclass==CLASS_WARLOCK ||
-            ourclass==CLASS_PRIEST ||
-            ourclass==CLASS_PALADIN ||
-            ourclass==CLASS_MAGICIAN ||
-            ourclass==CLASS_BARBARIAN ||
-			ourclass==CLASS_MONK)
-        {
+		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+		{
             if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with bows.");
             canUse=FALSE;
         }
@@ -5202,16 +5143,7 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
             case EQUIP_ARMOR_TYPE_BRACING_PLATE:
             case EQUIP_ARMOR_TYPE_HELMET_PLATE:
             case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
-            if (ourclass==CLASS_WARLOCK ||
-                ourclass==CLASS_PRIEST ||
-                ourclass==CLASS_ARCHER ||
-                ourclass==CLASS_SAILOR ||
-                ourclass==CLASS_MAGE ||
-                ourclass==CLASS_ROGUE ||
-                ourclass==CLASS_MAGICIAN ||
-				ourclass==CLASS_BARBARIAN||
-				ourclass==CLASS_MONK ||
-			ourclass==CLASS_NINJA)
+			if (CreateClassDatas[ourclass]->CanUseArmor[ARMOR_TYPE_PLATE] == 0)
             {
                 if (showMessage==TRUE) MessageAdd ("^005You can't wear heavy armor");
                 canUse=FALSE;
@@ -5222,18 +5154,22 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
             case EQUIP_ARMOR_TYPE_LEGGINGS_CHAIN:
             case EQUIP_ARMOR_TYPE_HELMET_CHAIN:
             case EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN:
-            if (ourclass==CLASS_MAGE ||
-                ourclass==CLASS_ROGUE ||
-                ourclass==CLASS_MAGICIAN ||
-				ourclass==CLASS_BARBARIAN||
-				ourclass==CLASS_MONK ||
-				ourclass==CLASS_NINJA)
+			if (CreateClassDatas[ourclass]->CanUseArmor[ARMOR_TYPE_CHAIN] == 0)
             {
                 if (showMessage==TRUE) MessageAdd ("^005That armor is too heavy for you to wear.");
                 canUse=FALSE;
             }
             break;
 
+			case EQUIP_ARMOR_TYPE_BRACING_CLOTH:
+			case EQUIP_ARMOR_TYPE_BREASTPLATE_CLOTH:
+			case EQUIP_ARMOR_TYPE_LEGGINGS_CLOTH:
+			if (CreateClassDatas[ourclass]->CanUseArmor[ARMOR_TYPE_LEATHER] == 0)
+            {
+                if (showMessage==TRUE) MessageAdd ("^005You cannot wear light armor.");
+                canUse=FALSE;
+            }
+			break;
             default:
             break;
         }

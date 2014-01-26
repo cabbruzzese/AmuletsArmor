@@ -436,41 +436,6 @@ T_void PlayerJump(T_word16 jumpPower)
             /* play a jump 'exertion' sound */
             PlayerMakeSoundGlobal(SOUND_PLAYER_JUMP_SET+(rand()%3),500);
         }
-/*
-        switch (StatsGetPlayerClassType())
-        {
-            case CLASS_CITIZEN:
-            case CLASS_PRIEST:
-            case CLASS_ARCHER:
-//          SoundPlayByNumber(SOUND_CITIZEN_JUMP,255);
-            ClientSyncSendActionAreaSound(SOUND_CITIZEN_JUMP,500);
-            break;
-
-            case CLASS_KNIGHT:
-            case CLASS_PALADIN:
-//            SoundPlayByNumber(SOUND_PALADIN_JUMP,255);
-            ClientSyncSendActionAreaSound(SOUND_PALADIN_JUMP,500);
-            break;
-
-            case CLASS_MAGE:
-            case CLASS_MAGICIAN:
-            case CLASS_WARLOCK:
-            ClientSyncSendActionAreaSound(SOUND_MAGE_JUMP,500);
-//            SoundPlayByNumber(SOUND_MAGE_JUMP,255);
-            break;
-
-            case CLASS_ROGUE:
-            case CLASS_SAILOR:
-            case CLASS_MERCENARY:
-            ClientSyncSendActionAreaSound(SOUND_THIEF_JUMP,500);
-//            SoundPlayByNumber(SOUND_THIEF_JUMP,255);
-            break;
-
-            default:
-            DebugCheck(0);
-            break;
-        }
-*/
     } else if (isFlying)  {
         ObjMoveAccelXYZ(&G_playerMove, 0, 0, (jumpPower>>2)+(jumpPower>>3)) ;
     }

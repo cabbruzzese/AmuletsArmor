@@ -2,7 +2,7 @@ Ninja
 Warriors of an order who operate in secret. They rely on stealth before delivering deadly blows.
 
 Armor Types:Leather
-Weapon Types:Dagger,Sword,Bow
+Weapon Types:Dagger/Sword/Bow
 Magic System: Mage
 ~
 10,20,10,50,45,10~
@@ -10,6 +10,8 @@ Magic System: Mage
 Novice,Student,Pupil,Martial Artist,Panda Master,Hunter,Trained Killer,Shadow,Assassin,Tiger Master,Deadly Artist,Clan Initiate,Night Walker,Warrior of Shadows,Phoenix Master,Master Spy,Black Curse,Dark Samurai,Instructor,Dragon Master~
 1,32~
 1,1,1.3,1.25,1.5,0.5,6~
+1,0,1,1,1,0,0,1~
+1,0,0~
 healingpotion 2,
 speedpotion 2,
 roguetools 1,
