@@ -3,10 +3,96 @@
 #include "STATS.H"
 #include "GRAPHICS.H"
 
+ItemListEntry *FindFromItemList(char *itemname)
+{
+	int i = 0;
+	ItemListEntry *retvalue;
+
+	DebugRoutine("FindFromItemList");
+
+	retvalue = NULL;
+	for (i = 0; i < ItemListCount; i++)
+	{
+		if (&ItemList[i] == NULL)
+			continue;
+
+		if (strcmp(itemname, ItemList[i].name) == 0)
+			retvalue = &ItemList[i];
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
+T_void LoadItemList()
+{
+	FILE *fp;
+	char filename[32];
+	char cbuffer = ' ';
+	char name[128];
+	float num = 0;
+	int lines = 0;
+	int i = 0;
+	ItemListEntry *item;
+
+	DebugRoutine ("LoadItemList");
+
+	sprintf(filename, "./classes/itemlist.dat");
+	if (fp = fopen(filename, "r"))
+	{
+		//count lines in order to allocate space
+		while (!feof(fp))
+		{
+			fscanf(fp, "%c", &cbuffer);
+			if (cbuffer == 10)
+			{
+				lines++;
+			}
+		}
+
+		//size array
+		// Always assume there's 1 extra entry because eof will terminate the last line
+		ItemListCount = lines + 1;
+		ItemList = (ItemListEntry*)malloc(sizeof(ItemListEntry) * ItemListCount);
+		
+
+		rewind(fp);
+		//count lines in order to assign space
+		cbuffer = ' ';
+		while (!feof(fp))
+		{
+			//read values
+			fscanf(fp, "%s", &name);
+			//skip tab
+			fseek(fp, 1, SEEK_CUR);
+			fscanf(fp, "%f", &num);
+
+			//create new item
+			item = (ItemListEntry*)malloc(sizeof(ItemListEntry));
+			item->name = (char*)malloc(sizeof(char));
+			strcpy(item->name, name);
+			item->num = (T_word16)num;
+			//add to list
+			ItemList[i] = *item;
+
+			i++;
+
+			//read next char data
+			fscanf(fp, "%c", &cbuffer);
+		}	
+
+	}
+
+	DebugEnd();
+}
+
 CreateClassData* NewCreateClassData (T_byte8 classnum)
 {
 	CreateClassData *classdata = malloc(sizeof(CreateClassData));
-	
+
+    DebugRoutine ("NewCreateClassData");
+
 	classdata->ClassNum = classnum;
 	classdata->RegenHealthModifier = 1;
 	classdata->RegenManaModifier = 1;
@@ -17,15 +103,23 @@ CreateClassData* NewCreateClassData (T_byte8 classnum)
 	classdata->SpellSystem = SPELL_SYSTEM_MAGE;
 	*classdata->LevelTitles = (T_byte8*)malloc(sizeof(T_byte8) * NUM_TITLES_PER_CLASS);
 
+	DebugEnd();
+
 	return classdata;
 }
 
 E_Boolean CreateClassDatasLoaded()
 {
-	if (CreateClassDatas[0] == NULL)
-		return FALSE;
+	E_Boolean retvalue = TRUE;
 
-	return TRUE;
+	DebugRoutine ("CreateClassDatasLoaded");
+
+	if (CreateClassDatas[0] == NULL)
+		retvalue = FALSE;
+
+	DebugEnd();
+
+	return retvalue;
 }
 
 T_bitmap* LoadImageFromRes(T_byte8 classnum)
@@ -55,28 +149,6 @@ T_bitmap* LoadImageFromRes(T_byte8 classnum)
 
 T_bitmap* LoadImage(T_byte8 classnum)
 {
-	/*long fsize = 0;
-	T_byte8* data;
-	char filename[32];
-	FILE *fp;
-
-	DebugRoutine ("LoadImage");
-
-	sprintf(filename, "./classes/%i.bmp", (int)classnum);
-	if (fp = fopen(filename, "r"))
-	{
-		fsize = ftell(fp);
-		data = (T_byte8*) malloc (sizeof(char)*fsize);
-		fread(data, 1, fsize, fp);
-		fclose(fp);
-	}
-	else
-	{
-		data = NULL;
-	}
-	DebugEnd();
-	return data;*/
-
 	BITMAPINFOHEADER bmpheader;
 	T_byte8 *p_data, *f_data, *tempptr;
 	T_bitmap *bmp_data = (T_bitmap*)malloc(sizeof(T_bitmap));
@@ -108,13 +180,6 @@ T_bitmap* LoadImage(T_byte8 classnum)
 				   bmpheader.biWidth);
 		}
 		retval = (T_bitmap *)tempptr;
-
-		//for (i = 0; i < bmp_data->sizey; i++)
-		//{
-			//bmp_data->data[i] = (T_byte8)p_data + (i * bmp_data->sizex);
-		//}
-
-		
 	}
 	else
 	{
@@ -135,6 +200,11 @@ T_void ReadClassData(T_byte8 classnum)
 	char title[MAXCLASSTITLELENGTH];
 	char descr[MAXCLASSDESCRLENGTH] = "";
 	char *levelTitles[NUM_TITLES_PER_CLASS];
+	char itemname[128];
+	float itemcount = 0;
+	long temppos = 0;
+	int itemscount = 0;
+	StartingItemData *item;
 	int attr[NUM_ATTRIBUTES];
 	int adv[NUM_ATTRIBUTES];
 	int i, j;
@@ -248,6 +318,57 @@ T_void ReadClassData(T_byte8 classnum)
 		fscanf(fp, "%f", &num);
 		pdmg = num;
 		fseek(fp, 1, SEEK_CUR);
+
+		//Starting Items List
+		fseek(fp, 2, SEEK_CUR);
+		{
+			//get total number of weapons to be used
+			temppos = ftell(fp);
+			cbuffer = ' ';
+			while(cbuffer != '~')
+			{
+				fscanf(fp, "%c", &cbuffer);
+				if (cbuffer == ',')
+				{
+					itemscount++;
+				}
+			}
+
+			//start item list
+			CreateClassDatas[classnum]->StartingItemsCount = itemscount + 1;
+			CreateClassDatas[classnum]->StartingItems = (StartingItemData*)malloc(sizeof(StartingItemData) * CreateClassDatas[classnum]->StartingItemsCount);
+
+			//rewind
+			fseek(fp, temppos, SEEK_SET);
+
+			//read in numbers
+			cbuffer = ' ';
+			itemscount = 0;
+			while(cbuffer != '~')
+			{
+				//read values
+				fscanf(fp, "%s", &itemname);
+				fscanf(fp, "%f", &itemcount);
+
+				//create new item entry
+				item = (StartingItemData*)malloc(sizeof(ItemListEntry));
+				item->num = FindFromItemList(itemname)->num;
+				item->count = (T_byte8)itemcount;
+
+				//assign entry
+				CreateClassDatas[classnum]->StartingItems[itemscount] = *item;
+
+				fscanf(fp, "%c", &cbuffer);
+				//if another entry follows
+				if (cbuffer == ',')
+				{
+					//skip newline char
+					fseek(fp, 2, SEEK_CUR);
+					itemscount++;
+				}
+			}
+		}
+
 		fclose(fp);
 	}
 
@@ -286,19 +407,30 @@ T_void LoadCreateClassDatas(T_void)
 {
 	T_byte8 i;
 
+	DebugRoutine("LoadCreateClassDatas");
+
+	LoadItemList();
+
 	for (i = 0; i < NUM_CLASSES; i++)
 	{	
 		//create and assign values
 		CreateClassDatas[i] = NewCreateClassData(i);
 		ReadClassData(i);		
 	}
+
+	DebugEnd();
 }
 
 T_void DestroyCreateClassDatas(T_void)
 {
 	int i;
+
+	DebugRoutine("DestroyCreateClassDatas");
+
 	for(i = 0; i < NUM_CLASSES; i++)
 	{
 		free(CreateClassDatas[i]);
 	}
+
+	DebugEnd();
 }

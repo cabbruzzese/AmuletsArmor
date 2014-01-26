@@ -6,3 +6,6 @@
 [Level Titles], ... ~
 [Magik Type], [Can Use Flag]~
 [Health Regen],[Mana Regen],[Jump Mod],[Dmg Mod],[Move Mod],[Thieving Tools],[Punch Dmg]~
+[itename] [count], 
+[itemname] [count], 
+... ~

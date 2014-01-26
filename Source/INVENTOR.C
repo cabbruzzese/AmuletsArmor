@@ -4597,11 +4597,13 @@ E_Boolean InventoryDestroySpecificItem (E_inventoryType whichInventory,
 /* on the player's class type */
 T_void InventorySetDefaultInventoryForClass(T_void)
 {
-    T_word16 i;
+    T_word16 i, j;
     T_word16 whichFood;
     E_statsClassType classType;
     T_doubleLinkListElement element,nextElement;
     T_inventoryItemStruct *p_inv;
+	T_word16 itemnum;
+	T_byte8 itemcount;
     DebugRoutine ("InventorySetDefaultInventoryForClass");
 
     /* get the player's class */
@@ -4669,396 +4671,31 @@ T_void InventorySetDefaultInventoryForClass(T_void)
     /* Give the player 1 Identify All Scroll */
     InventoryAddObjectToInventory (INVENTORY_PLAYER,351,1);
 
+	//give starting inventory
+	for (j = 0; j < CreateClassDatas[classType]->StartingItemsCount; j++)
+	{
+		if (&CreateClassDatas[classType]->StartingItems[j] == NULL)
+			continue;
+		itemnum = CreateClassDatas[classType]->StartingItems[j].num;
+		itemcount = CreateClassDatas[classType]->StartingItems[j].count;
 
-    switch (classType)
-    {
-        case CLASS_CITIZEN:
-             /* 2 healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all arcane runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-#endif
-             /* short sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,203,1);
-             /* leather armor */
-//           InventoryAddObjectToInventory (INVENTORY_PLAYER,700,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        case CLASS_KNIGHT:
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,3);
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all arcane runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-#endif
-             /* long sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,204,1);
-             /* chain armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,704,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,705,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,706,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,707,1);
-        break;
-
-        case CLASS_MAGE:
-             /* armor scrolls */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,809,3);
-             /* gain mana */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,362,3);
-             /* speed */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,814,3);
-             /* Mage runes */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,304,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,305,1);
-             /* dagger */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,1);
-
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        case CLASS_WARLOCK:
-             /* gain mana */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,362,1);
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-             /* Mage runes */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all mage runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,304,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,305,1);
-#endif
-             /* short sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,203,1);
-
-             /* leather armor */
-//           InventoryAddObjectToInventory (INVENTORY_PLAYER,700,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-             break;
-
-        case CLASS_PRIEST:
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,3);
-             /* cure poison potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,807,3);
-             /* Cleric runes */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,314,1);
-
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player extra cleric  runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,315,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,316,1);
-#endif
-
-             /* mace */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,201,1);
-
-             /* Leather armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        case CLASS_ROGUE:
-             /* speed */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,814,2);
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all arcane runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-#endif
-             /* rogue's tools */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,143,1);
-             /* dagger */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,3);
-
-             /* leather armor */
-//           InventoryAddObjectToInventory (INVENTORY_PLAYER,700,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-
-        break;
-
-        case CLASS_ARCHER:
-             /* crossbow */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,28,1);
-             /* short sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,203,1);
-
-             /* bolts -- special case */
-//           InventoryAddObjectToInventory (INVENTORY_PLAYER,206,40);
-             Effect(EFFECT_TAKE_AMMO,
+		//special case for ammo
+		if (itemnum < 10)
+		{
+			Effect(EFFECT_TAKE_AMMO,
                     EFFECT_TRIGGER_NONE,
-                    0,
-                    80,
+                    itemnum,
+                    itemcount,
                     0,
                     NULL);
-             Effect(EFFECT_TAKE_AMMO,
-                    EFFECT_TRIGGER_NONE,
-                    1,
-                    24,
-                    0,
-                    NULL);
-             Effect(EFFECT_TAKE_AMMO,
-                    EFFECT_TRIGGER_NONE,
-                    3,
-                    24,
-                    0,
-                    NULL);
+		}
+		else
+		{
+			InventoryAddObjectToInventory (INVENTORY_PLAYER,itemnum,itemcount);
+		}
 
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all arcane runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-#endif
-             /* Leather armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        case CLASS_SAILOR:
-             /* strength potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,818,2);
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all arcane runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-#endif
-             /* leather armor */
-//           InventoryAddObjectToInventory (INVENTORY_PLAYER,700,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-             /* long sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,204,1);
-
-        break;
-
-        case CLASS_PALADIN:
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-
-             /* Cleric runes */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-
-		
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player extra cleric  runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,314,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,315,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,316,1);
-#endif
-             /* long sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,204,1);
-             /* chain armor */
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,704,1);
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,705,1);
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,706,2);
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,707,1);
-             /* Leather armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-		case CLASS_BARBARIAN:
-			/* healing potions */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-			/*Strength potions */
-			InventoryAddObjectToInventory (INVENTORY_PLAYER,818,2);
-
-            /* Mage runes */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,304,1);
-			InventoryAddObjectToInventory (INVENTORY_PLAYER,306,1);
-
-			/* bronze axe */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,12493,1);
-
-			/* Leather armor */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-			break;
-
-		case CLASS_MONK:
-			/* healing potions */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-            /* gain mana */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,362,2);
-
-			/* Leather armor */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-
-			/* Cleric runes */
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-            InventoryAddObjectToInventory (INVENTORY_PLAYER,314,1);
-			break;
-
-		case CLASS_NINJA:
-             /* speed */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,814,1);
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,1);
-
-             /* rogue's tools */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,143,1);
-
-             /* short sword */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,203,1);
-             /* dagger */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,2);
-
-             /* leather armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        case CLASS_MERCENARY:
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all arcane runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,309,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,310,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,311,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,312,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,313,1);
-#endif
-             /* rogue's tools */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,143,1);
-             /* axe */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,205,1);
-             /* strength potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,818,2);
-             /* chain armor */
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,704,1);
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,705,1);
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,706,2);
-//             InventoryAddObjectToInventory (INVENTORY_PLAYER,707,1);
-
-             /* Leather armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        case CLASS_MAGICIAN:
-             /* speed */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,814,1);
-             /* healing potions */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,800,2);
-             /* gain mana */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,362,2);
-             /* Mage Runes */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,300,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,301,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,302,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,303,1);
-             /* rogue's tools */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,143,1);
-
-#ifdef COMPILE_OPTION_SHAREWARE_DEMO
-             /* Give player all mage runes necessary for demo */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,304,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,305,1);
-#endif
-             /* dagger */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,200,1);
-
-             /* Leather armor */
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,701,1);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,702,2);
-             InventoryAddObjectToInventory (INVENTORY_PLAYER,703,1);
-        break;
-
-        default:
-        /* fail! */
-        DebugCheck(0);
-        break;
-    }
-
+	}
+    
     InventoryReorder(INVENTORY_PLAYER,FALSE);
 
     /* iterate through the player's inventory and equip anything that */

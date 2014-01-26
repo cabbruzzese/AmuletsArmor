@@ -34,6 +34,19 @@ typedef enum
     CLASS_UNKNOWN
 } E_statsClassType;
 
+
+typedef struct {
+	char *name;
+	T_word16 num;
+}ItemListEntry;
+ItemListEntry *ItemList;
+int ItemListCount;
+
+typedef struct {
+	T_word16 num;
+	T_byte8 count;
+} StartingItemData;
+
 typedef struct {
 	T_byte8 Title[MAXCLASSTITLELENGTH];
 	T_byte8 Descr[MAXCLASSDESCRLENGTH];
@@ -51,10 +64,13 @@ typedef struct {
 	T_byte8 Advancement[NUM_ATTRIBUTES];
 	T_byte8 *LevelTitles[NUM_TITLES_PER_CLASS];
 	T_bitmap *Picture;
+	StartingItemData* StartingItems;
+	int	StartingItemsCount;
 
 }CreateClassData;
 
 CreateClassData *CreateClassDatas[NUM_CLASSES];
+
 
 CreateClassData *NewCreateClassData (T_byte8 classnum);
 E_Boolean CreateClassDatasLoaded();
