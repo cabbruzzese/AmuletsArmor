@@ -523,7 +523,7 @@ T_inventoryItemStruct *GetFirstItemFromInventory(T_word32 type)
 	T_inventoryItemStruct *testInv=NULL;
 	T_doubleLinkListElement element;
 
-    DebugRoutine ("InventoryContainsItem");
+    DebugRoutine ("GetFirstItemFromInventory");
 
 	//get first item
     element=DoubleLinkListGetFirst(G_inventories[INVENTORY_PLAYER].itemslist);
@@ -614,17 +614,21 @@ T_void InventoryUseItemInMouseHand (T_buttonID buttonID)
 				//throwing daggers
 				if (p_inv->itemdesc.subtype == EQUIP_WEAPON_TYPE_DAGGER)
 				{
-					/* make sure there's not an animation already in progress */
-					if (ClientIsInView() && OverlayIsDone() && G_useResetNeeded==FALSE)
+					//player can use daggers
+					if (CreateClassDatas[StatsGetPlayerClassType()]->CanUseWeapon[EQUIP_WEAPON_TYPE_DAGGER] == TRUE)
 					{
-						/* create the effect use */
-						InventoryDoEffect  (EFFECT_TRIGGER_READY, EQUIP_LOCATION_MOUSE_HAND);
+						/* make sure there's not an animation already in progress */
+						if (ClientIsInView() && OverlayIsDone() && G_useResetNeeded==FALSE)
+						{
+							/* create the effect use */
+							InventoryDoEffect  (EFFECT_TRIGGER_READY, EQUIP_LOCATION_MOUSE_HAND);
 
-						//remove dagger
-						InventoryDestroyItemInMouseHand();
+							//remove dagger
+							InventoryDestroyItemInMouseHand();
 
-	                    /* fist attack sound */
-		                SoundPlayByNumber (SOUND_SWING_SET4+(rand()%3),200);
+							/* fist attack sound */
+							SoundPlayByNumber (SOUND_SWING_SET4+(rand()%3),200);
+						}
 					}
 				}
 			}
