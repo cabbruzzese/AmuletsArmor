@@ -470,7 +470,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 	E_Boolean success;
     T_doubleLinkListElement element;
     T_resource res;
-    T_spellStruct *p_spell;
+    T_spellStruct *p_spell, *p_spell_obj;
     T_word32 spellpower, spellduration, spellcost;
     T_sword16 spelldif;
     T_byte8 charlevel;
@@ -559,13 +559,20 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                         /* do a color effect */
                         ColorAddGlobal ((T_sbyte8)p_spell->filtr>>1,(T_sbyte8)p_spell->filtg>>1,(T_sbyte8)p_spell->filtb>>1);
 
-                        /* create spell effect */
+                        
+						//do not send spell data if projectile
+						if (p_spell->type == EFFECT_CREATE_PROJECTILE)
+							p_spell_obj = NULL;
+						else
+							p_spell_obj = p_spell;
+
+						/* create spell effect */
                         Effect (p_spell->type,
                             EFFECT_TRIGGER_CAST,
                             p_spell->subtype,
                             (T_word16)spellduration,
                             (T_word16)spellpower,
-                            p_spell);
+                            p_spell_obj);
 
                         /* trigger the spell sound */
                         if (p_spell->sound != 0)

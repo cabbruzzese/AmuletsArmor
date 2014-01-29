@@ -308,7 +308,7 @@ E_Boolean Effect(E_effectType effecttype,
         case EFFECT_CREATE_PROJECTILE:
             //* will be something like */
             // ClientCreateProjectile (E_effectMissileType type, duration, power);
-			if (p_owner!=NULL)
+			if (p_owner)
 				p_object=(T_3dObject *)p_owner;
 
             ClientCreateProjectile(data1, data2, data3, p_owner) ;

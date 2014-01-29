@@ -394,8 +394,10 @@ T_void ClientCreateProjectile (
     DebugRoutine("ClientCreateProjectile") ;
     DebugCheck(type < EFFECT_MISSILE_UNKNOWN) ;
 
-	if (p_owner!=NULL)
+	if (p_owner)
 		p_object=(T_3dObject *)p_owner;
+	else
+		p_object=NULL;
 
     if (ClientIsInView())
     {
@@ -403,7 +405,10 @@ T_void ClientCreateProjectile (
 
 		objectType = G_missileToObjectType[type];
 
-		daggertype = p_object->spawnType;
+		if (p_object)
+			daggertype =  p_object->spawnType;
+		else
+			daggertype = 0;
 
         /* See if there is a target in view. */
         p_target = ViewGetMiddleTarget() ;
