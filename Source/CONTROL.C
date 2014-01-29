@@ -277,7 +277,7 @@ static T_void ControlMouseControlForGame(
                         /* place item in inventory or get item */
                         InventoryTransferToInventory(x, y);
                     } else if (InventoryReadyBoxIsAt(x, y)) {
-                        /* swap items with ready box */
+						/* swap items with ready box */
                         InventoryTransferToReadyHand();
                     } else if (InventoryEquipmentWindowIsAt(x, y)) {
                         /* try to equip item */

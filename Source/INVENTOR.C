@@ -1711,7 +1711,9 @@ T_void InventoryTransferToReadyHand (T_void)
         MessageAdd("Cannot transfer item, game is paused") ;
     } else if (ClientIsDead())  {
         MessageAdd("Cannot transfer item, you are dead.") ;
-    } else {
+    } 
+	else if (OverlayIsDone() && G_useResetNeeded==FALSE)
+	{
         /* is there something in our mouse hand right now? */
         if (G_inventoryLocations[EQUIP_LOCATION_MOUSE_HAND] != DOUBLE_LINK_LIST_ELEMENT_BAD)
         {
