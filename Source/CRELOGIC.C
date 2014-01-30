@@ -352,6 +352,10 @@ typedef struct {
 
     /* Time to update berserk state */
     T_word32 timeCheckBerserk ;
+
+	/*Time before forgetting about hidden enemies*/
+	E_Boolean losingInterest;
+	T_word32 timeTargetInterest;
 } T_creatureState ;
 
 /* Callback routine called each time a creature updates based on the */
@@ -2262,6 +2266,10 @@ static T_void IUpdateTarget(T_creatureState *p_creature)
                 /* Cannot see the target. */
                 p_creature->canSeeTarget = FALSE ;
             }
+
+			//keep interest
+			p_creature->losingInterest = FALSE;
+			p_creature->timeTargetInterest = 0;
         } else {
             /* Target IS stealthy. */
             /* Therefore, don't update the 'canSeeTarget' or */
@@ -2274,6 +2282,40 @@ static T_void IUpdateTarget(T_creatureState *p_creature)
             } else {
                 /* Cannot see the target's last location. */
                 p_creature->canSeeTarget = TRUE ;
+
+				//lose interest in target
+				//set timer
+				if (p_creature->losingInterest == FALSE)
+				{
+					//MessageAdd("Losing interest");
+					p_creature->losingInterest = TRUE;
+					p_creature->timeTargetInterest = SyncTimeGet() + 400 + (rand() % 400);
+
+				}
+				else
+				{
+					if (p_creature->timeTargetInterest < SyncTimeGet())
+					{
+						MessageAdd("The enemy has lost track of your movements.");
+
+						p_creature->losingInterest = FALSE;
+
+						/* Go back to the old target and forget this one. */
+						p_creature->targetID = p_creature->lastTargetID;
+						p_creature->lastTargetID = 0;
+
+						/* Find this target. */
+						if (p_creature->targetID != 0)
+						{
+							p_target = ObjectFind((T_word16)p_creature->targetID) ;
+						}
+						else
+						{
+                            p_creature->targetAcquired = FALSE ;
+                            p_creature->moveBlocked = TRUE ;
+						}
+					}
+				}
             }
         }
 
