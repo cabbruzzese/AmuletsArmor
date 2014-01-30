@@ -34,6 +34,8 @@
 #include "TICKER.H"
 #include "VIEW.H"
 
+#include "MESSAGE.H"
+
 #define CRELOGIC_DFT_FLY_ACCELERATION  7     /* Usually same as UPDATE_TIME */
 #define CRELOGIC_DFT_FLY_MAX_VELOCITY  20
 #define CRELOGIC_DFT_UPDATE_TIME       7
@@ -2447,7 +2449,7 @@ static T_player ICreatureScanA(
     /* Did we find a player? */
     if (foundPlayer != PLAYER_BAD)  {
         /* Yes, a player was found. */
-        /* Make this the target and update its stats. */
+		/* Make this the target and update its stats. */
         p_playerObj = PlayersGetPlayerObject(foundPlayer) ;
         DebugCheck(ObjectGetServerId(p_playerObj) != 0) ;
         if ((p_playerObj) &&
@@ -3994,6 +3996,13 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         damageAmt = 0 ;
                     }
 
+					//sneak attacks
+					if ((ownerID != 0) && (ownerID != p_creature->targetID) && ObjectIsPlayer(ObjectFind(ownerID)))
+					{
+						damageAmt *= 5;
+						MessageAdd("Sneak attack!");
+					}
+
                     /* Can only do true damage up to the creatures health. */
                     if (damageAmt > p_creature->health)
                         damageAmt = p_creature->health ;
@@ -4980,6 +4989,7 @@ T_void CreatureSetTarget(T_3dObject *p_obj, T_word16 targetID)
 //printf("%d SetTarget: Creature %d target is now %d\n", SyncTimeGet(), p_creature->objectID, p_creature->targetID) ;
 #               endif
                 p_creature->targetAcquired = TRUE ;
+
                 p_creature->targetX = ObjectGetX16(p_target) ;
                 p_creature->targetY = ObjectGetY16(p_target) ;
                 p_creature->targetZ = ObjectGetZ16(p_target) ;

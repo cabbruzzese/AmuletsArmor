@@ -1629,19 +1629,17 @@ static T_void IPlayerUpdateStealth(T_void)
 
         /* Do our random check based on if we are translucent */
         /* or invisible. */
-        stealthLevel = StatsGetPlayerStealth()>>1 ;
+        stealthLevel = StatsGetPlayerStealth() ;
 
-        /* If invisible, minimum stealth level of 240. */
-        if ((EffectPlayerEffectIsActive(PLAYER_EFFECT_INVISIBLE)) &&
-                 (stealthLevel < 190))
-            stealthLevel = 190 ;
+        /* if invisible, pump stealth stat to always be stealth.. unless stat is below 21 */
+        if (EffectPlayerEffectIsActive(PLAYER_EFFECT_INVISIBLE))
+            stealthLevel += 80;
+		 /* If translucent, pump stealth to +40 . */
+        else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_TRANSLUCENT))
+            stealthLevel += 40;
 
-        /* If translucent, minimum stealth level of 120. */
-        if ((EffectPlayerEffectIsActive(PLAYER_EFFECT_TRANSLUCENT)) &&
-                 (stealthLevel < 100))
-            stealthLevel = 100 ;
-
-        G_playerIsStealthy = ((rand() % 200) < stealthLevel) ? TRUE : FALSE ;
+		//comapare to d100 roll
+        G_playerIsStealthy = ((rand() % 100) < stealthLevel) ? TRUE : FALSE ;
     }
 }
 

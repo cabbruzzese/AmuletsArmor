@@ -401,7 +401,8 @@ T_void ClientSyncPacketEvaluate(T_syncronizePacket *p_sync)
                 ObjectGetZ(p_playerObj)) ;
 #           endif
             /* Alert creatures near me of my body. */
-            CreaturesHearSoundOfPlayer(p_playerObj, 50) ;
+			if (!p_playerObj->attributes & OBJECT_ATTR_STEALTHY)
+				CreaturesHearSoundOfPlayer(p_playerObj, 50) ;
         }
 
         /* Change the stance accordingly as well. */
@@ -477,7 +478,11 @@ T_void ClientSyncPacketEvaluate(T_syncronizePacket *p_sync)
             }
 
             if (stance == STANCE_ATTACK)
-                CreaturesHearSoundOfPlayer(p_playerObj, 500) ;
+			{
+				//sneak attacks don't alert enemy
+				if (!p_playerObj->attributes & OBJECT_ATTR_STEALTHY)
+					CreaturesHearSoundOfPlayer(p_playerObj, 500) ;
+			}
         }
 
         if (fieldsAvailable & SYNC_PACKET_FIELD_ACTION)  {
@@ -651,7 +656,8 @@ static T_void IClientSyncDoPlayerAction(
             ObjectSetStance(p_playerObj, STANCE_ATTACK);
 
             /* Alert creatures of my attack. */
-            CreaturesHearSoundOfPlayer(p_playerObj, 1500) ;
+			if (!p_playerObj->attributes & OBJECT_ATTR_STEALTHY)
+				CreaturesHearSoundOfPlayer(p_playerObj, 1500) ;
             break ;
         case PLAYER_ACTION_ACTIVATE_FORWARD:
             MapGetForwardWallActivationType(
