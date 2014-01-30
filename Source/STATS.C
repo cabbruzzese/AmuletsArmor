@@ -1789,9 +1789,9 @@ T_word16 StatsGetPlayerAttackDamage (T_void)
     /* check for critical hit */
     if (rand()%200 < StatsGetPlayerAttribute (ATTRIBUTE_ACCURACY))
     {
-        /* critical hit, max damage plus half accuracy stat */
+        /* critical hit is damage plus accuracy stat times 2*/
         G_hitWasCritical=TRUE;
-		retvalue = G_activeStats->AttackDamage * 2 + (StatsGetPlayerAttribute (ATTRIBUTE_ACCURACY) / 2);
+		retvalue = (G_activeStats->AttackDamage + StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY)) * 2;
     }
     else G_hitWasCritical=FALSE;
 
