@@ -320,7 +320,7 @@ T_void ReadClassData(T_byte8 classnum)
 		fseek(fp, 3, SEEK_CUR);
 
 		//canuse weapons
-		for (i = 0; i < (EQUIP_WEAPON_TYPE_UNKNOWN - 1); i++)
+		for (i = 0; i < (EQUIP_WEAPON_TYPE_UNKNOWN); i++)
 		{
 			fscanf(fp, "%f", &num);
 			CreateClassDatas[classnum]->CanUseWeapon[i] = (E_Boolean)num;

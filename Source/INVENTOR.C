@@ -1214,7 +1214,7 @@ T_inventoryItemStruct* InventoryTakeObject (E_inventoryType which, T_3dObject *i
                 destroyme=FALSE;
                 ourclass=StatsGetPlayerClassType();
                 if (InventoryIsUseableByClass(p_inv)==FALSE) destroyme=TRUE;
-                if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON)
+				if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON || p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WAND)
                 {
                     if (InventoryCheckClassCanUseWeapon(p_inv,FALSE)==FALSE)
                     {
@@ -1731,7 +1731,7 @@ T_void InventoryTransferToReadyHand (T_void)
             }
 
             /* internal hard code to test weapons/armor for classes */
-            if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON)
+            if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON || p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WAND)
             {
                 if (InventoryCheckClassCanUseWeapon(p_inv,TRUE)==FALSE)
                 {
@@ -5052,74 +5052,62 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
 {
     E_Boolean canUse=TRUE;
     E_statsClassType ourclass=CLASS_UNKNOWN;
+	T_byte8 weapontype = 0;
 
     DebugRoutine ("InventoryCheckClassCanUseWeapon");
 
     ourclass=StatsGetPlayerClassType();
 
     DebugCheck (ourclass < CLASS_UNKNOWN);
-    DebugCheck (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON);
+	DebugCheck (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON || p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WAND);
 
-    switch (p_inv->itemdesc.subtype)
-    {
-		case EQUIP_WEAPON_TYPE_STAFF:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
+	if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_WEAPON)
+		weapontype = p_inv->itemdesc.subtype;
+	else
+		weapontype = EQUIP_WEAPON_TYPE_WAND;
+
+	if (CreateClassDatas[ourclass]->CanUseWeapon[weapontype] == 0)
+	{
+		canUse=FALSE;
+
+		switch (weapontype)
 		{
-			if (showMessage==TRUE) MessageAdd ("You aren't allowed to use staffs.");
-            canUse=FALSE;
+			case EQUIP_WEAPON_TYPE_STAFF:
+				if (showMessage==TRUE) MessageAdd ("You aren't allowed to use staffs.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_DAGGER:
+				if (showMessage==TRUE) MessageAdd ("You aren't allowed to use daggers.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_AXE:
+				if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with axes.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_LONGSWORD:
+				if (showMessage==TRUE) MessageAdd("^005You aren't proficient with longswords.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_SHORTSWORD:
+				if (showMessage==TRUE) MessageAdd("^005You aren't proficient with swords.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_MACE:
+				if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with maces.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_CROSSBOW:
+				if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with bows.");
+				break;
+
+			case EQUIP_WEAPON_TYPE_WAND:
+				if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with wands.");
+				break;
+
+			default:
+			break;
 		}
-		break;
-
-        case EQUIP_WEAPON_TYPE_DAGGER:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
-		{
-            if (showMessage==TRUE) MessageAdd ("You aren't allowed to use daggers.");
-            canUse=FALSE;
-        }
-        break;
-
-        case EQUIP_WEAPON_TYPE_AXE:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
-		{
-            if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with axes.");
-            canUse=FALSE;
-        }
-        break;
-
-        case EQUIP_WEAPON_TYPE_LONGSWORD:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
-		{
-            if (showMessage==TRUE) MessageAdd("^005You aren't proficient with longswords.");
-            canUse=FALSE;
-        }
-
-        case EQUIP_WEAPON_TYPE_SHORTSWORD:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
-		{
-            if (showMessage==TRUE) MessageAdd("^005You aren't proficient with swords.");
-            canUse=FALSE;
-        }
-        break;
-
-        case EQUIP_WEAPON_TYPE_MACE:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
-		{
-            if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with maces.");
-            canUse=FALSE;
-        }
-        break;
-
-        case EQUIP_WEAPON_TYPE_CROSSBOW:
-		if (CreateClassDatas[ourclass]->CanUseWeapon[p_inv->itemdesc.subtype] == 0)
-		{
-            if (showMessage==TRUE) MessageAdd ("^005You aren't proficient with bows.");
-            canUse=FALSE;
-        }
-        break;
-
-        default:
-        break;
-    }
+	}
 
     DebugEnd();
 

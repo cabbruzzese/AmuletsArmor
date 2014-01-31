@@ -2,7 +2,7 @@ Knight
 Characters of the Knight class are specialized in melee combat.  Knights receive bonuses to damage done with melee weapons.
 
 Armor Types: All
-Weapon Types: All
+Weapon Types: No Daggers
 Magik System: Arcane
 ~
 35,15,10,20,15,35~
@@ -10,7 +10,7 @@ Magik System: Arcane
 Page,Trainee,Squire,Swordsman,Enlisted Servant,Tactical Student,Swordsmaster,Court Guard,Armsmaster,Knight,Sect of Elmore,Royal Captain,Royal General,King's Guardian,Vanquisher,Sword of Titas,Glory of Aelia,Horn of Domitian,Title of Omega,Dragonslayer~
 3,0~
 1,1,1,1.5,1,0,3~
-1,1,1,1,1,1,1,1~
+1,1,0,1,1,1,1,1,0~
 1,1,1~
 healingpotion 3,
 longsword 1,

@@ -5,7 +5,7 @@ Archers are the masters of missile weapons.
 
 
 Armor Types: Up to chain
-Weapon Types: All
+Weapon Types: No dagger
 Magik System: Arcane
 ~
 20,20,15,35,20,20~
@@ -13,7 +13,7 @@ Magik System: Arcane
 Fletcher,Journeyman,Page,Squire,Marksman,Targetman,Noble,Sharpshooter,Warrior,Acurate,Archer,Forest Arrow,CraftMaster,Ancient Arrow,Huntsman (1rd),Huntsman (2nd),Huntsman (3rd),Divine Missile,Unerring One,The Mighty~
 3,0~
 1,1,1,1,1,0,3~
-1,1,1,1,1,1,1,1~
+1,1,0,1,1,1,1,1,0~
 1,1,0~
 crossbow 1,
 shortsword 1,

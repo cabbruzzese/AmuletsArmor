@@ -73,7 +73,7 @@ typedef struct {
 	T_bitmap *Picture;
 	StartingItemData* StartingItems;
 	int	StartingItemsCount;
-	E_Boolean CanUseWeapon[EQUIP_WEAPON_TYPE_UNKNOWN - 1];//(No restrictions on wands)
+	E_Boolean CanUseWeapon[EQUIP_WEAPON_TYPE_UNKNOWN];
 	E_Boolean CanUseArmor[NUM_ARMOR_TYPES];
 }CreateClassData;
 

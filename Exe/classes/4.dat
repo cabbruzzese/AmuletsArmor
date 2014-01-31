@@ -10,7 +10,7 @@ Magik System: Priest
 Flock Tender,Student,Scribe,Teacher,Evangelist,Cleric,Elder,The Annointed,Parable Master,Master of Canon,Bishop,Minor Prophet,Cross Bearer,Disciple,Sacred Branch,Witness,Apostle,Saint,Herald of Glory,Illuminated One~
 2,0~
 1,3,1,1,1,0,3~
-1,0,0,0,0,1,1,0~
+1,0,0,0,0,1,1,0,1~
 1,1,0~
 healingpotion 3,
 curepotion 3,

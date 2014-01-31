@@ -3,15 +3,15 @@ Sailors are quick on their feet and are brutal fighters, but are weak in the mag
 
 
 Armor Types: Up to chain
-Weapon Types: All
+Weapon Types: No dagger
 Magik System: Arcane
 ~
 25,25,10,20,15,35~
 2,2,1,2,2,3~
 Landlubber,Trainee,Galley Grunt,Seaman,Mate,First Mate,Sailor,Veteran,Captain,Degree Hellespont,Order of Salamis,Golden Horn,Seamaster,Sextant Lord,Admiral,Water Magician,Fury,Order of Ulysses,Prince of Havens,Poseidon's Guide~
 3,0~
-1,1,1,1.25,1.13,0,3~
-1,1,1,1,1,1,1,1~
+1,1,1,1.25,1.13,0,8~
+1,1,0,1,1,1,1,1,0~
 1,1,0~
 strengthpotion 2,
 healingpotion 2
