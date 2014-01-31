@@ -32,7 +32,8 @@ T_3dObject *ServerProjectileAdd(
         T_sword16 vz,
         T_word16 target,
         T_word16 ownerObjID,
-		T_word16 daggertype);
+		T_word16 daggertype,
+		T_word16 power);
 
 T_3dObject *ServerShootProjectile(
           T_3dObject *p_objSource,
@@ -40,7 +41,8 @@ T_3dObject *ServerShootProjectile(
           T_word16 typeObj,
           T_word16 initSpeed,
           T_3dObject *p_target,
-		  T_word16 daggertype) ;
+		  T_word16 daggertype,
+		  T_word16 power) ;
 
 T_void ServerGotoPlace (T_word32 placeNumber, T_word16 startLocation);
 

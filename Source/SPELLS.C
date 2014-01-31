@@ -471,9 +471,10 @@ T_void SpellsCastSpell (T_buttonID buttonID)
     T_doubleLinkListElement element;
     T_resource res;
     T_spellStruct *p_spell, *p_spell_obj;
-    T_word32 spellpower, spellduration, spellcost;
+    T_word32 spellpower, spellduration;
+	T_sword16 spellcost;
     T_sword16 spelldif;
-    T_byte8 charlevel;
+    T_byte8 charlevel, charmagic;
 	T_word32 i;
 
 	DebugRoutine ("SpellsCastSpell");
@@ -510,21 +511,25 @@ T_void SpellsCastSpell (T_buttonID buttonID)
             {
                 /* get level of character */
                 charlevel = StatsGetPlayerLevel();
-
+				charmagic = StatsGetPlayerMagic();
+				
                 /* figure duration of spell */
                 spellduration = p_spell->duration + (p_spell->durationmod*charlevel);
                 if (spellduration > MAX_EFFECT_DURATION) spellduration = MAX_EFFECT_DURATION;
+				if (spellduration > 0)
+					spellduration += charmagic * 20;
 
                 /* figure power of spell */
-                spellpower = p_spell->power + (p_spell->powermod*charlevel);
+                spellpower = p_spell->power + (p_spell->powermod*charlevel) + (charmagic / 15);
                 if (spellpower > MAX_EFFECT_POWER) spellpower = MAX_EFFECT_POWER;
 
                 /* figure casting cost of spell */
-                spellcost = p_spell->cost + (p_spell->costmod*charlevel);
+                spellcost = (T_sword16)(p_spell->cost + (p_spell->costmod*charlevel) - (charmagic * 2));
+				if (spellcost < 100)
+					spellcost = 100;
 
                 /* figure difficulty of spell */
-                spelldif = StatsGetPlayerAttribute(ATTRIBUTE_MAGIC) +
-                           p_spell->hardness + (2 * charlevel);
+                spelldif = charmagic + p_spell->hardness + (2 * charlevel);
                 if (spelldif < 0) spelldif = 0;
 
                 /* cast this spell if possible */
@@ -533,7 +538,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 {
                     success=TRUE;
 
-                    /* check for a d100 agains hardness for sucess */
+                    /* check for a d100 against hardness for sucess */
                     if (EffectPlayerEffectIsActive (PLAYER_EFFECT_GOD_MODE) == FALSE)
                     {
                         if (rand()%100 > spelldif)
@@ -544,7 +549,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                             ColorAddGlobal (10,10,-10);
                             SoundPlayByNumber (SOUND_SPELL_FIZZLE,255);
                             /* remove half the spell cost */
-                            StatsChangePlayerMana (-p_spell->cost>>1);
+                            StatsChangePlayerMana (-(spellcost / 2));
                             PictureUnlock(res);
                             break;
                         }
@@ -554,7 +559,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                     {
                         if (EffectPlayerEffectIsActive(PLAYER_EFFECT_GOD_MODE)==FALSE)
                         {
-                            StatsChangePlayerMana (-p_spell->cost);
+                            StatsChangePlayerMana (-spellcost);
                         }
                         /* do a color effect */
                         ColorAddGlobal ((T_sbyte8)p_spell->filtr>>1,(T_sbyte8)p_spell->filtg>>1,(T_sbyte8)p_spell->filtb>>1);
@@ -562,7 +567,14 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                         
 						//do not send spell data if projectile
 						if (p_spell->type == EFFECT_CREATE_PROJECTILE)
+						{
 							p_spell_obj = NULL;
+							
+							//remove bonus power value from all attack spelltypes
+							spellpower -= 1;
+							//scale back to a reasonable damage modifier
+							spellpower *= 30;
+						}
 						else
 							p_spell_obj = p_spell;
 

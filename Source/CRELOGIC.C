@@ -1275,7 +1275,7 @@ updateTime += (updateTime>>1) ;
                                     p_creature,
                                     p_logic,
                                     p_obj,
-                                    p_logic->meleeDamage) ;
+									p_logic->meleeDamage + p_obj->power) ;
                                 isGone = TRUE ;
                             } else {
                                 IHandleBlockedMove(
@@ -3704,7 +3704,8 @@ static T_void IShootAtTarget(
                     p_logic->missileType,
                     30,
                     p_target,
-					p_obj->spawnType) ;
+					p_obj->spawnType,
+					0) ;
             }
         }
         /* Set up the "wait" time for the next missile. */

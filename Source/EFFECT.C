@@ -158,8 +158,8 @@ E_Boolean Effect(E_effectType effecttype,
 			
 			
 			//base weapon damage (accuracy * damage / 2) * dmg mod
-			dmg = (T_sword16)(G_activeStats->Attributes[ATTRIBUTE_ACCURACY] * (T_word16)((float)data2 / 2));
-			power = (T_word16)((float)dmg * CreateClassDatas[G_activeStats->ClassType]->DamageModifier);
+			//dmg = (T_sword16)(G_activeStats->Attributes[ATTRIBUTE_ACCURACY] * (T_word16)((float)data2 / 2));
+			//power = (T_word16)((float)dmg * CreateClassDatas[G_activeStats->ClassType]->DamageModifier);
 
 			if (p_owner!=NULL)
 				p_object=(T_3dObject *)p_owner;
@@ -187,7 +187,7 @@ E_Boolean Effect(E_effectType effecttype,
 					EFFECT_TRIGGER_USE,
 					data1,
 					data2,
-					power,
+					0,
 					p_object);
 
 			break;
@@ -581,7 +581,7 @@ E_Boolean Effect(E_effectType effecttype,
                     EFFECT_TRIGGER_USE,
                     data1,
                     data2,
-                    data2,
+                    0,
                     0);
 //           ClientCreateProjectile(data1, data2, data2);
         }

@@ -213,6 +213,8 @@ typedef struct T_3dObject_ {
     T_word16 objCollisionGroup ;
 
 	T_word16 spawnType; //used to drop at explosion point for projectiles. I.E. throwing daggers
+
+	T_word16 power; //damage bonus for projectiles
 } T_3dObject ;
 
 typedef struct  {

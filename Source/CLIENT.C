@@ -427,7 +427,8 @@ T_void ClientCreateProjectile (
         ClientSyncSendActionMissileAttack(
             objectType,
             target,
-			daggertype) ;
+			daggertype,
+			power) ;
     }
     DebugEnd() ;
 }

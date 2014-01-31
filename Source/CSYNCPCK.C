@@ -652,7 +652,8 @@ static T_void IClientSyncDoPlayerAction(
                 p_actionData[0], /* type of missile */
                 50, /* initial speed */
                 (p_actionData[1] != 0) ? ObjectFind(p_actionData[1]) : NULL,
-				p_actionData[2]) ;
+				p_actionData[2],
+				p_actionData[3]) ;
             ObjectSetStance(p_playerObj, STANCE_ATTACK);
 
             /* Alert creatures of my attack. */
@@ -723,8 +724,9 @@ static T_void IClientSyncDoPlayerAction(
                         p_actionData[1], /* angle */
                         p_actionData[0], /* type of object */
                         p_actionData[2], /* throw speed */
-                        NULL,
-						0) ;          /* no aimed target. */
+                        NULL,			 /* no aimed target. */
+						0,
+						0) ;          
             ObjectSetStance(p_playerObj, STANCE_ATTACK);
             ObjectSetAccData(p_obj, p_actionData[3]) ;
             break ;
@@ -1058,7 +1060,8 @@ T_void ClientSyncSendActionMeleeAttack(
 T_void ClientSyncSendActionMissileAttack(
            T_word16 missileType,
            T_word16 target,
-		   T_word16 knifetype)
+		   T_word16 knifetype,
+		   T_word16 power)
 {
     DebugRoutine("ClientSyncSendActionMissileAttack") ;
 
@@ -1067,7 +1070,7 @@ T_void ClientSyncSendActionMissileAttack(
         missileType,
         target,
         knifetype,
-        0) ;
+        power) ;
 
     DebugEnd() ;
 }
