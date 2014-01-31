@@ -299,6 +299,9 @@ T_void GrInvalidateRectClipped(
 
 T_void GrActivateColumn(T_word16 x);
 
+
+T_bitmap *MakeBitmapCopy(T_bitmap *source);
+
 #endif
 #endif
 

@@ -333,6 +333,34 @@ T_void GrDrawHorizontalLine(
     DebugEnd() ;
 }
 
+//Make copy of bitmap into new chunk of memory
+T_bitmap *MakeBitmapCopy(T_bitmap *source)
+{
+	T_bitmap *retval;
+	T_byte8 *f_data, *tempptr;
+	int i = 0;
+
+	DebugRoutine("MakeBitmapcopy");
+	
+	f_data = (T_byte8*)malloc(sizeof(T_byte8) * ((source->sizex * source->sizey) + 2));
+	tempptr = f_data;
+	f_data[0] = (int)source->sizex;
+	f_data[1] = 0;
+	f_data[2] = (int)source->sizey;
+	f_data[3] = 0;
+	f_data+=4;
+	for (i = source->sizey; i > 0; i--)
+	{
+		memcpy(&f_data[i*source->sizex], 
+			   &source->data[i*source->sizex], 
+			   source->sizex);
+	}
+	retval = (T_bitmap *)tempptr;
+
+	DebugEnd();
+	return retval;
+}
+
 /*-------------------------------------------------------------------------*
  * Routine:  GrDrawBitmap
  *-------------------------------------------------------------------------*/
