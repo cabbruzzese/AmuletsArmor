@@ -3337,7 +3337,7 @@ T_void ClientDoSteal(T_void)
 
     /* Apply class based modifier. */
 	tmod = CreateClassDatas[StatsGetPlayerClassType()]->ThiefModifier;
-    stealPickSkill = (T_word16)((float)StatsGetPlayerStealth() * tmod);
+	stealPickSkill = (T_word16)((float)StatsGetPlayerStealthTotal() * tmod);
 	
 
     /* Look at the position ahead and try to hit anything */
