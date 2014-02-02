@@ -620,7 +620,7 @@ E_Boolean Effect(E_effectType effecttype,
                             EFFECT_TRIGGER_USE,
                             bolttype+EFFECT_BOLT_NORMAL,
                             data3,
-                            data3,
+                            0,
                             0);
                 }
             }
