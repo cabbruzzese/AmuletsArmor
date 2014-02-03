@@ -1157,7 +1157,7 @@ T_void StatsUpdatePlayerStatistics (T_void)
 			hrvalue = -20;
 
 			//check if player is moving
-			if (PlayerIsMoving())  
+			if (PlayerIsMoving() == TRUE)  
 			{
 				//make heartrate recovery slower
 				hrvalue += 10;
@@ -1199,10 +1199,23 @@ T_void StatsUpdatePlayerStatistics (T_void)
 			//adjust by percentage of heartrate over normal tick time to avoid increase in regeneration
 			hregen *= normaltimeratio;
 
+			//if relaxed
 			if (G_activeStats->HeartRate == 0)
 			{
-				mregen *= 1.5;
-				hregen *= 1.5;
+				//and not moving
+				if (PlayerIsMoving() == FALSE)
+				{
+					//big regen boost
+					mregen *= (float)1.5;
+					hregen *= (float)1.5;
+				}
+				//otherwise
+				else
+				{
+					//small regen boost
+					mregen *= (float)1.2;
+					hregen *= (float)1.2;
+				}
 			}
 
 //          MessagePrintf ("hregen=%f mregen=%f",hregen,mregen);
