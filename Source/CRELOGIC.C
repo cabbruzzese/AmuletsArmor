@@ -4040,7 +4040,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                     }
 
 					//sneak attacks
-					if ((ownerID != 0) && (ownerID != p_creature->targetID) && ObjectIsPlayer(ObjectFind(ownerID)))
+					if ((ownerID != 0) && (ownerID != p_creature->targetID) && 
+						ObjectIsPlayer(ObjectFind(ownerID)) &&
+						ClientIsDead() == FALSE) // cant sneakattack with dying blow
 					{
 						damageAmt *= 5;
 						MessageAdd("Sneak attack!");

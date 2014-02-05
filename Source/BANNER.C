@@ -1793,37 +1793,40 @@ T_void BannerAddSpellButton(T_byte8 slot)
             155,
             155,
             155 };
-    E_spellsSpellSystemType spellSystem;
+	
+	E_spellsSpellSystemType spellSystem;
 
     T_byte8 keycode, picno;
     T_byte8 stmp[32];
     DebugRoutine("BannerAddSpellButton");
 
-    spellSystem = StatsGetPlayerSpellSystem();
+	//do not draw for skills with no runes
+	if (StatsGetPlayerSkillLogic()->UsesRunes == FALSE)
+	{
+		DebugEnd();
+		return;
+	}
 
-//    DebugCheck (G_bannerButtonsCreated==TRUE);
+	spellSystem = StatsGetPlayerSkillLogic()->RuneType;
 
     if (G_bannerButtonsCreated == TRUE) {
         switch (spellSystem) {
-            case SPELL_SYSTEM_MAGE:
-                picno = slot;
+			case SPELL_SYSTEM_MAGE:
+			    picno = slot;
                 break;
 
-            case SPELL_SYSTEM_CLERIC:
+			case SPELL_SYSTEM_CLERIC:
                 picno = slot + 9;
                 break;
 
-            case SPELL_SYSTEM_ARCANE:
+			case SPELL_SYSTEM_ARCANE:
                 if (slot < 4)
                     picno = slot;
                 else
                     picno = slot + 5;
                 break;
-
             default:
-                printf("Bad class type in bannerAddSpellButton");
-                DebugCheck(-1);
-                /* fail! */
+				break;
         }
 
         if (slot == 0)
