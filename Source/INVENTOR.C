@@ -763,8 +763,12 @@ T_void InventoryUseItem (T_inventoryItemStruct *p_inv)
                         (effecttype != EFFECT_PLAY_AREA_SOUND) &&
                         (effecttype != EFFECT_COLOR_FLASH))
                     {
-                        /* id this object */
-                        StatsPlayerIdentify(ObjectGetType(p_inv->object));
+//                        if ((rand()%100) < StatsGetPlayerAttribute(ATTRIBUTE_MAGIC))
+//                        {
+                            /* id this object */
+                            StatsPlayerIdentify(ObjectGetType(p_inv->object));
+    //                        MessageAdd ("Identified\n");
+//                        }
                     }
                }
             }
@@ -2909,8 +2913,11 @@ static E_Boolean InventoryDoItemEffect (T_inventoryItemStruct *p_inv, E_effectTr
                     p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_SCROLL ||
                     p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_FOODSTUFF)
                 {
-                    /* id this object */
-                    StatsPlayerIdentify(ObjectGetType(p_inv->object));
+//                    if ((rand()%100) < StatsGetPlayerAttribute(ATTRIBUTE_MAGIC))
+//                    {
+                        /* id this object */
+                        StatsPlayerIdentify(ObjectGetType(p_inv->object));
+//                    }
                 }
             }
             retvalue=TRUE;
@@ -3033,8 +3040,11 @@ E_Boolean InventoryDoEffect_Load  (E_effectTriggerType trigger, E_equipLocations
                         p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_SCROLL ||
                         p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_FOODSTUFF)
                     {
-                        /* id this object */
-                        StatsPlayerIdentify(ObjectGetType(p_inv->object));
+//                        if ((rand()%100) < StatsGetPlayerAttribute(ATTRIBUTE_MAGIC))
+//                        {
+                            /* id this object */
+                            StatsPlayerIdentify(ObjectGetType(p_inv->object));
+//                        }
                     }
                 }
                 retvalue=TRUE;
@@ -3360,6 +3370,7 @@ E_equipArmorTypes InventoryGetArmorType (E_equipLocations location)
     DebugEnd();
     return (retvalue);
 }
+
 
 T_void   InventoryPlayWeaponAttackSound(T_void)
 {

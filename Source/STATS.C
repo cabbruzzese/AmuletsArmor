@@ -32,7 +32,6 @@
 #include "STATS.H"
 #include "TICKER.H"
 #include "VIEW.H"
-#include "INVENTOR.H"
 #include <direct.h>
 
 static E_Boolean G_exit=FALSE;
@@ -1425,34 +1424,34 @@ T_void StatsDisplayStatisticsPage (T_void)
    /* set stealth*/
    TxtboxID=FormGetObjID(505);
 
-   mod=StatsGetPlayerAttributeMod (ATTRIBUTE_STEALTH) - StatsGetArmorPenaltyStealth();
+   mod=StatsGetPlayerAttributeMod (ATTRIBUTE_STEALTH);
    if (mod > 0) strcpy (stmp,"^009");
    else if (mod < 0) strcpy (stmp,"^014");
    else strcpy (stmp,"^007");
 
-   sprintf (stmp,"%s%d",stmp,StatsGetPlayerStealthTotal());
+   sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_STEALTH));
    TxtboxSetData(TxtboxID,stmp);
 
    /* set magic */
    TxtboxID=FormGetObjID(506);
 
-   mod=StatsGetPlayerAttributeMod (ATTRIBUTE_MAGIC) - StatsGetArmorPenaltyMagic();
+   mod=StatsGetPlayerAttributeMod (ATTRIBUTE_MAGIC);
    if (mod > 0) strcpy (stmp,"^009");
    else if (mod < 0) strcpy (stmp,"^014");
    else strcpy (stmp,"^007");
 
-   sprintf (stmp,"%s%d",stmp,StatsGetPlayerMagicTotal());
+   sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_MAGIC));
    TxtboxSetData(TxtboxID,stmp);
 
    /* set speed */
    TxtboxID=FormGetObjID(507);
 
-   mod=StatsGetPlayerAttributeMod (ATTRIBUTE_SPEED) - StatsGetArmorPenaltySpeed();
+   mod=StatsGetPlayerAttributeMod (ATTRIBUTE_SPEED);
    if (mod > 0) strcpy (stmp,"^009");
    else if (mod < 0) strcpy (stmp,"^014");
    else strcpy (stmp,"^007");
 
-   sprintf (stmp,"%s%d",stmp,StatsGetPlayerSpeedTotal());
+   sprintf (stmp,"%s%d",stmp,StatsGetPlayerAttribute(ATTRIBUTE_SPEED));
    TxtboxSetData(TxtboxID,stmp);
 
    /* set class name */
@@ -1627,12 +1626,7 @@ E_Boolean StatsAddBolt (E_equipBoltTypes type, T_sword16 num)
 }
 
 
-T_void StatsSetArmorPenalty ()
-{
-	//T_byte8 speedmod, magicmod;
 
-
-}
 T_void StatsSetArmorValue (E_equipLocations location, T_byte8 value)
 {
     DebugRoutine ("StatsSetArmorValue");
@@ -1654,67 +1648,6 @@ T_void StatsSetArmorValue (E_equipLocations location, T_byte8 value)
     DebugEnd();
 }
 
-
-T_byte8 GetArmorPenaltyValue(T_byte8 platepenalty, T_byte8 chainpenalty, T_byte8 leatherpenalty)
-{
-	int i;
-	E_equipArmorTypes armortype;
-	T_byte8 retvalue = 0;
-	
-	DebugRoutine("GetArmorPenaltyValue");
-
-	for (i = EQUIP_LOCATION_HEAD; i < EQUIP_LOCATION_LEGS + 1; i++)
-	{
-		armortype = InventoryGetArmorType(i);
-		switch(armortype)
-		{
-			case EQUIP_ARMOR_TYPE_LEGGINGS_PLATE:
-            case EQUIP_ARMOR_TYPE_BRACING_PLATE:
-            case EQUIP_ARMOR_TYPE_HELMET_PLATE:
-            case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
-				retvalue += platepenalty;
-				break;
-
-            case EQUIP_ARMOR_TYPE_BRACING_CHAIN:
-            case EQUIP_ARMOR_TYPE_LEGGINGS_CHAIN:
-            case EQUIP_ARMOR_TYPE_HELMET_CHAIN:
-            case EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN:
-				retvalue += chainpenalty;
-				break;
-
-			case EQUIP_ARMOR_TYPE_BRACING_CLOTH:
-			case EQUIP_ARMOR_TYPE_BREASTPLATE_CLOTH:
-			case EQUIP_ARMOR_TYPE_LEGGINGS_CLOTH:
-				retvalue += leatherpenalty;
-				break;
-
-			default:
-				break;
-		}
-	}
-	
-	DebugEnd();
-	return retvalue;
-}
-
-T_byte8 StatsGetArmorPenaltyMagic()
-{
-	DebugRoutine("StatsGetArmorPenaltyMagic");
-	DebugEnd();
-	return GetArmorPenaltyValue(5, 3, 0);
-}
-T_byte8 StatsGetArmorPenaltyStealth()
-{
-	DebugRoutine("StatsGetArmorPenaltyStealth");
-	DebugEnd();
-	return GetArmorPenaltyValue(7, 4, 0);
-}
-T_byte8 StatsGetArmorPenaltySpeed()
-{
-	DebugRoutine("StatsGetArmorPenaltySpeed");
-	DebugEnd();
-	return GetArmorPenaltyValue(3,2,1);
-}
 
 T_void StatsCalcAverageArmorValue (T_void)
 {
@@ -1758,15 +1691,6 @@ T_void StatsCalcAverageArmorValue (T_void)
     G_activeStats->ArmorLevel = (T_byte8)Alev;
     /* redraw equip screen if necessary */
     if (BannerFormIsOpen (BANNER_FORM_EQUIPMENT)) InventoryDrawEquipmentWindow();
-
-	
-	//Update movement stats
-    StatsCalcPlayerAttackSpeed();
-    StatsCalcPlayerMovementSpeed();
-    
-	//Update stats page if needed
-    if (BannerFormIsOpen (BANNER_FORM_STATISTICS))
-      StatsDisplayStatisticsPage();	
 }
 
 
@@ -1828,7 +1752,7 @@ T_void StatsCalcPlayerAttackSpeed (T_void)
     weaponmod = G_activeStats->WeaponBaseSpeed;
     //10=slow, 100=fast.
 
-	wspeed=StatsGetPlayerSpeedTotal()+weaponmod;
+    wspeed=StatsGetPlayerAttribute(ATTRIBUTE_SPEED)+weaponmod;
     if (wspeed < 0) wspeed=0;
     if (wspeed > 100) wspeed=100;
 
@@ -2039,7 +1963,7 @@ T_void StatsCalcPlayerMovementSpeed (T_void)
 
     DebugRoutine ("StatsCalcPlayerMovementSpeed");
 
-	G_activeStats->MaxVWalking = (StatsGetPlayerSpeedTotal()/5)+10;
+    G_activeStats->MaxVWalking = (StatsGetPlayerAttribute(ATTRIBUTE_SPEED)/5)+10;
 	/* apply class bonuses */
 	G_activeStats->MaxVWalking = (T_word16)((float)G_activeStats->MaxVWalking * CreateClassDatas[G_activeStats->ClassType]->MoveModifier);
     
@@ -3292,43 +3216,6 @@ E_Boolean StatsSaveCharacter (T_byte8 selected)
     DebugEnd();
 
     return (success);
-}
-
-T_byte8 StatsGetPlayerMagicTotal()
-{
-	T_byte8 retvalue;
-	DebugRoutine("StatsGetPlayerMagicTotal");
-
-	retvalue = StatsGetPlayerAttribute(ATTRIBUTE_MAGIC) - StatsGetArmorPenaltyMagic();
-	if (retvalue < 10) retvalue = 10;
-    if (retvalue > 120) retvalue= 120;
-
-	DebugEnd();
-	return retvalue;
-}
-T_byte8 StatsGetPlayerStealthTotal()
-{
-	T_byte8 retvalue;
-	DebugRoutine("StatsGetPlayerStealthTotal");
-
-	retvalue = StatsGetPlayerAttribute(ATTRIBUTE_STEALTH) - StatsGetArmorPenaltyStealth();
-	if (retvalue < 10) retvalue = 10;
-    if (retvalue > 120) retvalue= 120;
-
-	DebugEnd();
-	return retvalue;
-}
-T_byte8 StatsGetPlayerSpeedTotal()
-{
-	T_byte8 retvalue;
-	DebugRoutine("StatsGetPlayerSpeedTotal");
-
-	retvalue = StatsGetPlayerAttribute(ATTRIBUTE_SPEED) - StatsGetArmorPenaltySpeed();
-	if (retvalue < 10) retvalue = 10;
-    if (retvalue > 120) retvalue= 120;
-
-	DebugEnd();
-	return retvalue;
 }
 
 /* @} */
