@@ -1214,7 +1214,7 @@ T_inventoryItemStruct* InventoryTakeObject (E_inventoryType which, T_3dObject *i
             {
                 /* check to see if the player can use this item, else */
                 /* don't add it to the store */
-                spellsys=StatsGetPlayerSkillSystem();
+                spellsys=StatsGetPlayerSpellSystem();
                 destroyme=FALSE;
                 ourclass=StatsGetPlayerClassType();
                 if (InventoryIsUseableByClass(p_inv)==FALSE) destroyme=TRUE;
@@ -1235,31 +1235,20 @@ T_inventoryItemStruct* InventoryTakeObject (E_inventoryType which, T_3dObject *i
                 else if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_THING &&
                          p_inv->itemdesc.subtype==THING_TYPE_RUNE)
                 {
-					//skill classes don't pick up runes
-					if (StatsGetPlayerSkillLogic()->CanPickupRunes == FALSE)
-					{
-						destroyme=TRUE;
-					}
-					else 
-					{
-						switch(StatsGetPlayerSkillLogic()->RuneType)
-						{
-						case SPELL_SYSTEM_CLERIC:
-							if (ObjectGetType(p_inv->object)<309) destroyme=TRUE;
-							break;
-						case SPELL_SYSTEM_MAGE:
-							if (ObjectGetType(p_inv->object)>308) destroyme=TRUE;
-							break;
-						case SPELL_SYSTEM_ARCANE:
-							if (ObjectGetType(p_inv->object)>303 &&
-								ObjectGetType(p_inv->object)<309) destroyme=TRUE;
-							if (ObjectGetType(p_inv->object)>313) destroyme=TRUE;
-							break;
-						default:
-							break;
-						}
-
-					}
+                    if (spellsys==SPELL_SYSTEM_CLERIC)
+                    {
+                        if (ObjectGetType(p_inv->object)<309) destroyme=TRUE;
+                    }
+                    else if (spellsys==SPELL_SYSTEM_MAGE)
+                    {
+                        if (ObjectGetType(p_inv->object)>308) destroyme=TRUE;
+                    }
+                    else
+                    {
+                        if (ObjectGetType(p_inv->object)>303 &&
+                            ObjectGetType(p_inv->object)<309) destroyme=TRUE;
+                        if (ObjectGetType(p_inv->object)>313) destroyme=TRUE;
+                    }
                 }
                 else if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_BOLT ||
                          p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_QUIVER)
@@ -4674,7 +4663,7 @@ T_void InventorySetDefaultInventoryForClass(T_void)
 		}
 
 	}
-
+    
     InventoryReorder(INVENTORY_PLAYER,FALSE);
 
     /* iterate through the player's inventory and equip anything that */
@@ -4798,15 +4787,15 @@ T_void InventorySetDefaultInventoryForClass(T_void)
     /* Add 'spell group listing' page */
     StatsAddPlayerNotePage(99);
 
+#ifndef COMPILE_OPTION_SHAREWARE_DEMO
     /* spells for regular version */
-	//if (StatsGetPlayerSkillSystem() == SPELL_SYSTEM_MAGE && StatsGetPlayerClassType() == CLASS_BARBARIAN)
-	//{
-		//StatsAddPlayerNotePage(100); /* Deflect */
-        //StatsAddPlayerNotePage(125); /* Wolf Speed */
-        //StatsAddPlayerNotePage(131); /* Giant Strength */
-	//}
-	//else 
-	if (StatsGetPlayerSkillSystem() == SKILL_SYSTEM_MAGIC_MAGE)
+	if (StatsGetPlayerSpellSystem() == SPELL_SYSTEM_MAGE && StatsGetPlayerClassType() == CLASS_BARBARIAN)
+	{
+		StatsAddPlayerNotePage(100); /* Deflect */
+        StatsAddPlayerNotePage(125); /* Wolf Speed */
+        StatsAddPlayerNotePage(131); /* Giant Strength */
+	}
+	else if (StatsGetPlayerSpellSystem() == SPELL_SYSTEM_MAGE)
     {
         StatsAddPlayerNotePage(100); /* Deflect */
         StatsAddPlayerNotePage(101); /* Magic Dart */
@@ -4818,7 +4807,7 @@ T_void InventorySetDefaultInventoryForClass(T_void)
         StatsAddPlayerNotePage(110); /* Angry word */
         StatsAddPlayerNotePage(111); /* Force Door */
     }
-	else if (StatsGetPlayerSkillSystem()==SKILL_SYSTEM_MAGIC_CLERIC)
+    else if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_CLERIC)
     {
         StatsAddPlayerNotePage(300); /* Rejuvinate */
         StatsAddPlayerNotePage(305); /* Confuse */
@@ -4827,13 +4816,54 @@ T_void InventorySetDefaultInventoryForClass(T_void)
         StatsAddPlayerNotePage(308); /* Attract */
         StatsAddPlayerNotePage(309); /* Repel */
     }
-	else if (StatsGetPlayerSkillSystem()==SKILL_SYSTEM_MAGIC_ARCANE)
+    else if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_ARCANE)
     {
         StatsAddPlayerNotePage(202); /* Cast of Sand */
         StatsAddPlayerNotePage(204); /* Pull */
         StatsAddPlayerNotePage(206); /* Push */
         StatsAddPlayerNotePage(208); /* Knock */
     }
+#else
+    /* buy me note */
+    StatsAddPlayerNotePage(98);
+    /* Spells for shareware demo */
+    if (StatsGetPlayerSpellSystem() == SPELL_SYSTEM_MAGE)
+    {
+        StatsAddPlayerNotePage(100); /* Deflect */
+        StatsAddPlayerNotePage(101); /* Magic Dart */
+        StatsAddPlayerNotePage(103); /* Magic Missile */
+        StatsAddPlayerNotePage(104); /* Disorient */
+        StatsAddPlayerNotePage(105); /* Attact */
+        StatsAddPlayerNotePage(109); /* Repulse */
+        StatsAddPlayerNotePage(111); /* Force Door */
+        StatsAddPlayerNotePage(113); /* Magic Map */
+        StatsAddPlayerNotePage(121); /* Enhance Vision */
+    }
+    else if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_CLERIC)
+    {
+        StatsAddPlayerNotePage(300); /* Rejuvinate */
+        StatsAddPlayerNotePage(301); /* Waterwalk */
+        StatsAddPlayerNotePage(302); /* Purify Blood */
+        StatsAddPlayerNotePage(303); /* Resist Impact */
+//      StatsAddPlayerNotePage(304); /* Earthsmite */
+        StatsAddPlayerNotePage(306); /* Knock */
+        StatsAddPlayerNotePage(308); /* Attract */
+        StatsAddPlayerNotePage(309); /* Repel */
+        StatsAddPlayerNotePage(310); /* Magic Map */
+        StatsAddPlayerNotePage(317); /* Glow */
+        StatsAddPlayerNotePage(318); /* Life Water */
+        StatsAddPlayerNotePage(320); /* Wolf Speed */
+    }
+    else if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_ARCANE)
+    {
+        StatsAddPlayerNotePage(202); /* Cast of Sand */
+        StatsAddPlayerNotePage(204); /* Pull */
+        StatsAddPlayerNotePage(206); /* Push */
+        StatsAddPlayerNotePage(208); /* Knock */
+        StatsAddPlayerNotePage(209); /* Magic Map */
+        StatsAddPlayerNotePage(214); /* Glow */
+    }
+#endif
 
     EffectSoundOn();
 

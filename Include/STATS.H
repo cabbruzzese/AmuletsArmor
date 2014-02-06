@@ -32,7 +32,6 @@
 #define HEARTRATE_SPELL			10
 #define HEARTRATE_SPELL_FAIL	5
 #define HEARTRATE_TAKEDAMAGE	20
-#define HEARTRATE_FULL			250
 
 typedef enum
 {
@@ -216,7 +215,7 @@ extern T_playerStats *G_activeStats ;
 #define StatsGetPlayerExperience()(G_activeStats->Experience)
 #define StatsGetPlayerExpNeeded()(G_activeStats->ExpNeeded)
 #define StatsGetPlayerAttackSpeed()(G_activeStats->AttackSpeed)
-#define StatsGetPlayerSkillSystem()(G_activeStats->SpellSystem)
+#define StatsGetPlayerSpellSystem()(G_activeStats->SpellSystem)
 #define StatsGetCompletedAdventure()(G_activeStats->CompletedAdventure)
 #define StatsGetCompletedMap()(G_activeStats->CompletedMap)
 #define StatsGetCurrentQuestNumber()(G_activeStats->CurrentQuestNumber)
@@ -370,9 +369,9 @@ E_Boolean StatsPlayerHasIdentified(T_word16 objType);
 T_void    StatsPlayerIdentify(T_word16 objType);
 T_void StatsCalcPlayerMovementSpeed(T_void);
 
-T_byte8 StatsGetPlayerMagicTotal(T_void);
-T_byte8 StatsGetPlayerStealthTotal(T_void);
-T_byte8 StatsGetPlayerSpeedTotal(T_void);
+T_byte8 StatsGetPlayerMagicTotal();
+T_byte8 StatsGetPlayerStealthTotal();
+T_byte8 StatsGetPlayerSpeedTotal();
 
 T_void StatsChangePlayerHeartBeat(T_sword16 amt);
 
@@ -382,9 +381,6 @@ T_void StatsUpdatePastPlace(
            T_word16 adventureNumber,
            T_word16 mapNumber) ;
 T_word16 StatsFindPastPlace(T_word16 adventureNumber) ;
-
-T_SkillLogic *StatsGetPlayerSkillLogic(T_void);
-T_byte8 StatsGetPlayerSkillLevel(T_void);
 
 #endif /* SERVER_ONLY */
 

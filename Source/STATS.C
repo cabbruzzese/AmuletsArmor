@@ -793,43 +793,7 @@ T_void StatsTakeDamage (T_word16 type, T_word16 amt)
     DebugEnd();
 }
 
-T_void StatsCalcPlayerRunes (T_void)
-{
-	T_byte8 skilllevel;
-	T_byte8 runenum;
-	DebugRoutine("StatsCalcPlayerRunes");
 
-	skilllevel = StatsGetPlayerSkillLevel();
-	if (skilllevel > 9)
-		skilllevel = 9;
-
-	if (skilllevel > 0)
-	{
-		switch(StatsGetPlayerSkillLogic()->RuneType)
-		{
-		case SPELL_SYSTEM_CLERIC:
-			runenum = (int)RUNE_ARCANE_5 + (skilllevel - 1);
-			SpellsSetRune((E_spellsRuneType)runenum);
-			break;
-		case SPELL_SYSTEM_MAGE:
-			runenum = (int)RUNE_ARCANE_1 + (skilllevel - 1);
-			SpellsSetRune((E_spellsRuneType)runenum);
-			break;
-		case SPELL_SYSTEM_ARCANE:
-			if (skilllevel <= 4)
-				runenum = (int)RUNE_ARCANE_1 + (skilllevel - 1);
-			else
-				runenum = (int)RUNE_ARCANE_5 + (skilllevel - 1);
-
-			SpellsSetRune((E_spellsRuneType)runenum);
-			break;
-		default:
-			break;
-		}
-	}
-
-	DebugEnd();
-}
 
 T_void StatsChangePlayerExperience (T_sword32 amt)
 {
@@ -936,9 +900,6 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
 
             /* update movement speed */
             StatsCalcPlayerMovementSpeed();
-
-			//Update spell runes for skilled classes
-			StatsCalcPlayerRunes();
 
             /* update title */
             if (G_activeStats->Level < 21)
@@ -2283,7 +2244,7 @@ T_void StatsIncrementRuneCount (T_byte8 which)
 
     /* if now 1, we must have added a new rune, update buttons accordingly */
     if (G_activeStats->ActiveRunes[which]==1)
-		BannerAddSpellButton(which);
+      BannerAddSpellButton(which);
 
     DebugEnd();
 }
@@ -2306,29 +2267,6 @@ T_void StatsDecrementRuneCount (T_byte8 which)
     DebugEnd();
 }
 
-T_byte8 StatsGetPlayerSkillLevel(T_void)
-{
-	T_byte8 retvalue = 0;
-	T_byte8 charlevel;
-	DebugRoutine("StatsGetPlayerSkillLevel");
-	
-	charlevel = StatsGetPlayerLevel();
-	
-	//first 5 levels have 1:1 progression
-	if (charlevel < 8)
-	{
-		retvalue = charlevel - 1;
-	}
-	//last 5 have 1/2:1progression
-	else
-	{
-		retvalue = ((charlevel - 7) / 2) + 6;
-	}
-	DebugEnd();
-
-	return retvalue;
-}
-
 /* returns true if G_activeStats->ActiveRunes[which]>0 */
 /* i.e. if there is a rune in the keypad slot designated by which */
 
@@ -2337,18 +2275,7 @@ E_Boolean StatsRuneIsAvailable (T_byte8 which)
     E_Boolean retvalue=FALSE;
     DebugRoutine ("StatsRuneIsAvailable");
 
-	if (StatsGetPlayerSkillLogic()->UsesRunes == TRUE)
-	{
-		if(StatsGetPlayerSkillLogic()->CanPickupRunes == FALSE)
-		{
-			if (which < StatsGetPlayerSkillLevel())
-				retvalue=TRUE;
-		}
-		else if (G_activeStats->ActiveRunes[which]>0)
-		{
-			 retvalue=TRUE;
-		}
-	}
+    if (G_activeStats->ActiveRunes[which]>0) retvalue=TRUE;
 
     DebugEnd();
     return (retvalue);
@@ -3499,24 +3426,6 @@ T_byte8 StatsGetPlayerSpeedTotal()
 
 	DebugEnd();
 	return (T_byte8)retvalue;
-}
-
-E_Boolean SkillLogicsInitialized = FALSE;
-T_SkillLogic *StatsGetPlayerSkillLogic(T_void)
-{
-	T_SkillLogic *retvalue;
-	DebugRoutine("StatsGetPlayerSkillLogic");
-
-	if (SkillLogicsInitialized == FALSE)
-	{
-		SkillLogicsInitialize();
-		SkillLogicsInitialized = TRUE;
-	}
-
-	retvalue = &G_SkillLogics[StatsGetPlayerSkillSystem()];
-	DebugEnd();
-
-	return retvalue;
 }
 
 /* @} */
