@@ -1051,7 +1051,7 @@ T_void PerformMonkSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Divine Intervention Activated");
+				MessageAdd("Diving Intervention Activated");
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
 					EFFECT_TRIGGER_CAST,
 					PLAYER_EFFECT_DEATH_WARD,
@@ -1132,12 +1132,11 @@ T_void PerformSkillSpell(T_byte8 spellnum)
 
 	DebugRoutine("PerformSkillSpell");
 
-	/*if (G_curspell[0] == 0)
+	if (G_curspell[0] == 0)
 	{
-		//artificially level up for testing
 		StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
 		StatsChangePlayerMana(StatsGetPlayerMaxMana() - StatsGetManaLeft());
-	}*/
+	}
 
 	switch(StatsGetPlayerSkillSystem())
 	{
