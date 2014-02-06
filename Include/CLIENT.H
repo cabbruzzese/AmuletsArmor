@@ -85,6 +85,11 @@ T_void ClientCreateProjectile(
         T_word16 power,
 		T_void* p_owner);
 
+T_void ClientDoAreaOfeffect(T_word16 type,
+							T_word16 range,
+							T_word16 power,
+							T_void* p_owner);
+
 T_void ClientAttack(T_void);
 
 /* Acknowledgements: */

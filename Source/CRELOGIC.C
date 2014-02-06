@@ -3101,7 +3101,7 @@ static T_void IHandleBlockedMove(
         IUpdateTarget(p_creature) ;
 
         if ((p_creature->canMeleeHitTarget == TRUE) &&
-            ((p_creature->isFleeing == FALSE) || (p_creature->blockCount==2)))  {
+			((p_creature->isFleeing == FALSE) || (p_creature->blockCount==2)))  {
             p_creature->blockCount = NUM_UPDATES_DO_BLOCK_MOVEMENT ;
             ObjectSetAngle(p_obj, p_creature->targetAngle) ;
             p_creature->moveBlocked = FALSE ;
@@ -4147,7 +4147,7 @@ static T_void IExplodeSelf(
         (T_word16)p_logic->maxMeleeRange,
         (T_word16)damage,
         (T_word16)ObjectGetOwnerID(p_obj),
-        (T_byte8)p_logic->damageType) ;
+        (T_byte8)p_logic->damageType);
 
     /* Check if this killed us. */
     if (ICreatureFindViaObjectPtr(p_obj) ==

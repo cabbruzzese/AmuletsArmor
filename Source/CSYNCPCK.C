@@ -660,6 +660,13 @@ static T_void IClientSyncDoPlayerAction(
 			if (!p_playerObj->attributes & OBJECT_ATTR_STEALTHY)
 				CreaturesHearSoundOfPlayer(p_playerObj, 1500) ;
             break ;
+		case PLAYER_ACTION_AREA_OF_EFFECT:
+			ServerPerformAreaOfEffect(p_playerObj,
+				p_actionData[0],
+				p_actionData[1],
+				p_actionData[2],
+				p_actionData[3]);
+			break;
         case PLAYER_ACTION_ACTIVATE_FORWARD:
             MapGetForwardWallActivationType(
                 p_playerObj,
@@ -1053,6 +1060,23 @@ T_void ClientSyncSendActionMeleeAttack(
         (T_word16)damageType,
         targetId,
         0) ;
+
+    DebugEnd() ;
+}
+
+T_void ClientSyncSendActionAreaOfEffect(
+           T_word16 type,
+           T_word16 range,
+		   T_word16 power)
+{
+    DebugRoutine("ClientSyncSendActionMissileAttack") ;
+
+    IClientSyncSendAction(
+        PLAYER_ACTION_AREA_OF_EFFECT,
+        type,
+        range,
+        power,
+		0) ;
 
     DebugEnd() ;
 }
