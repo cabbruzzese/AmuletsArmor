@@ -194,11 +194,11 @@ T_void SkillLogicsInitialize(T_void)
 	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].CanPickupRunes = TRUE;
 	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].RuneType = SPELL_SYSTEM_ARCANE;
 	//Barbarian
-	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].UsesRunes = FALSE;
 	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].IsMultiRune = FALSE;
 	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].UsesSpells = FALSE;
 	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].CanPickupRunes = FALSE;
-	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].RuneType = SPELL_SYSTEM_ARCANE;
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].RuneType = SPELL_SYSTEM_NONE;
 	//Monk
 	G_SkillLogics[SKILL_SYSTEM_MONK].UsesRunes = TRUE;
 	G_SkillLogics[SKILL_SYSTEM_MONK].IsMultiRune = FALSE;
@@ -279,7 +279,7 @@ T_void SpellsAddRune (T_buttonID buttonID)
 	DebugCheck (buttonID != NULL);
 
 	//barbarians can't set runes
-	if (StatsGetPlayerSkillLogic()->UsesRunes == FALSE)
+	if (StatsGetPlayerSkillSystem() == SKILL_SYSTEM_BARBARIAN)
 	{
 		DebugEnd();
 		return;
@@ -539,33 +539,13 @@ T_void SpellsMakeNextSound (T_void *p_data)
 
 //Must have unique spell entries to track adding/removing buffs
 // Every buff is indexed by the spell pointer.
-T_spellStruct BerserkerSkillSpells[7] =
+T_spellStruct BerserkerSkillSpells[2] =
 {
 	{//battle rage stat 1
 		0,0,0,0,0,0,0,0,
 		0,0,1000
 	},
 	{//battle rage stat 2
-		0,0,0,0,0,0,0,0,
-		0,0,1000
-	},
-	{//piercing damage
-		0,0,0,0,0,0,0,0,
-		0,0,1000
-	},
-	{//fury stat 1
-		0,0,0,0,0,0,0,0,
-		0,0,2000
-	},
-	{//fury stat 2
-		0,0,0,0,0,0,0,0,
-		0,0,2000
-	},
-	{//fury stat 3
-		0,0,0,0,0,0,0,0,
-		0,0,2000
-	},
-	{//shield
 		0,0,0,0,0,0,0,0,
 		0,0,1000
 	}
@@ -1102,268 +1082,91 @@ T_void PerformMonkSkill(T_byte8 runenum)
 	DebugEnd();
 }
 
-T_void PerformBarbarianSkill(T_byte8 runenum)
+T_void PerformBarbarianSkill()
 {
 	E_Boolean skillsucess = FALSE;
+	E_Boolean failpenalty = FALSE;
 	T_sword16 spellcost = 0;
 	T_sword16 spellpower = 0;
 	T_sword16 spellduration = 0;
-	T_sword32 manaleft;
-	T_sword16 heartratecost;
 	DebugRoutine("PerformBarbarianSkill");
 
-	manaleft = StatsGetManaLeft();
-	switch (runenum)
+	spellcost = StatsGetManaLeft();
+	if (spellcost >= BerserkerSkillSpells[0].cost)
 	{
-		case KEY_SCAN_CODE_KEYPAD_1:
-			//use minimum as spell cost to correctly display exhausted message
-			spellcost = BerserkerSkillSpells[0].cost;
-			spellduration = StatsGetPlayerMagicTotal() * 100;
+		spellpower = spellcost / 200;
+		spellduration = StatsGetPlayerMagicTotal() * 100;
 
-			if (manaleft >= BerserkerSkillSpells[0].cost)
-			{
-				//update spellcost and power
-				spellcost = manaleft;
-				spellpower = spellcost / 140;
-			
-				MessageAdd("Battle rage activated");
-				//strength boost
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_STRENGTH_MOD,
-						spellduration,
-						spellpower,
-						&BerserkerSkillSpells[0]);
-				//speed boost
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_SPEED_MOD,
-						spellduration,
-						spellpower,
-						&BerserkerSkillSpells[1]);
+		MessageAdd("Battle rage activated");
 
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_FULL;
-			}
-			break;
+		//strength boost
+		Effect (EFFECT_ADD_PLAYER_EFFECT,
+				EFFECT_TRIGGER_CAST,
+				PLAYER_EFFECT_STRENGTH_MOD,
+				spellduration,
+				spellpower,
+				&BerserkerSkillSpells[0]);
+		//speed boost
+		Effect (EFFECT_ADD_PLAYER_EFFECT,
+				EFFECT_TRIGGER_CAST,
+				PLAYER_EFFECT_SPEED_MOD,
+				spellduration,
+				spellpower,
+				&BerserkerSkillSpells[1]);
 
-		case KEY_SCAN_CODE_KEYPAD_2:
-			spellcost = 500;
-			spellpower = 200 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
-			//duration used as range
-			spellduration = StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH)*2;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Break Free activated");
-
-				Effect(EFFECT_AREA_OF_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_PUSH,
-						5000,
-						5000,
-						NULL);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_JUMP;
-			}
-			break;
-		case KEY_SCAN_CODE_KEYPAD_3:
-			spellcost = 250;
-			spellpower = 2000 + StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH) * 100;
-			spellduration = 0;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Giant Leap activated");
-
-				Effect (EFFECT_PLAYER_LEAP,
-						EFFECT_TRIGGER_CAST,
-						0,
-						0,
-						spellpower,
-						NULL);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_JUMP;
-			}
-			break;
-		case KEY_SCAN_CODE_KEYPAD_4:
-			spellcost = 500;
-			spellpower = 1;
-			spellduration = 0;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Attract activated");
-
-				Effect (EFFECT_CREATE_PROJECTILE,
-						EFFECT_TRIGGER_CAST,
-						EFFECT_MISSILE_PULL,
-						spellduration,
-						spellpower,
-						NULL);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_SPELL;
-			}
-			break;
-		case KEY_SCAN_CODE_KEYPAD_5:
-			spellcost = 500;
-			spellpower = 1;
-			spellduration = 0;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Hurl Insults activated");
-
-				Effect (EFFECT_CREATE_PROJECTILE,
-						EFFECT_TRIGGER_CAST,
-						EFFECT_MISSILE_BERSERK,
-						spellduration,
-						spellpower,
-						NULL);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_SPELL;
-			}
-			break;
-		case KEY_SCAN_CODE_KEYPAD_6:
-			spellcost = BerserkerSkillSpells[2].cost;
-			spellpower = 1;
-			spellduration = 75 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Smash Armor activated");
-
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_PIERCING_ATTACK,
-						spellduration,
-						spellpower,
-						&BerserkerSkillSpells[2]);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_SPELL;
-			}		
-			break;
-		case KEY_SCAN_CODE_KEYPAD_7:
-			spellcost = BerserkerSkillSpells[6].cost;
-			spellpower = 2 * StatsGetPlayerMagicTotal();
-			spellduration = 25 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Shout of Courage activated");
-
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_SHIELD,
-						spellduration,
-						spellpower,
-						&BerserkerSkillSpells[6]);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_SPELL;
-			}	
-			break;
-		case KEY_SCAN_CODE_KEYPAD_8:
-			spellcost = 750;
-			spellpower = StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH) * 7;
-			spellduration = 0;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Rush activated");
-
-				Effect (EFFECT_JUMP_FORWARD,
-						EFFECT_TRIGGER_CAST,
-						0,
-						0,
-						spellpower,
-						NULL);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_FULL;
-			}
-			break;
-		case KEY_SCAN_CODE_KEYPAD_9:
-			spellcost = BerserkerSkillSpells[3].cost;
-			spellpower = StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH) * 7;
-			spellduration = 0;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Fury of the Gods activated");
-
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_FIRE_ATTACK,
-						0,
-						spellpower,
-						&BerserkerSkillSpells[3]);
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_ELECTRICITY_ATTACK,
-						0,
-						spellpower,
-						&BerserkerSkillSpells[4]);
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-						EFFECT_TRIGGER_CAST,
-						PLAYER_EFFECT_ACID_ATTACK,
-						0,
-						spellpower,
-						&BerserkerSkillSpells[5]);
-
-				skillsucess = TRUE;
-				heartratecost = HEARTRATE_SPELL;
-			}
-			break;
+		skillsucess = TRUE;
+		failpenalty = FALSE;
 	}
 
-	if (skillsucess == TRUE)
+	if (skillsucess)
 	{
 		StatsChangePlayerMana (-(spellcost));
-		StatsChangePlayerHeartBeat(heartratecost);
+		StatsChangePlayerHeartBeat(HEARTRATE_FULL);
 	}
-	else if (spellcost > 0 && spellcost > manaleft)
+
+	DebugEnd();
+}
+
+T_void PerformSkillSpell(T_byte8 spellnum)
+{
+
+	DebugRoutine("PerformSkillSpell");
+
+	/*if (G_curspell[0] == 0)
 	{
-		MessageAdd("Too exhausted to perform skill.");
+		//artificially level up for testing
+		StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
+		StatsChangePlayerMana(StatsGetPlayerMaxMana() - StatsGetManaLeft());
+	}*/
+
+	switch(StatsGetPlayerSkillSystem())
+	{
+	case SKILL_SYSTEM_BARBARIAN:
+		PerformBarbarianSkill();
+		break;
+	case SKILL_SYSTEM_NINJA:
+		PerformNinjaSkill(spellnum);
+		break;
+	case SKILL_SYSTEM_MONK:
+		PerformMonkSkill(spellnum);
+		break;
+	default:
+		break;
 	}
+	
 	DebugEnd();
 }
 
 T_void SkillsCastSpell (T_void)
 {
-	T_byte8 runenum;
+	T_byte8 spellnum;
 
 	DebugRoutine ("SpellsCastSpell");
 
 	//get first rune
-	runenum = G_curspell[0];
+	spellnum = G_curspell[0];
 
-	//ariticial leveling for debugging
-	//if (runenum == 0)
-	//{
-		//StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
-		//StatsChangePlayerMana(StatsGetPlayerMaxMana());
-	//}
-
-	switch(StatsGetPlayerSkillSystem())
-	{
-	case SKILL_SYSTEM_BARBARIAN:
-		PerformBarbarianSkill(runenum);
-		break;
-	case SKILL_SYSTEM_NINJA:
-		PerformNinjaSkill(runenum);
-		break;
-	case SKILL_SYSTEM_MONK:
-		PerformMonkSkill(runenum);
-		break;
-	default:
-		break;
-	}
+	PerformSkillSpell(spellnum);
 
 	DebugEnd();
 }

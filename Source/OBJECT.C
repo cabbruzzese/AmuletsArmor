@@ -27,7 +27,6 @@
 #include "SCRIPTEV.H"
 #include "SYNCMEM.H"
 #include "TICKER.H"
-#include "SERVERSH.H"
 
 #define OBJECT_HASH_TABLE_SIZE 2048
 #define OBJECT_HASH_TABLE_MASK (OBJECT_HASH_TABLE_SIZE-1)
@@ -1838,19 +1837,6 @@ T_void ObjectsDoToAllAtXYZRadius(
            T_objectDoToAllCallback p_callback,
            T_word32 data)
 {
-	DebugRoutine("ObjectsDoToAllAtXYZRadius");
-	ObjectsDoToAllAtXYZRadiusExceptOwner(x, y, z, radius, p_callback, data, NULL);
-	DebugEnd();
-}
-T_void ObjectsDoToAllAtXYZRadiusExceptOwner(
-           T_sword16 x,
-           T_sword16 y,
-           T_sword16 z,
-           T_word16 radius,
-           T_objectDoToAllCallback p_callback,
-           T_word32 data,
-		   T_3dObject *p_owner)
-{
     T_3dObject *p_obj ;
     T_word16 xyPlaneDistance ;
     T_sword16 objZ ;
@@ -1934,10 +1920,6 @@ T_void ObjectsDoToAllAtXYZRadiusExceptOwner(
         /** I'll make a copy of each next ptr before calling it. **/
         p_objNext = ObjectGetNext(p_obj) ;
 
-		//don't affect owner
-		if (p_obj == p_owner)
-			continue;
-
         /* First see if we are close enough to be in the XY plane */
         /* distance. */
         xyPlaneDistance = CalculateDistance(
@@ -1946,8 +1928,7 @@ T_void ObjectsDoToAllAtXYZRadiusExceptOwner(
                               ObjectGetX16(p_obj),
                               ObjectGetY16(p_obj)) ;
 
-        if (xyPlaneDistance <= (radius + ObjectGetRadius(p_obj)))  
-		{
+        if (xyPlaneDistance <= (radius + ObjectGetRadius(p_obj)))  {
             /* Now we will check the z heights. */
             objZ = ObjectGetZ16(p_obj) ;
 

@@ -402,15 +402,6 @@ T_void ObjectsDoToAllAtXYZRadius(
            T_objectDoToAllCallback p_callback,
            T_word32 data) ;
 
-T_void ObjectsDoToAllAtXYZRadiusExceptOwner(
-           T_sword16 x,
-           T_sword16 y,
-           T_sword16 z,
-           T_word16 radius,
-           T_objectDoToAllCallback p_callback,
-           T_word32 data,
-		   T_3dObject *p_owner);
-
 T_void ObjectSetAngle(T_3dObject *p_obj, T_word16 angle) ;
 
 E_Boolean ObjectCheckIfCollide(

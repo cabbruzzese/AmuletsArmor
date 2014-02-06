@@ -306,10 +306,6 @@ E_Boolean Effect(E_effectType effecttype,
         PlayerMakeSoundGlobal(2000, 500) ;
         break;
 
-		case EFFECT_AREA_OF_EFFECT:
-			ClientDoAreaOfeffect(data1, data2, data3, p_owner);
-			break;
-
         case EFFECT_CREATE_PROJECTILE:
             //* will be something like */
             // ClientCreateProjectile (E_effectMissileType type, duration, power);

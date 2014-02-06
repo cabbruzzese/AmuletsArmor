@@ -378,17 +378,6 @@ static T_word16 G_missileToObjectType[EFFECT_MISSILE_UNKNOWN] = {
     4017
 } ;
 
-T_void ClientDoAreaOfeffect(T_word16 type,
-							T_word16 range,
-							T_word16 power,
-							T_void* p_owner)
-{
-	DebugRoutine("ClientDoAreaOfeffect");
-
-	ClientSyncSendActionAreaOfEffect(type, range, power);
-	DebugEnd();
-}
-
 /* LES: 06/12/96 Created. */
 T_void ClientCreateProjectile (
            E_effectMissileType type,
