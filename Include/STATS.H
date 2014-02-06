@@ -292,6 +292,10 @@ T_void StatsSetArmorValue(E_equipLocations location, T_byte8 value);
 T_void StatsCalcAverageArmorValue(T_void);
 T_byte8 StatsGetArmorValue(T_byte8 location);
 
+T_byte8 StatsGetArmorPenaltyMagic();
+T_byte8 StatsGetArmorPenaltyStealth();
+T_byte8 StatsGetArmorPenaltySpeed();
+
 T_void StatsSetWeaponBaseDamage(T_byte8 damage);
 T_void StatsSetWeaponBaseSpeed(T_sbyte8 speed);
 
@@ -356,6 +360,10 @@ E_effectDamageType StatsGetPlayerDamageType(T_void);
 E_Boolean StatsPlayerHasIdentified(T_word16 objType);
 T_void    StatsPlayerIdentify(T_word16 objType);
 T_void StatsCalcPlayerMovementSpeed(T_void);
+
+T_byte8 StatsGetPlayerMagicTotal();
+T_byte8 StatsGetPlayerStealthTotal();
+T_byte8 StatsGetPlayerSpeedTotal();
 
 /* Past place information stored in the current character. */
 T_void StatsUpdatePastPlace(

@@ -1629,7 +1629,7 @@ static T_void IPlayerUpdateStealth(T_void)
 
         /* Do our random check based on if we are translucent */
         /* or invisible. */
-        stealthLevel = StatsGetPlayerStealth() ;
+        stealthLevel = StatsGetPlayerStealthTotal() ;
 
         /* if invisible, pump stealth stat to always be stealth.. unless stat is below 21 */
         if (EffectPlayerEffectIsActive(PLAYER_EFFECT_INVISIBLE))

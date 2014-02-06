@@ -526,7 +526,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
             {
                 /* get level of character */
                 charlevel = StatsGetPlayerLevel();
-				charmagic = StatsGetPlayerMagic();
+				charmagic = StatsGetPlayerMagicTotal();
 				
                 /* figure duration of spell */
                 spellduration = p_spell->duration + (p_spell->durationmod*charlevel);
