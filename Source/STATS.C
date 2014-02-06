@@ -3374,7 +3374,7 @@ E_Boolean StatsSaveCharacter (T_byte8 selected)
 
 T_byte8 StatsGetPlayerMagicTotal()
 {
-	T_byte8 retvalue;
+	T_sword16 retvalue;
 	DebugRoutine("StatsGetPlayerMagicTotal");
 
 	retvalue = StatsGetPlayerAttribute(ATTRIBUTE_MAGIC) - StatsGetArmorPenaltyMagic();
@@ -3382,11 +3382,11 @@ T_byte8 StatsGetPlayerMagicTotal()
     if (retvalue > 120) retvalue= 120;
 
 	DebugEnd();
-	return retvalue;
+	return (T_byte8)retvalue;
 }
 T_byte8 StatsGetPlayerStealthTotal()
 {
-	T_byte8 retvalue;
+	T_sword16 retvalue;
 	DebugRoutine("StatsGetPlayerStealthTotal");
 
 	retvalue = StatsGetPlayerAttribute(ATTRIBUTE_STEALTH) - StatsGetArmorPenaltyStealth();
@@ -3394,11 +3394,11 @@ T_byte8 StatsGetPlayerStealthTotal()
     if (retvalue > 120) retvalue= 120;
 
 	DebugEnd();
-	return retvalue;
+	return (T_byte8)retvalue;
 }
 T_byte8 StatsGetPlayerSpeedTotal()
 {
-	T_byte8 retvalue;
+	T_sword16 retvalue;
 	DebugRoutine("StatsGetPlayerSpeedTotal");
 
 	retvalue = StatsGetPlayerAttribute(ATTRIBUTE_SPEED) - StatsGetArmorPenaltySpeed();
@@ -3406,7 +3406,7 @@ T_byte8 StatsGetPlayerSpeedTotal()
     if (retvalue > 120) retvalue= 120;
 
 	DebugEnd();
-	return retvalue;
+	return (T_byte8)retvalue;
 }
 
 /* @} */
