@@ -189,6 +189,28 @@ T_3dObject *ServerProjectileAdd(
     return p_obj ;
 }
 
+//Finds enemies in range and dishes out effect
+T_void ServerPerformAreaOfEffect(
+          T_3dObject *p_objSource,
+		  T_word16 type,
+		  T_word16 range,
+		  T_word16 power,
+		  T_word16 data4)
+{
+	DebugRoutine("ServerPerformAreaOfEffect");
+
+	ServerDamageAtWithTypeExceptOwner(
+        (T_sword16)ObjectGetX16(p_objSource),
+        (T_sword16)ObjectGetY16(p_objSource),
+        (T_sword16)(ObjectGetZ16(p_objSource) + ((ObjectGetHeight(p_objSource)) / 2)),
+        range,
+        power,
+        (T_word16)ObjectGetOwnerID(p_objSource),
+        (T_byte8)type,
+		p_objSource);
+
+	DebugEnd();
+}
 
 /*-------------------------------------------------------------------------*
  * Routine:  ServerShootProjectile
@@ -961,6 +983,20 @@ T_void ServerDamageAtWithType(
            T_word16 ownerID,
            T_byte8 type)
 {
+	DebugRoutine("");
+	ServerDamageAtWithTypeExceptOwner(x, y, z, radius, damage, ownerID, type, NULL);
+	DebugEnd();
+}
+T_void ServerDamageAtWithTypeExceptOwner(
+           T_sword16 x,
+           T_sword16 y,
+           T_sword16 z,
+           T_word16 radius,
+           T_word16 damage,
+           T_word16 ownerID,
+           T_byte8 type,
+		   T_3dObject *p_owner)
+{
     T_damageObjInfo damageInfo ;
     T_word16 locked ;
 
@@ -1004,13 +1040,14 @@ T_void ServerDamageAtWithType(
             }
         }
     } else {
-        ObjectsDoToAllAtXYZRadius(
+        ObjectsDoToAllAtXYZRadiusExceptOwner(
             x,
             y,
             z,
             radius,
             ServerDamageObjectXYZ,
-            (T_word32)(&damageInfo));
+            (T_word32)(&damageInfo),
+			p_owner);
     }
 
     DebugEnd() ;

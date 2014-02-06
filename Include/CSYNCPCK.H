@@ -29,6 +29,11 @@ T_void ClientSyncSendActionMissileAttack(
 		   T_word16 knifetype,
 		   T_word16 power) ;
 
+T_void ClientSyncSendActionAreaOfEffect(
+           T_word16 type,
+           T_word16 range,
+		   T_word16 power);
+
 T_void ClientSyncSendActionActivateForward(T_void) ;
 
 T_void ClientSyncSendActionLeaveLevel(

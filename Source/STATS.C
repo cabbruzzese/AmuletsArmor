@@ -816,10 +816,9 @@ T_void StatsCalcPlayerRunes (T_void)
 			SpellsSetRune((E_spellsRuneType)runenum);
 			break;
 		case SPELL_SYSTEM_ARCANE:
-			if (skilllevel <= 4)
-				runenum = (int)RUNE_ARCANE_1 + (skilllevel - 1);
-			else
-				runenum = (int)RUNE_ARCANE_5 + (skilllevel - 1);
+			runenum = (int)RUNE_ARCANE_1 + (skilllevel - 1);
+			if (runenum > RUNE_ARCANE_4)
+				runenum += 5;
 
 			SpellsSetRune((E_spellsRuneType)runenum);
 			break;

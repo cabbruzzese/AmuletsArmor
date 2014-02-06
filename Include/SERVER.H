@@ -44,6 +44,13 @@ T_3dObject *ServerShootProjectile(
 		  T_word16 daggertype,
 		  T_word16 power) ;
 
+T_void ServerPerformAreaOfEffect(
+          T_3dObject *p_objSource,
+		  T_word16 type,
+		  T_word16 range,
+		  T_word16 power,
+		  T_word16 data4);
+
 T_void ServerGotoPlace (T_word32 placeNumber, T_word16 startLocation);
 
 T_void ServerSetServerID(T_word32 newID) ;
@@ -111,6 +118,16 @@ T_void ServerDamageAtWithType(
            T_word16 damage,
            T_word16 ownerID,
            T_byte8 type) ;
+
+T_void ServerDamageAtWithTypeExceptOwner(
+           T_sword16 x,
+           T_sword16 y,
+           T_sword16 z,
+           T_word16 radius,
+           T_word16 damage,
+           T_word16 ownerID,
+           T_byte8 type,
+		   T_3dObject *p_owner);
 
 #endif
 
