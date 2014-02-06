@@ -33,7 +33,6 @@
 #include "TICKER.H"
 #include "VIEW.H"
 #include "INVENTOR.H"
-#include "PLAYER.H"
 #include <direct.h>
 
 static E_Boolean G_exit=FALSE;
@@ -78,7 +77,7 @@ T_void StatsInit (T_void)
    EffectRemoveAllPlayerEffects();
    InventoryRemoveEquippedEffects();
 
-   G_activeStats->HeartRate = 0;
+//   G_activeStats->HeartRate = 60;
    G_activeStats->MaxFallV = 31000;
    G_activeStats->playerisalive=FALSE;
 
@@ -733,11 +732,6 @@ T_void StatsTakeDamage (T_word16 type, T_word16 amt)
         /* take damage specified by amt */
         StatsChangePlayerHealth (-amt);
 
-		if (amt > 0)
-		{
-			StatsChangePlayerHeartBeat(HEARTRATE_TAKEDAMAGE);
-		}
-
         /* reorient the player's view a little */
 //#if COMPILE_OPTION_ALLOW_REORIENT_SMACK
         if ((amt >= 400) &&
@@ -1056,7 +1050,6 @@ T_void StatsChangePlayerManaRegen (T_sword16 amt)
 /*               high levels of poison (255+). */
 T_void StatsChangePlayerPoisonLevel (T_sword16 amt)
 {
-	float foodmod, charcon, conmod;
     DebugRoutine ("StatsChangePlayerPoisonLevel");
 
     /* LES:  Add a message to tell the state of the poison */
@@ -1070,13 +1063,6 @@ T_void StatsChangePlayerPoisonLevel (T_sword16 amt)
         }
     }
 
-	//modify poison gained by constitution and food level
-	//  75 con removes 50%. higher values will increase above 50%
-	foodmod = (float)StatsGetPlayerFood() / (float)StatsGetPlayerMaxFood();
-	charcon = foodmod * (float)StatsGetPlayerAttribute(ATTRIBUTE_CONSTITUTION);
-	conmod = (float)0.5 * (charcon / 75);
-	//subtract percentage
-	amt = amt - (T_sword16)((float)amt * conmod);
     G_activeStats->PoisonLevel += amt;
 
     /* clip poison level to zero */
@@ -1086,23 +1072,6 @@ T_void StatsChangePlayerPoisonLevel (T_sword16 amt)
     DebugEnd();
 }
 
-T_void StatsChangePlayerHeartBeat(T_sword16 amt)
-{
-	DebugRoutine("StatsSetPlayerHeartBeat");
-
-	if ((G_activeStats->HeartRate + amt) < 0)
-		G_activeStats->HeartRate = 0;
-	else
-		G_activeStats->HeartRate += amt;
-	
-	if (G_activeStats->HeartRate > MAX_HEARTRATE)
-		G_activeStats->HeartRate = MAX_HEARTRATE;
-
-	DebugEnd();
-}
-
-#define HEARTRATE_TICK_TIME 70
-#define STATUSUPDATE_TICK_TIME 420
 
 /*-------------------------------------------------------------------------*
  * Routine:  StatsUpdatePlayerStatistics
@@ -1114,12 +1083,11 @@ T_void StatsChangePlayerHeartBeat(T_sword16 amt)
  *<!-----------------------------------------------------------------------*/
 T_void StatsUpdatePlayerStatistics (T_void)
 {
-    T_word32 delta,time, hrdelta;
+    T_word32 delta,time;
     T_word16 pReduction;
-	T_sword16 hrvalue;
-    float fratio,wratio,hregen,mregen,normaltimeratio;
+    float fratio,wratio,hregen,mregen;
     T_word16 plev;
-    static T_word32 lastupdate=0, hrlastupdate=0;
+    static T_word32 lastupdate=0;
     DebugRoutine ("StatsUpdatePlayerStatistics");
 
     /* calculate time passed delta */
@@ -1134,52 +1102,13 @@ T_void StatsUpdatePlayerStatistics (T_void)
          delta=time-lastupdate;
     }
 
-	//heartrate timer
-	if (hrlastupdate==0)
-	{
-		hrdelta = 0;
-		hrlastupdate=TickerGet();
-	}
-	else
-	{
-		hrdelta=time-hrlastupdate;
-	}
-
     if (ClientIsPaused()==FALSE &&
         ClientIsInView()==TRUE &&
         ClientIsDead()==FALSE )  {
-
-		//modify heartrate every second
-		if(hrdelta >= HEARTRATE_TICK_TIME)
-		{
-			hrlastupdate = TickerGet();
-
-			hrvalue = -15;
-
-			//check if player is moving
-			if (PlayerIsMoving())  
-			{
-				//make heartrate recover slower
-				hrvalue += 10;
-			}
-
-			StatsChangePlayerHeartBeat(hrvalue);
-
-			//MessagePrintf("Heartrate is %i", G_activeStats->HeartRate);
-
-			/* modify last update by remainder */
-			hrdelta-=HEARTRATE_TICK_TIME;
-            hrlastupdate-=hrdelta;
-		}
-
         /* this routine triggers approx every 6 seconds */
-		//  (adjusted by heartrate)
-		if (delta >= (T_word32)(STATUSUPDATE_TICK_TIME - G_activeStats->HeartRate))
+        if (delta >= 420)
         {
             lastupdate=TickerGet();
-
-			//get ratio of time passge compared to normal tick to adjust things downward that should not be affected
-			normaltimeratio = (float)(STATUSUPDATE_TICK_TIME - G_activeStats->HeartRate) / (float)STATUSUPDATE_TICK_TIME;
 
             /* calculate water ratio */
             /* calculate food ratio */
@@ -1190,14 +1119,10 @@ T_void StatsUpdatePlayerStatistics (T_void)
             /* calculate health regen rate */
             mregen = (float)(G_activeStats->RegenMana>>2);
             mregen *= wratio;
-			//adjust by percentage of heartrate over normal tick time to avoid increase in regeneration
-			mregen *= normaltimeratio;
 
             /* regen health 1/2 as fast as mana if rates are same */
             hregen = (float)(G_activeStats->RegenHealth>>3);
             hregen *= fratio;
-			//adjust by percentage of heartrate over normal tick time to avoid increase in regeneration
-			hregen *= normaltimeratio;
 
 //          MessagePrintf ("hregen=%f mregen=%f",hregen,mregen);
 
@@ -1213,14 +1138,14 @@ T_void StatsUpdatePlayerStatistics (T_void)
             {
                 if (EffectPlayerEffectIsActive (PLAYER_EFFECT_FOOD_CONSERVATION)==FALSE)
                 {
-                    /* modify food level by -2 every update (based on heartrate) */
-                    StatsChangePlayerFood (-2);
+                    /* modify food level by -1 every 6 seconds */
+                    StatsChangePlayerFood (-1);
                 }
 
                 if (EffectPlayerEffectIsActive (PLAYER_EFFECT_WATER_CONSERVATION)==FALSE)
                 {
-                    /* modify water level by -2 every update (based on heartrate) */
-                    StatsChangePlayerWater (-2);
+                    /* modify water level by -1 every 6 seconds */
+                    StatsChangePlayerWater (-1);
                 }
             }
 
@@ -1241,23 +1166,15 @@ T_void StatsUpdatePlayerStatistics (T_void)
                     else ColorAddGlobal (-0,63,0);
 
                     StatsChangePlayerHealth (-plev*2);
-
-					//Also damage food and water
-					StatsChangePlayerFood (-3);
-					StatsChangePlayerWater (-3);
                 }
                 /* reduce poison level */
                 pReduction = StatsGetPlayerAttribute(ATTRIBUTE_CONSTITUTION)>>2;
                 if (pReduction < 5) pReduction=5;
-
-				//only adjust based on normal time ratio;
-				pReduction = (T_word16)((float)pReduction * normaltimeratio);
-
                 StatsChangePlayerPoisonLevel (-pReduction);
             }
 
             /* modify last update by remainder */
-            delta-=STATUSUPDATE_TICK_TIME - G_activeStats->HeartRate;
+            delta-=420;
             lastupdate-=delta;
 
             // Always update the banner status
@@ -1267,7 +1184,6 @@ T_void StatsUpdatePlayerStatistics (T_void)
     else
     {
         lastupdate=0;
-		hrlastupdate = 0;
     }
 
     DebugEnd();
@@ -1711,6 +1627,12 @@ E_Boolean StatsAddBolt (E_equipBoltTypes type, T_sword16 num)
 }
 
 
+T_void StatsSetArmorPenalty ()
+{
+	//T_byte8 speedmod, magicmod;
+
+
+}
 T_void StatsSetArmorValue (E_equipLocations location, T_byte8 value)
 {
     DebugRoutine ("StatsSetArmorValue");

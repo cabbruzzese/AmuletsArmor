@@ -25,14 +25,6 @@
 #define MAX_JUMP_POWER 60000
 #define MAX_NOTE_SIZE 1000
 
-#define MAX_HEARTRATE			250
-#define HEARTRATE_ATTACK		20
-#define HEARTRATE_RUN			5
-#define HEARTRATE_JUMP			30
-#define HEARTRATE_SPELL			10
-#define HEARTRATE_SPELL_FAIL	5
-#define HEARTRATE_TAKEDAMAGE	20
-
 typedef enum
 {
     ATTRIBUTE_STRENGTH,
@@ -372,9 +364,6 @@ T_void StatsCalcPlayerMovementSpeed(T_void);
 T_byte8 StatsGetPlayerMagicTotal();
 T_byte8 StatsGetPlayerStealthTotal();
 T_byte8 StatsGetPlayerSpeedTotal();
-
-T_void StatsChangePlayerHeartBeat(T_sword16 amt);
-
 
 /* Past place information stored in the current character. */
 T_void StatsUpdatePastPlace(

@@ -566,8 +566,6 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                             /* remove half the spell cost */
                             StatsChangePlayerMana (-(spellcost / 2));
                             PictureUnlock(res);
-
-							StatsChangePlayerHeartBeat(HEARTRATE_SPELL_FAIL);
                             break;
                         }
                     }
@@ -608,9 +606,6 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                         {
                             SoundPlayByNumber (p_spell->sound,255);
                         }
-
-						StatsChangePlayerHeartBeat(HEARTRATE_SPELL);
-
                         PictureUnlock(res);
                         break;
                     }
@@ -620,8 +615,6 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                     MessageAdd ("^003You are too exhausted to cast this spell.");
                     success=TRUE;
                     PictureUnlock(res);
-
-					StatsChangePlayerHeartBeat(HEARTRATE_SPELL_FAIL);
                     break;
                 }
 
