@@ -436,6 +436,9 @@ T_void PlayerJump(T_word16 jumpPower)
             /* play a jump 'exertion' sound */
             PlayerMakeSoundGlobal(SOUND_PLAYER_JUMP_SET+(rand()%3),500);
         }
+
+		StatsChangePlayerHeartBeat(HEARTRATE_JUMP);
+
     } else if (isFlying)  {
         ObjMoveAccelXYZ(&G_playerMove, 0, 0, (jumpPower>>2)+(jumpPower>>3)) ;
     }
@@ -1603,6 +1606,23 @@ T_void PlayerMakeSoundGlobal(T_word16 soundNum, T_word16 radius)
     DebugEnd() ;
 }
 
+E_Boolean PlayerIsMoving(T_void)
+{
+	E_Boolean retvalue = FALSE;
+	DebugRoutine("");
+
+	if ((ObjectGetXVel(G_playerObject) != 0) ||
+            (ObjectGetYVel(G_playerObject) != 0) ||
+            (ObjectGetZVel(G_playerObject) != 0))  
+	{
+		retvalue = TRUE;
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
 E_Boolean PlayerIsStealthy(T_void)
 {
     return G_playerIsStealthy ;
@@ -1615,9 +1635,7 @@ static T_void IPlayerUpdateStealth(T_void)
     /* Update our stealth checks. */
     if (TickerGet() >= G_nextStealthCheck)  {
         /* Are we moving or standing still? */
-        if ((ObjectGetXVel(G_playerObject) != 0) ||
-            (ObjectGetYVel(G_playerObject) != 0) ||
-            (ObjectGetZVel(G_playerObject) != 0))  {
+        if (PlayerIsMoving())  {
             /* Moving around. */
             /* Check again in a second. */
             G_nextStealthCheck = TickerGet() + 70 ;

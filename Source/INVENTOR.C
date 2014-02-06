@@ -628,6 +628,9 @@ T_void InventoryUseItemInMouseHand (T_buttonID buttonID)
 
 							/* fist attack sound */
 							SoundPlayByNumber (SOUND_SWING_SET4+(rand()%3),200);
+
+							//update heartbeat
+							StatsChangePlayerHeartBeat(HEARTRATE_ATTACK);
 						}
 					}
 				}
@@ -707,7 +710,12 @@ T_void InventoryUseItemInReadyHand (T_buttonID buttonID)
                 {
                     /* fist attack */
                     SoundPlayByNumber (SOUND_SWING_SET4+(rand()%3),200);
+
+
                 }
+
+				//update heartbeat
+				StatsChangePlayerHeartBeat(HEARTRATE_ATTACK);
             }
         }
         else if (isobject)
