@@ -1154,12 +1154,12 @@ T_void StatsUpdatePlayerStatistics (T_void)
 		{
 			hrlastupdate = TickerGet();
 
-			hrvalue = -20;
+			hrvalue = -15;
 
 			//check if player is moving
 			if (PlayerIsMoving())  
 			{
-				//make heartrate recovery slower
+				//make heartrate recover slower
 				hrvalue += 10;
 			}
 
