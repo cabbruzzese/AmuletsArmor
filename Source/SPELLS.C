@@ -22,6 +22,7 @@
 #include "SOUNDS.H"
 #include "SPELLS.H"
 #include "STATS.H"
+#include "SYNCTIME.H"
 
 /* define if all spells available for any class */
 #define MANA_BACKCOLOR 225
@@ -478,6 +479,20 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 	T_word32 i;
 
 	DebugRoutine ("SpellsCastSpell");
+
+	//reset if synctime resets
+	if (SpellTimeout > SyncTimeGet() + SPELL_CAST_TIMEOUT)
+		SpellTimeout = 0;
+	//if spell was not cast too recently
+	if (SpellTimeout < SyncTimeGet())
+	{
+		SpellTimeout = SyncTimeGet() + SPELL_CAST_TIMEOUT;
+	}
+	else
+	{
+		DebugEnd();
+		return;
+	}
 
     /* search through spell list and see if any spell */
     /* matches current spell code */
