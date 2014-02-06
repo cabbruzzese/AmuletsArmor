@@ -1193,11 +1193,17 @@ T_void StatsUpdatePlayerStatistics (T_void)
 			//adjust by percentage of heartrate over normal tick time to avoid increase in regeneration
 			mregen *= normaltimeratio;
 
-            /* regen health 1/2 as fast as mana if rates are same */
+			/* regen health 1/2 as fast as mana if rates are same */
             hregen = (float)(G_activeStats->RegenHealth>>3);
             hregen *= fratio;
 			//adjust by percentage of heartrate over normal tick time to avoid increase in regeneration
 			hregen *= normaltimeratio;
+
+			if (G_activeStats->HeartRate == 0)
+			{
+				mregen *= 1.5;
+				hregen *= 1.5;
+			}
 
 //          MessagePrintf ("hregen=%f mregen=%f",hregen,mregen);
 
