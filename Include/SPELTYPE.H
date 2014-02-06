@@ -16,8 +16,31 @@ typedef enum
     SPELL_SYSTEM_MAGE_AND_ARCANE,
     SPELL_SYSTEM_CLERIC_AND_ARCANE,
     SPELL_SYSTEM_ANY,
-    SPELL_SYSTEM_UNKNOWN
+    SPELL_SYSTEM_UNKNOWN,
 } E_spellsSpellSystemType;
+
+typedef enum
+{
+	SKILL_SYSTEM_NONE,
+	SKILL_SYSTEM_MAGIC_MAGE,
+	SKILL_SYSTEM_MAGIC_CLERIC,
+	SKILL_SYSTEM_MAGIC_ARCANE,
+	SKILL_SYSTEM_BARBARIAN,
+	SKILL_SYSTEM_MONK,
+	SKILL_SYSTEM_NINJA
+} E_skillSystemType;
+
+typedef struct
+{
+	E_Boolean UsesRunes;
+	E_Boolean IsMultiRune;
+	E_Boolean UsesSpells;
+	E_Boolean CanPickupRunes;
+	E_spellsSpellSystemType RuneType;
+} T_SkillLogic;
+
+T_SkillLogic G_SkillLogics[SKILL_SYSTEM_NINJA + 1];
+T_void SkillLogicsInitialize(T_void);
 
 typedef enum
 {

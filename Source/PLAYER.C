@@ -1649,6 +1649,10 @@ static T_void IPlayerUpdateStealth(T_void)
         /* or invisible. */
         stealthLevel = StatsGetPlayerStealthTotal() ;
 
+		//can't have less than 15% fail rate, otherwise stats can make us invisible.
+		if (stealthLevel > 85)
+			stealthLevel = 85;
+
         /* if invisible, pump stealth stat to always be stealth.. unless stat is below 21 */
         if (EffectPlayerEffectIsActive(PLAYER_EFFECT_INVISIBLE))
             stealthLevel += 80;

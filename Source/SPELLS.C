@@ -64,7 +64,7 @@ T_void SpellsInitSpells (T_void)
     DebugCheck (G_spellsList!=DOUBLE_LINK_LIST_BAD);
 
     /* get current character spell system */
-    system = StatsGetPlayerSpellSystem();
+    system = StatsGetPlayerSkillSystem();
 
     /* scan through resource files and lock in all available spells */
     /* for current class type */
@@ -162,6 +162,55 @@ T_void SpellsInitSpells (T_void)
         }
         sprintf (stmp,"SPELDESC/SPL%05d",count++);
     }
+	DebugEnd();
+}
+
+T_void SkillLogicsInitialize(T_void)
+{
+	DebugRoutine("InitSkills");
+	//setup skill Logics
+	//none
+	G_SkillLogics[SKILL_SYSTEM_NONE].UsesRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NONE].IsMultiRune = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NONE].UsesSpells = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NONE].CanPickupRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NONE].RuneType = SPELL_SYSTEM_NONE;
+	//mage
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_MAGE].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_MAGE].IsMultiRune = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_MAGE].UsesSpells = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_MAGE].CanPickupRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_MAGE].RuneType = SPELL_SYSTEM_MAGE;
+	//Cleric
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_CLERIC].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_CLERIC].IsMultiRune = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_CLERIC].UsesSpells = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_CLERIC].CanPickupRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_CLERIC].RuneType = SPELL_SYSTEM_CLERIC;
+	//Arcane
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].IsMultiRune = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].UsesSpells = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].CanPickupRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MAGIC_ARCANE].RuneType = SPELL_SYSTEM_ARCANE;
+	//Barbarian
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].UsesRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].IsMultiRune = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].UsesSpells = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].CanPickupRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_BARBARIAN].RuneType = SPELL_SYSTEM_NONE;
+	//Monk
+	G_SkillLogics[SKILL_SYSTEM_MONK].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_MONK].IsMultiRune = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_MONK].UsesSpells = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_MONK].CanPickupRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_MONK].RuneType = SPELL_SYSTEM_CLERIC;
+	//Ninja
+	G_SkillLogics[SKILL_SYSTEM_NINJA].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_NINJA].IsMultiRune = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NINJA].UsesSpells = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NINJA].CanPickupRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NINJA].RuneType = SPELL_SYSTEM_MAGE;
 
 	DebugEnd();
 }
@@ -228,6 +277,28 @@ T_void SpellsAddRune (T_buttonID buttonID)
 
 	DebugRoutine ("SpellsAddRune");
 	DebugCheck (buttonID != NULL);
+
+	//barbarians can't set runes
+	if (StatsGetPlayerSkillSystem() == SKILL_SYSTEM_BARBARIAN)
+	{
+		DebugEnd();
+		return;
+	}
+	
+	//skill systems can only have a single rune active
+	if (StatsGetPlayerSkillLogic()->IsMultiRune == FALSE)
+	{
+		SpellsClearRunes (buttonID);
+
+		p_button=(T_buttonStruct *)buttonID;
+
+		ColorSetColor (MANA_BACKCOLOR,30,0,30);
+		G_curspell[0]=(T_byte8)p_button->scancode;   //add scancode to spell key
+		SpellsDrawRuneBox();
+		
+		DebugEnd();
+		return;
+	}
 
     if (G_clearSpells==TRUE)
     {
@@ -466,6 +537,639 @@ T_void SpellsMakeNextSound (T_void *p_data)
 
 #endif
 
+//Must have unique spell entries to track adding/removing buffs
+// Every buff is indexed by the spell pointer.
+T_spellStruct BerserkerSkillSpells[2] =
+{
+	{//battle rage stat 1
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	},
+	{//battle rage stat 2
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	}
+};
+
+T_spellStruct NinjaSkillSpells[9] =
+{
+	{ // water walking
+		0,0,0,0,0,0,0,0,
+		0,0,500
+	},
+	{ // Night vision
+		0,0,0,0,0,0,0,0,
+		0,0,750
+	},
+	{ // Jump stat 1
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	},
+	{ // Jump stat 2
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	},
+	{ // poison hands
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // lava walk
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	},
+	{ // speed
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // spirit warrior stat 1
+		0,0,0,0,0,0,0,0,
+		0,0,4000
+	},
+	{ // spirit warrior stat 2
+		0,0,0,0,0,0,0,0,
+		0,0,4000
+	}
+};
+
+T_spellStruct MonkSkillSpells[12] =
+{
+	{ // meditate stat 1
+		0,0,0,0,0,0,0,0,
+		0,0,750
+	},
+	{ // meditate stat 2
+		0,0,0,0,0,0,0,0,
+		0,0,750
+	},
+	{ // fire attack
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	},	
+	{ // spirit shield stat 1
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // spirit shield stat 2
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // spirit shield stat 3
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // iron skin
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	},
+	{ // body shield stat 1
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // body shield stat 2
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},	
+	{ // body shield stat 3
+		0,0,0,0,0,0,0,0,
+		0,0,2000
+	},
+	{ // acension
+		0,0,0,0,0,0,0,0,
+		0,0,2500
+	},
+	{ // divine intervention
+		0,0,0,0,0,0,0,0,
+		0,0,3000
+	}
+};
+
+T_void PerformNinjaSkill(T_byte8 runenum)
+{
+	E_Boolean skillsucess = FALSE;
+	E_Boolean failpenalty = FALSE;
+	T_sword16 spellcost = 0;
+	T_sword16 spellpower = 0;
+	T_sword16 spellduration = 0;
+	T_sword32 manaleft;
+	DebugRoutine("PerformNinjaSkill");
+
+	manaleft = StatsGetManaLeft();
+	switch (runenum)
+	{
+		case KEY_SCAN_CODE_KEYPAD_1:
+			spellpower = 0;
+			spellduration = (75 * StatsGetPlayerSpeedTotal()) + (75 * StatsGetPlayerMagicTotal());
+			spellcost = NinjaSkillSpells[0].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Serpent Feet Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_WATER_WALK,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[0]);
+
+				skillsucess = TRUE;
+			}
+			break;
+
+		case KEY_SCAN_CODE_KEYPAD_2:
+			spellpower = 0;
+			spellduration = 150 * StatsGetPlayerMagicTotal();
+			spellcost = NinjaSkillSpells[1].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Night Eyes Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_NIGHT_VISION,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[1]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_3:
+			spellpower = 0;
+			spellduration = (75 * StatsGetPlayerSpeedTotal()) + (75 * StatsGetPlayerMagicTotal());
+			spellcost = NinjaSkillSpells[2].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Ninja Jump Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_FEATHER_FALL,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[2]);
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_LOW_GRAVITY,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[3]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_4:
+			spellpower = 1;
+			spellduration = 150 * StatsGetPlayerMagicTotal();
+			spellcost = NinjaSkillSpells[4].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Snake Form Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_POISON_ATTACK,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[4]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_5:
+			spellpower = 0;
+			spellduration = 0;
+			spellcost = 1000;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Smoke Cloud Activated");
+				Effect (EFFECT_CREATE_PROJECTILE,
+					EFFECT_TRIGGER_CAST,
+					EFFECT_MISSILE_CONFUSION,
+					spellduration,
+					spellpower,
+					NULL);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_6:
+			spellpower = 0;
+			spellduration = (75 * StatsGetPlayerSpeedTotal()) + (75 * StatsGetPlayerMagicTotal());
+			spellcost = NinjaSkillSpells[5].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Dragon Feet Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_LAVA_WALK,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[5]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_7:
+			spellpower = 25;
+			spellduration = (75 * StatsGetPlayerSpeedTotal()) + (75 * StatsGetPlayerMagicTotal());
+			spellcost = NinjaSkillSpells[6].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Great Wind Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_SPEED_MOD,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[6]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_8:
+			spellpower = 0;
+			spellduration = (200 * StatsGetPlayerMagicTotal());
+			spellcost = NinjaSkillSpells[7].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Demon Warrior Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_INVISIBLE,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[7]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_PIERCING_ATTACK,
+					spellduration,
+					1,
+					&NinjaSkillSpells[8]);
+
+				skillsucess = TRUE;	
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_9:
+			spellpower = 10 * StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY);
+			spellduration = 0;
+			spellcost = 1500;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Dragon's Breath Activated");
+				Effect (EFFECT_CREATE_PROJECTILE,
+					EFFECT_TRIGGER_CAST,
+					EFFECT_MISSILE_HOMING_FIREBALL,
+					spellduration,
+					spellpower,
+					NULL);
+
+				skillsucess = TRUE;
+			}
+			break;
+	}
+
+	if (skillsucess == TRUE)
+	{
+		StatsChangePlayerMana (-(spellcost));
+		StatsChangePlayerHeartBeat(HEARTRATE_SPELL);
+	}
+	else if (failpenalty == TRUE && manaleft >= spellcost)
+	{
+		MessageAdd("Skill failed.");
+		StatsChangePlayerMana (-(spellcost / 2));
+		StatsChangePlayerHeartBeat(HEARTRATE_SPELL_FAIL);
+	}
+	else if (spellcost > 0)
+	{
+		MessageAdd("Too exhausted to perform skill.");
+	}
+	DebugEnd();
+}
+
+T_void PerformMonkSkill(T_byte8 runenum)
+{
+	E_Boolean skillsucess = FALSE;
+	E_Boolean failpenalty = FALSE;
+	T_sword16 spellcost = 0;
+	T_sword16 spellpower = 0;
+	T_sword16 spellduration = 0;
+	T_sword32 manaleft;
+	DebugRoutine("PerformMonkSkill");
+
+	manaleft = StatsGetManaLeft();
+	switch (runenum)
+	{
+		case KEY_SCAN_CODE_KEYPAD_1:
+			spellpower = StatsGetPlayerMagicTotal() * 8;
+			spellduration = (100 * StatsGetPlayerMagicTotal());
+			spellcost = MonkSkillSpells[0].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Meditation Activated");
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_HEALTH_REGEN_MOD,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[0]);
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_MANA_REGEN_MOD,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[1]);
+
+				//also put heartrate at rest
+				StatsChangePlayerHeartBeat(-(HEARTRATE_FULL));
+
+				skillsucess = TRUE;
+			}
+			break;
+
+		case KEY_SCAN_CODE_KEYPAD_2:
+			spellpower = 1;
+			spellduration = 80 * StatsGetPlayerMagicTotal();
+			spellcost = MonkSkillSpells[2].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Dragon Fist Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_FIRE_ATTACK,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[2]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_3:
+			spellpower = 0;
+			spellduration = (75 * StatsGetPlayerMagicTotal());
+			spellcost = MonkSkillSpells[3].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Spirit Shield Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_RESIST_MANA_DRAIN,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[3]);
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_RESIST_PIERCING,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[4]);
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_RESIST_POISON,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[5]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_4:
+			spellpower = (StatsGetPlayerMagicTotal() * 2) / 3;
+			spellduration = 150 * StatsGetPlayerMagicTotal();
+			spellcost = MonkSkillSpells[6].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Iron Skin Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_SHIELD,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[6]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_5:
+			spellpower = StatsGetPlayerMagicTotal() * 15;
+			spellduration = 0;
+			spellcost = 1000;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Healing Energy Activated");
+				StatsChangePlayerHealth(spellpower);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_6:
+			spellpower = 0;
+			spellduration = (75 * StatsGetPlayerMagicTotal());
+			spellcost = MonkSkillSpells[7].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Body Shield Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_RESIST_FIRE,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[7]);
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_RESIST_ELECTRICITY,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[8]);
+
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_RESIST_ACID,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[9]);
+
+				skillsucess = TRUE;
+			}			
+			break;
+		case KEY_SCAN_CODE_KEYPAD_7:
+			spellpower = 10 * StatsGetPlayerMagicTotal();
+			spellduration = 0;
+			spellcost = 1500;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Spirit Blast Activated");
+				Effect (EFFECT_CREATE_PROJECTILE,
+					EFFECT_TRIGGER_CAST,
+					EFFECT_MISSILE_LIGHTNING_BOLT,
+					spellduration,
+					spellpower,
+					NULL);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_8:
+			spellpower = 0;
+			spellduration = 50 * StatsGetPlayerMagicTotal();
+			spellcost = MonkSkillSpells[10].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Acension Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_FLY,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[10]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_9:
+			spellpower = 0;
+			spellduration = 50 * StatsGetPlayerMagicTotal();
+			spellcost = MonkSkillSpells[10].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Diving Intervention Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_DEATH_WARD,
+					spellduration,
+					spellpower,
+					&MonkSkillSpells[11]);
+
+				skillsucess = TRUE;
+			}
+			break;
+	}
+
+	if (skillsucess == TRUE)
+	{
+		StatsChangePlayerMana (-(spellcost));
+		StatsChangePlayerHeartBeat(HEARTRATE_SPELL);
+	}
+	else if (failpenalty == TRUE && manaleft >= spellcost)
+	{
+		MessageAdd("Skill failed.");
+		StatsChangePlayerMana (-(spellcost / 2));
+		StatsChangePlayerHeartBeat(HEARTRATE_SPELL_FAIL);
+	}
+	else if (spellcost > 0)
+	{
+		MessageAdd("Too exhausted to perform skill.");
+	}
+	DebugEnd();
+}
+
+T_void PerformBarbarianSkill()
+{
+	E_Boolean skillsucess = FALSE;
+	E_Boolean failpenalty = FALSE;
+	T_sword16 spellcost = 0;
+	T_sword16 spellpower = 0;
+	T_sword16 spellduration = 0;
+	DebugRoutine("PerformBarbarianSkill");
+
+	spellcost = StatsGetManaLeft();
+	if (spellcost >= BerserkerSkillSpells[0].cost)
+	{
+		spellpower = spellcost / 200;
+		spellduration = StatsGetPlayerMagicTotal() * 100;
+
+		MessageAdd("Battle rage activated");
+
+		//strength boost
+		Effect (EFFECT_ADD_PLAYER_EFFECT,
+				EFFECT_TRIGGER_CAST,
+				PLAYER_EFFECT_STRENGTH_MOD,
+				spellduration,
+				spellpower,
+				&BerserkerSkillSpells[0]);
+		//speed boost
+		Effect (EFFECT_ADD_PLAYER_EFFECT,
+				EFFECT_TRIGGER_CAST,
+				PLAYER_EFFECT_SPEED_MOD,
+				spellduration,
+				spellpower,
+				&BerserkerSkillSpells[1]);
+
+		skillsucess = TRUE;
+		failpenalty = FALSE;
+	}
+
+	if (skillsucess)
+	{
+		StatsChangePlayerMana (-(spellcost));
+		StatsChangePlayerHeartBeat(HEARTRATE_FULL);
+	}
+
+	DebugEnd();
+}
+
+T_void PerformSkillSpell(T_byte8 spellnum)
+{
+
+	DebugRoutine("PerformSkillSpell");
+
+	if (G_curspell[0] == 0)
+	{
+		StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
+		StatsChangePlayerMana(StatsGetPlayerMaxMana() - StatsGetManaLeft());
+	}
+
+	switch(StatsGetPlayerSkillSystem())
+	{
+	case SKILL_SYSTEM_BARBARIAN:
+		PerformBarbarianSkill();
+		break;
+	case SKILL_SYSTEM_NINJA:
+		PerformNinjaSkill(spellnum);
+		break;
+	case SKILL_SYSTEM_MONK:
+		PerformMonkSkill(spellnum);
+		break;
+	default:
+		break;
+	}
+	
+	DebugEnd();
+}
+
+T_void SkillsCastSpell (T_void)
+{
+	T_byte8 spellnum;
+
+	DebugRoutine ("SpellsCastSpell");
+
+	//get first rune
+	spellnum = G_curspell[0];
+
+	PerformSkillSpell(spellnum);
+
+	DebugEnd();
+}
+
 T_void SpellsCastSpell (T_buttonID buttonID)
 {
 	E_Boolean success;
@@ -503,6 +1207,14 @@ T_void SpellsCastSpell (T_buttonID buttonID)
         MessageAdd("Dead players do not cast spells.") ;
     } else {
         element = DoubleLinkListGetFirst (G_spellsList);
+
+		if (StatsGetPlayerSkillLogic()->UsesSpells == FALSE)
+		{
+			SkillsCastSpell();
+
+			DebugEnd();
+			return;
+		}
 
         while (element != DOUBLE_LINK_LIST_ELEMENT_BAD)
         {
@@ -678,12 +1390,13 @@ T_void SpellsDrawInEffectRunes (T_word16 left,
 
 T_void SpellsSetRune (E_spellsRuneType type)
 {
-    DebugRoutine ("SpellsAddRune");
+	E_spellsSpellSystemType spelltype;
+    DebugRoutine ("SpellsSetRune");
 
-
+	spelltype = StatsGetPlayerSkillLogic()->RuneType;
     /* check to see if this rune is valid for the characters */
     /* current spell system */
-    if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_MAGE)
+	if (spelltype == SPELL_SYSTEM_MAGE)
     {
         /* valid runes are >=RUNE_ARCANE_1, <=RUNE_MAGE_5 */
         if (type >=RUNE_ARCANE_1 && type <= RUNE_MAGE_5)
@@ -691,13 +1404,13 @@ T_void SpellsSetRune (E_spellsRuneType type)
             /* valid rune, increment counter */
             StatsIncrementRuneCount (type);
         }
-    } else if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_CLERIC)
+	} else if (spelltype == SPELL_SYSTEM_CLERIC)
     {
         if (type >= RUNE_ARCANE_5 && type <= RUNE_CLERIC_4)
         {
             StatsIncrementRuneCount (type - RUNE_ARCANE_5);
         }
-    } else
+	} else if (spelltype == SPELL_SYSTEM_ARCANE)
     {
         /* arcane spell system */
         if (type >= RUNE_ARCANE_1 && type <= RUNE_ARCANE_4)
@@ -720,7 +1433,7 @@ T_void SpellsClearRune (E_spellsRuneType type)
 
     /* check to see if this rune is valid for the characters */
     /* current spell system */
-    if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_MAGE)
+	if (StatsGetPlayerSkillLogic()->RuneType == SPELL_SYSTEM_MAGE)
     {
         /* valid runes are >=RUNE_ARCANE_1, <=RUNE_MAGE_5 */
         if (type >=RUNE_ARCANE_1 && type <= RUNE_MAGE_5)
@@ -728,13 +1441,14 @@ T_void SpellsClearRune (E_spellsRuneType type)
             /* valid rune, increment counter */
             StatsDecrementRuneCount (type);
         }
-    } else if (StatsGetPlayerSpellSystem()==SPELL_SYSTEM_CLERIC)
+	} 
+	else if (StatsGetPlayerSkillLogic()->RuneType == SPELL_SYSTEM_CLERIC)
     {
         if (type >= RUNE_ARCANE_5 && type <= RUNE_CLERIC_4)
         {
             StatsDecrementRuneCount (type - RUNE_ARCANE_5);
         }
-    } else
+	}else if (StatsGetPlayerSkillLogic()->RuneType == SPELL_SYSTEM_ARCANE)
     {
         /* arcane spell system */
         if (type >= RUNE_ARCANE_1 && type <= RUNE_ARCANE_4)

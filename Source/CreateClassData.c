@@ -100,7 +100,7 @@ CreateClassData* NewCreateClassData (T_byte8 classnum)
 	classdata->DamageModifier = 1;
 	classdata->ThiefModifier = 0;
 	classdata->BasePunchDamage = 3;
-	classdata->SpellSystem = SPELL_SYSTEM_MAGE;
+	classdata->SpellSystem = SKILL_SYSTEM_MAGIC_MAGE;
 	*classdata->LevelTitles = (T_byte8*)malloc(sizeof(T_byte8) * NUM_TITLES_PER_CLASS);
 
 	DebugEnd();
