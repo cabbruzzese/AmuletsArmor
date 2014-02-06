@@ -33,7 +33,6 @@
 #include "TICKER.H"
 #include "VIEW.H"
 #include "VIEWFILE.H"
-#include "SYNCTIME.H"
 
 /* double link list for current player effects */
 static T_doubleLinkList G_playerEffectsList=DOUBLE_LINK_LIST_BAD;
@@ -572,37 +571,26 @@ E_Boolean Effect(E_effectType effecttype,
         break;
 
         case EFFECT_FIRE_WAND:
-
-		//reset if synctime resets
-		if (WandTimeout > SyncTimeGet() + SPELL_CAST_TIMEOUT)
-			WandTimeout = 0;
-		//if spell was not cast too recently
-		if (WandTimeout < SyncTimeGet())
-		{
-			WandTimeout = SyncTimeGet() + SPELL_CAST_TIMEOUT;
-
-			/* check to see if we have enough mana */
-			if (StatsGetPlayerMana()>data3)
-			{
-			
-				/* subtract the mana */
-				StatsChangePlayerMana (-data3);
-				/* create the projectile effect */
-				Effect (EFFECT_CREATE_PROJECTILE,
-						EFFECT_TRIGGER_USE,
-						data1,
-						data2,
-						0,
-						0);			
-			}
-			else
-			{
-				/* fail, subtract some mana */
-				StatsChangePlayerMana(-data3>>1);
-				MessageAdd ("^014Nothing happens when you activate the wand.");
-			}	
-		}
-        
+        /* check to see if we have enough mana */
+        if (StatsGetPlayerMana()>data3)
+        {
+            /* subtract the mana */
+            StatsChangePlayerMana (-data3);
+            /* create the projectile effect */
+            Effect (EFFECT_CREATE_PROJECTILE,
+                    EFFECT_TRIGGER_USE,
+                    data1,
+                    data2,
+                    0,
+                    0);
+//           ClientCreateProjectile(data1, data2, data2);
+        }
+        else
+        {
+            /* fail, subtract some mana */
+            StatsChangePlayerMana(-data3>>1);
+            MessageAdd ("^014Nothing happens when you activate the wand.");
+        }
         break;
 
         case EFFECT_FIRE_BOLT:

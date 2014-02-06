@@ -8,10 +8,6 @@
 #include "BUTTON.H"
 #include "SPELTYPE.H"
 
-#define SPELL_CAST_TIMEOUT 24
-static T_word32 SpellTimeout;
-static T_word32 WandTimeout;
-
 T_void SpellsBackspace (T_buttonID buttonID);
 
 

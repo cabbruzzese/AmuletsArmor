@@ -1804,7 +1804,7 @@ T_word16 StatsGetPlayerAttackDamage (T_void)
 
 T_void StatsDrawCharacterPortrait (T_word16 x1, T_word16 y1)
 {
-	//T_bitmap *bmpdata;
+    //T_byte8 *p_data;
 
     DebugRoutine ("StatsDrawCharacterPortrait");
 
@@ -1816,9 +1816,7 @@ T_void StatsDrawCharacterPortrait (T_word16 x1, T_word16 y1)
 	if (CreateClassDatas[StatsGetPlayerClassType()]->Picture != NULL)
     {
         ColorUpdate(0) ;
-		//bmpdata = MakeBitmapCopy(CreateClassDatas[StatsGetPlayerClassType()]->Picture);
-        //GrDrawBitmap (bmpdata,x1,y1);
-		GrDrawBitmap (CreateClassDatas[StatsGetPlayerClassType()]->Picture,x1,y1);
+        GrDrawBitmap (CreateClassDatas[StatsGetPlayerClassType()]->Picture,x1,y1);
     } else
     {
         /* clear area */
