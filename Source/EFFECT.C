@@ -410,11 +410,17 @@ E_Boolean Effect(E_effectType effecttype,
         break;
 
         case EFFECT_ADD_RUNE:
-        SpellsSetRune ((E_spellsRuneType)subtype);
+			if (StatsGetPlayerSkillLogic()->CanPickupRunes)
+			{
+				SpellsSetRune ((E_spellsRuneType)subtype);
+			}
         break;
 
         case EFFECT_REMOVE_RUNE:
-        SpellsClearRune ((E_spellsRuneType)subtype);
+			if (StatsGetPlayerSkillLogic()->CanPickupRunes)
+			{
+				SpellsClearRune ((E_spellsRuneType)subtype);
+			}
         break;
 
         case EFFECT_MOD_PLAYER_HEALTH_RANDOM:
