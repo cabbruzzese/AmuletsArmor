@@ -698,7 +698,7 @@ E_Boolean Effect(E_effectType effecttype,
         break;
 
         case EFFECT_ACTIVATE_THIEVING:
-			if (CreateClassDatas[StatsGetPlayerClassType()]->ThiefModifier > 0)
+			if (CreateClassDatas[StatsGetPlayerClassType()].ThiefModifier > 0)
         {
             /* stealing or door opening code here */
             /* note: check for CLASS_MERCENARY when determining whether */

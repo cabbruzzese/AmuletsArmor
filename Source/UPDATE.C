@@ -158,8 +158,7 @@ SyncTimeSet(1) ;
     InventoryInit() ;
 
 	//Make sure class datas is loaded
-	if(!CreateClassDatasLoaded())
-		LoadCreateClassDatas();
+	LoadCreateClassDatas();
 
 //puts("Stats init");fflush(stdout);
     StatsInit(); /* Init player statistics */
@@ -202,8 +201,7 @@ T_void UpdateGameEnd(T_void)
 
     DebugRoutine("UpdateGameEnd") ;
 
-	if (CreateClassDatasLoaded())
-		DestroyCreateClassDatas();
+	DestroyCreateClassDatas();
 
     PeopleHereFinish() ;
 

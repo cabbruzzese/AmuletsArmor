@@ -86,7 +86,7 @@ T_void StatsInit (T_void)
 
    /* intial attributes */
    for (i=0;i<NUM_ATTRIBUTES;i++)
-	   G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
+	   G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType].Attributes[i];
 
    G_activeStats->Food = 2000;
    G_activeStats->MaxFood=2000;
@@ -213,25 +213,25 @@ T_void StatsCalcClassStats (T_void)
    /* set some class specific bonuses */
    
    classtypeid = StatsGetPlayerClassType();
-   G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[classtypeid]->RegenHealthModifier);
-   G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[classtypeid]->RegenManaModifier);
-   G_activeStats->JumpPower = (T_sword16)((float)G_activeStats->JumpPower * CreateClassDatas[classtypeid]->JumpModifier);
+   G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[classtypeid].RegenHealthModifier);
+   G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[classtypeid].RegenManaModifier);
+   G_activeStats->JumpPower = (T_sword16)((float)G_activeStats->JumpPower * CreateClassDatas[classtypeid].JumpModifier);
    
    /* set class name / title */
-   strcpy (G_activeStats->ClassName,CreateClassDatas[classtypeid]->Title);
+   strcpy (G_activeStats->ClassName,CreateClassDatas[classtypeid].Title);
 
    if (G_activeStats->Level < 21)
    {
-	   strcpy (G_activeStats->ClassTitle,CreateClassDatas[G_activeStats->ClassType]->LevelTitles[G_activeStats->Level-1]);
+	   strcpy (G_activeStats->ClassTitle,CreateClassDatas[G_activeStats->ClassType].LevelTitles[G_activeStats->Level-1]);
    }
 
    /* base for hand */
-   StatsSetWeaponBaseDamage (CreateClassDatas[classtypeid]->BasePunchDamage);
+   StatsSetWeaponBaseDamage (CreateClassDatas[classtypeid].BasePunchDamage);
 
    StatsSetWeaponBaseSpeed (0);
 
    /* init spell casting type available for classtype */
-   G_activeStats->SpellSystem = CreateClassDatas[classtypeid]->SpellSystem;
+   G_activeStats->SpellSystem = CreateClassDatas[classtypeid].SpellSystem;
    
    DebugEnd();
 }
@@ -880,7 +880,7 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
                 {
                     /* subtract G_statsCharacterAdvancements value */
                     /* for this attribute from value */
-					randweight -= CreateClassDatas[G_activeStats->ClassType]->Advancement[j];
+					randweight -= CreateClassDatas[G_activeStats->ClassType].Advancement[j];
 
                     if (randweight <= 0)
                     {
@@ -920,8 +920,8 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
 
             G_activeStats->RegenMana = G_activeStats->Attributes[ATTRIBUTE_MAGIC]*
                                        (G_activeStats->Level+5);
-            G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[G_activeStats->ClassType]->RegenHealthModifier);
-		    G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[G_activeStats->ClassType]->RegenManaModifier);
+            G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[G_activeStats->ClassType].RegenHealthModifier);
+		    G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[G_activeStats->ClassType].RegenManaModifier);
 
 
             /* update max load */
@@ -942,7 +942,7 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
             /* update title */
             if (G_activeStats->Level < 21)
             {
-				strcpy (G_activeStats->ClassTitle,CreateClassDatas[G_activeStats->ClassType]->LevelTitles[G_activeStats->Level-1]);
+				strcpy (G_activeStats->ClassTitle,CreateClassDatas[G_activeStats->ClassType].LevelTitles[G_activeStats->Level-1]);
             }
         }
     }
@@ -1399,7 +1399,6 @@ T_void StatsUpdateCreateCharacterUI (T_void)
     T_byte8 stmp[64];
     T_TxtboxID TxtboxID;
     T_byte8 *description;
-    T_resource res;
 
     DebugRoutine ("StatsUpdateCreateCharacterUI");
 
@@ -1409,9 +1408,8 @@ T_void StatsUpdateCreateCharacterUI (T_void)
     TxtboxID=FormGetObjID (500);
 
     sprintf (stmp,"UI/CREATEC/DESC%2.2d.TXT",StatsGetPlayerClassType());
-    description=PictureLockData (stmp,&res);
-	TxtboxSetNData (TxtboxID,CreateClassDatas[StatsGetPlayerClassType()]->Descr,ResourceGetSize(res));
-    PictureUnlockAndUnfind (res);
+    description=CreateClassDatas[StatsGetPlayerClassType()].Descr;
+	TxtboxSetNData (TxtboxID,description,strlen(description));
 
     /* set up attribute fields */
     TxtboxID=FormGetObjID (503);
@@ -1983,7 +1981,7 @@ T_void StatsCalcPlayerAttackDamage (T_void)
     weaponmod = G_activeStats->WeaponBaseDamage;
 
     damage=(StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH)*weaponmod)/2;
-	G_activeStats->AttackDamage = (T_word16)((float)damage * CreateClassDatas[G_activeStats->ClassType]->DamageModifier);
+	G_activeStats->AttackDamage = (T_word16)((float)damage * CreateClassDatas[G_activeStats->ClassType].DamageModifier);
 
     DebugEnd();
 }
@@ -2024,12 +2022,12 @@ T_void StatsDrawCharacterPortrait (T_word16 x1, T_word16 y1)
 
     GrScreenSet (GRAPHICS_ACTUAL_SCREEN);
     GrDrawRectangle (x1,y1,x1+115,y1+102,0);
-	if (CreateClassDatas[StatsGetPlayerClassType()]->Picture != NULL)
+	if (CreateClassDatas[StatsGetPlayerClassType()].Picture != NULL)
     {
         ColorUpdate(0) ;
-		//bmpdata = MakeBitmapCopy(CreateClassDatas[StatsGetPlayerClassType()]->Picture);
+		//bmpdata = MakeBitmapCopy(CreateClassDatas[StatsGetPlayerClassType()].Picture);
         //GrDrawBitmap (bmpdata,x1,y1);
-		GrDrawBitmap (CreateClassDatas[StatsGetPlayerClassType()]->Picture,x1,y1);
+		GrDrawBitmap (CreateClassDatas[StatsGetPlayerClassType()].Picture,x1,y1);
     } else
     {
         /* clear area */
@@ -2176,7 +2174,7 @@ T_void StatsCalcPlayerMovementSpeed (T_void)
 
 	G_activeStats->MaxVWalking = (StatsGetPlayerSpeedTotal()/5)+10;
 	/* apply class bonuses */
-	G_activeStats->MaxVWalking = (T_word16)((float)G_activeStats->MaxVWalking * CreateClassDatas[G_activeStats->ClassType]->MoveModifier);
+	G_activeStats->MaxVWalking = (T_word16)((float)G_activeStats->MaxVWalking * CreateClassDatas[G_activeStats->ClassType].MoveModifier);
     
     /* apply encumberance */
     load=G_activeStats->Load;
@@ -2799,7 +2797,7 @@ T_void StatsCreateCharacterUIStart(T_void)
     StatsInit();
 //    StatsSetPlayerClassType(CLASS_CITIZEN);
    for (i=0;i<NUM_ATTRIBUTES;i++)
-	   G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
+	   G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType].Attributes[i];
     StatsCalcClassStats();
 
  	/* load the form for this page */
@@ -2854,7 +2852,7 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
 				curclass=NUM_CLASSES - 1;
             StatsSetPlayerClassType (curclass);
 			for (i=0;i<NUM_ATTRIBUTES;i++)
-				G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
+				G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType].Attributes[i];
             StatsUpdateCreateCharacterUI();
         }
         else if (objID==302)
@@ -2865,7 +2863,7 @@ T_void StatsCreateCharacterControl (E_formObjectType objtype,
             if (curclass >= CLASS_UNKNOWN) curclass=CLASS_CITIZEN;
             StatsSetPlayerClassType (curclass);
 			for (i=0;i<NUM_ATTRIBUTES;i++)
-				G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType]->Attributes[i];
+				G_activeStats->Attributes[i]=CreateClassDatas[G_activeStats->ClassType].Attributes[i];
             StatsUpdateCreateCharacterUI();
         }
         else if (objID==303)

@@ -2,6 +2,7 @@
 #include "BitmapLoader.h"
 #include "STATS.H"
 #include "GRAPHICS.H"
+#include "MEMORY.H"
 
 ItemListEntry *FindFromItemList(char *itemname)
 {
@@ -54,8 +55,6 @@ T_void LoadItemList()
 		//size array
 		// Always assume there's 1 extra entry because eof will terminate the last line
 		ItemListCount = lines + 1;
-		ItemList = (ItemListEntry*)malloc(sizeof(ItemListEntry) * ItemListCount);
-		
 
 		rewind(fp);
 		//count lines in order to assign space
@@ -69,8 +68,7 @@ T_void LoadItemList()
 			fscanf(fp, "%f", &num);
 
 			//create new item
-			item = (ItemListEntry*)malloc(sizeof(ItemListEntry));
-			item->name = (char*)malloc(sizeof(char));
+			item = (ItemListEntry*)MemAlloc(sizeof(ItemListEntry));
 			strcpy(item->name, name);
 			item->num = (T_word16)num;
 			//add to list
@@ -82,17 +80,21 @@ T_void LoadItemList()
 			fscanf(fp, "%c", &cbuffer);
 		}	
 
+		fclose(fp);
 	}
+
+	fp = NULL;
+	item = NULL;
 
 	DebugEnd();
 }
 
-CreateClassData* NewCreateClassData (T_byte8 classnum)
+T_void InitCreateClassData (T_byte8 classnum)
 {
-	CreateClassData *classdata = malloc(sizeof(CreateClassData));
+	CreateClassData *classdata;
+    DebugRoutine ("InitCreateClassData");
 
-    DebugRoutine ("NewCreateClassData");
-
+	classdata = &CreateClassDatas[classnum];
 	classdata->ClassNum = classnum;
 	classdata->RegenHealthModifier = 1;
 	classdata->RegenManaModifier = 1;
@@ -101,25 +103,10 @@ CreateClassData* NewCreateClassData (T_byte8 classnum)
 	classdata->ThiefModifier = 0;
 	classdata->BasePunchDamage = 3;
 	classdata->SpellSystem = SKILL_SYSTEM_MAGIC_MAGE;
-	*classdata->LevelTitles = (T_byte8*)malloc(sizeof(T_byte8) * NUM_TITLES_PER_CLASS);
+	
+	classdata = NULL;
 
 	DebugEnd();
-
-	return classdata;
-}
-
-E_Boolean CreateClassDatasLoaded()
-{
-	E_Boolean retvalue = TRUE;
-
-	DebugRoutine ("CreateClassDatasLoaded");
-
-	if (CreateClassDatas[0] == NULL)
-		retvalue = FALSE;
-
-	DebugEnd();
-
-	return retvalue;
 }
 
 T_bitmap* LoadImageFromRes(T_byte8 classnum)
@@ -151,7 +138,7 @@ T_bitmap* LoadImage(T_byte8 classnum)
 {
 	BITMAPINFOHEADER bmpheader;
 	T_byte8 *p_data, *f_data, *tempptr;
-	T_bitmap *bmp_data = (T_bitmap*)malloc(sizeof(T_bitmap));
+	T_bitmap *bmp_data = (T_bitmap*)MemAlloc(sizeof(T_bitmap));
 	T_bitmap *retval;
 	int i = 0;
 
@@ -166,7 +153,7 @@ T_bitmap* LoadImage(T_byte8 classnum)
 	{
 		bmp_data->sizex = (T_word16)bmpheader.biWidth;
 		bmp_data->sizey = (T_word16)bmpheader.biHeight;
-		f_data = (T_byte8*)malloc(bmpheader.biSizeImage + 2);
+		f_data = (T_byte8*)MemAlloc(bmpheader.biSizeImage + 2);
 		tempptr = f_data;
 		f_data[0] = (int)bmpheader.biWidth;
 		f_data[1] = 0;
@@ -199,7 +186,7 @@ T_void ReadClassData(T_byte8 classnum)
 	char sbuffer[MAXLEVELTITLELENGTH] = "";
 	char title[MAXCLASSTITLELENGTH];
 	char descr[MAXCLASSDESCRLENGTH] = "";
-	char *levelTitles[NUM_TITLES_PER_CLASS];
+	char levelTitles[NUM_TITLES_PER_CLASS][MAXLEVELTITLELENGTH];
 	char itemname[128];
 	float itemcount = 0;
 	long temppos = 0;
@@ -267,7 +254,6 @@ T_void ReadClassData(T_byte8 classnum)
 					sbuffer[j] = '\0';
 				j++;
 			}
-			levelTitles[i] = (char*)malloc(sizeof(char));
 			strcpy(levelTitles[i], sbuffer);
 		}
 		fseek(fp, 2, SEEK_CUR);
@@ -323,7 +309,7 @@ T_void ReadClassData(T_byte8 classnum)
 		for (i = 0; i < (EQUIP_WEAPON_TYPE_UNKNOWN); i++)
 		{
 			fscanf(fp, "%f", &num);
-			CreateClassDatas[classnum]->CanUseWeapon[i] = (E_Boolean)num;
+			CreateClassDatas[classnum].CanUseWeapon[i] = (E_Boolean)num;
 			fseek(fp, 1, SEEK_CUR);
 		}
 		fseek(fp, 2, SEEK_CUR);
@@ -332,7 +318,7 @@ T_void ReadClassData(T_byte8 classnum)
 		for (i = 0; i < NUM_ARMOR_TYPES; i++)
 		{
 			fscanf(fp, "%f", &num);
-			CreateClassDatas[classnum]->CanUseArmor[i] = (E_Boolean)num;
+			CreateClassDatas[classnum].CanUseArmor[i] = (E_Boolean)num;
 			fseek(fp, 1, SEEK_CUR);
 		}
 		fseek(fp, 2, SEEK_CUR);
@@ -352,8 +338,8 @@ T_void ReadClassData(T_byte8 classnum)
 			}
 
 			//start item list
-			CreateClassDatas[classnum]->StartingItemsCount = itemscount + 1;
-			CreateClassDatas[classnum]->StartingItems = (StartingItemData*)malloc(sizeof(StartingItemData) * CreateClassDatas[classnum]->StartingItemsCount);
+			CreateClassDatas[classnum].StartingItemsCount = itemscount + 1;
+			CreateClassDatas[classnum].StartingItems = (StartingItemData*)MemAlloc(sizeof(StartingItemData) * CreateClassDatas[classnum].StartingItemsCount);
 
 			//rewind
 			fseek(fp, temppos, SEEK_SET);
@@ -368,12 +354,12 @@ T_void ReadClassData(T_byte8 classnum)
 				fscanf(fp, "%f", &itemcount);
 
 				//create new item entry
-				item = (StartingItemData*)malloc(sizeof(ItemListEntry));
+				item = (StartingItemData*)MemAlloc(sizeof(StartingItemData));
 				item->num = FindFromItemList(itemname)->num;
 				item->count = (T_byte8)itemcount;
 
 				//assign entry
-				CreateClassDatas[classnum]->StartingItems[itemscount] = *item;
+				CreateClassDatas[classnum].StartingItems[itemscount] = *item;
 
 				fscanf(fp, "%c", &cbuffer);
 				//if another entry follows
@@ -389,33 +375,36 @@ T_void ReadClassData(T_byte8 classnum)
 		fclose(fp);
 	}
 
-	strcpy(CreateClassDatas[classnum]->Title, title);
-	strcpy(CreateClassDatas[classnum]->Descr, descr);
+	strcpy(CreateClassDatas[classnum].Title, title);
+	strcpy(CreateClassDatas[classnum].Descr, descr);
 	for (i=0; i<NUM_ATTRIBUTES;i++)
 	{
-		CreateClassDatas[classnum]->Attributes[i] = attr[i];
-		CreateClassDatas[classnum]->Advancement[i] = adv[i];
+		CreateClassDatas[classnum].Attributes[i] = attr[i];
+		CreateClassDatas[classnum].Advancement[i] = adv[i];
 	}
 	for (i=0; i<NUM_TITLES_PER_CLASS;i++)
 	{
-		CreateClassDatas[classnum]->LevelTitles[i] = (T_byte8*)malloc(sizeof(T_byte8));
-		strcpy(CreateClassDatas[classnum]->LevelTitles[i], levelTitles[i]);
+		strcpy(CreateClassDatas[classnum].LevelTitles[i], levelTitles[i]);
 	}
-	CreateClassDatas[classnum]->SpellSystem = magic;
-	CreateClassDatas[classnum]->CanUseFlag = canUseFlag;
-	CreateClassDatas[classnum]->RegenHealthModifier = hmod;
-	CreateClassDatas[classnum]->RegenManaModifier = manamod;
-	CreateClassDatas[classnum]->JumpModifier = jmod;
-	CreateClassDatas[classnum]->DamageModifier = dmod;
-	CreateClassDatas[classnum]->MoveModifier = movemod;
-	CreateClassDatas[classnum]->ThiefModifier = tmod;
-	CreateClassDatas[classnum]->BasePunchDamage = (int)pdmg;
+	CreateClassDatas[classnum].SpellSystem = magic;
+	CreateClassDatas[classnum].CanUseFlag = canUseFlag;
+	CreateClassDatas[classnum].RegenHealthModifier = hmod;
+	CreateClassDatas[classnum].RegenManaModifier = manamod;
+	CreateClassDatas[classnum].JumpModifier = jmod;
+	CreateClassDatas[classnum].DamageModifier = dmod;
+	CreateClassDatas[classnum].MoveModifier = movemod;
+	CreateClassDatas[classnum].ThiefModifier = tmod;
+	CreateClassDatas[classnum].BasePunchDamage = (int)pdmg;
 
 	pictureData = LoadImage(classnum);
 	if (pictureData == NULL)
 		pictureData = LoadImageFromRes(classnum);
 
-	CreateClassDatas[classnum]->Picture = pictureData;
+	CreateClassDatas[classnum].Picture = pictureData;
+
+	fp=NULL;
+	item=NULL;
+	pictureData=NULL;
 
 	DebugEnd();
 }
@@ -431,7 +420,7 @@ T_void LoadCreateClassDatas(T_void)
 	for (i = 0; i < NUM_CLASSES; i++)
 	{	
 		//create and assign values
-		CreateClassDatas[i] = NewCreateClassData(i);
+		InitCreateClassData(i);
 		ReadClassData(i);		
 	}
 
@@ -440,14 +429,10 @@ T_void LoadCreateClassDatas(T_void)
 
 T_void DestroyCreateClassDatas(T_void)
 {
-	int i;
+	//int i;
 
 	DebugRoutine("DestroyCreateClassDatas");
 
-	for(i = 0; i < NUM_CLASSES; i++)
-	{
-		free(CreateClassDatas[i]);
-	}
 
 	DebugEnd();
 }

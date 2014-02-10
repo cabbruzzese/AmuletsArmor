@@ -10,6 +10,7 @@
     <LocalDebuggerCommandArguments>
     </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>$(ProjectDir)\..\..\..\..\..\Exe</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)$(Configuration)\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(SolutionDir)$(Configuration)\$(ProjectName).exe</LocalDebuggerCommand>
   </PropertyGroup>
 </Project>

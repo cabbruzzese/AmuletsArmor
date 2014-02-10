@@ -615,7 +615,7 @@ T_void InventoryUseItemInMouseHand (T_buttonID buttonID)
 				if (p_inv->itemdesc.subtype == EQUIP_WEAPON_TYPE_DAGGER)
 				{
 					//player can use daggers
-					if (CreateClassDatas[StatsGetPlayerClassType()]->CanUseWeapon[EQUIP_WEAPON_TYPE_DAGGER] == TRUE)
+					if (CreateClassDatas[StatsGetPlayerClassType()].CanUseWeapon[EQUIP_WEAPON_TYPE_DAGGER] == TRUE)
 					{
 						/* make sure there's not an animation already in progress */
 						if (ClientIsInView() && OverlayIsDone() && G_useResetNeeded==FALSE)
@@ -1264,7 +1264,7 @@ T_inventoryItemStruct* InventoryTakeObject (E_inventoryType which, T_3dObject *i
                 else if (p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_BOLT ||
                          p_inv->itemdesc.type==EQUIP_OBJECT_TYPE_QUIVER)
                 {
-					if (CreateClassDatas[ourclass]->CanUseWeapon[EQUIP_WEAPON_TYPE_CROSSBOW] == 0)
+					if (CreateClassDatas[ourclass].CanUseWeapon[EQUIP_WEAPON_TYPE_CROSSBOW] == 0)
 						destroyme=TRUE;
                 }
 
@@ -3343,7 +3343,7 @@ E_Boolean InventoryIsUseableByClass (T_inventoryItemStruct *p_inv)
     DebugRoutine ("InventoryIsUseableByClass");
 
     DebugCheck (p_inv != NULL);
-	ourclass = CreateClassDatas[StatsGetPlayerClassType()]->CanUseFlag;
+	ourclass = CreateClassDatas[StatsGetPlayerClassType()].CanUseFlag;
     if (ourclass&p_inv->itemdesc.useable)
     {
         retvalue=TRUE;
@@ -4651,12 +4651,12 @@ T_void InventorySetDefaultInventoryForClass(T_void)
     InventoryAddObjectToInventory (INVENTORY_PLAYER,351,1);
 
 	//give starting inventory
-	for (j = 0; j < CreateClassDatas[classType]->StartingItemsCount; j++)
+	for (j = 0; j < CreateClassDatas[classType].StartingItemsCount; j++)
 	{
-		if (&CreateClassDatas[classType]->StartingItems[j] == NULL)
+		if (&CreateClassDatas[classType].StartingItems[j] == NULL)
 			continue;
-		itemnum = CreateClassDatas[classType]->StartingItems[j].num;
-		itemcount = CreateClassDatas[classType]->StartingItems[j].count;
+		itemnum = CreateClassDatas[classType].StartingItems[j].num;
+		itemcount = CreateClassDatas[classType].StartingItems[j].count;
 
 		//special case for ammo
 		if (itemnum < 10)
@@ -5033,7 +5033,7 @@ E_Boolean InventoryCheckClassCanUseWeapon (T_inventoryItemStruct *p_inv,
 	else
 		weapontype = EQUIP_WEAPON_TYPE_WAND;
 
-	if (CreateClassDatas[ourclass]->CanUseWeapon[weapontype] == 0)
+	if (CreateClassDatas[ourclass].CanUseWeapon[weapontype] == 0)
 	{
 		canUse=FALSE;
 
@@ -5104,7 +5104,7 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
             case EQUIP_ARMOR_TYPE_BRACING_PLATE:
             case EQUIP_ARMOR_TYPE_HELMET_PLATE:
             case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
-			if (CreateClassDatas[ourclass]->CanUseArmor[ARMOR_TYPE_PLATE] == 0)
+			if (CreateClassDatas[ourclass].CanUseArmor[ARMOR_TYPE_PLATE] == 0)
             {
                 if (showMessage==TRUE) MessageAdd ("^005You can't wear heavy armor");
                 canUse=FALSE;
@@ -5115,7 +5115,7 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
             case EQUIP_ARMOR_TYPE_LEGGINGS_CHAIN:
             case EQUIP_ARMOR_TYPE_HELMET_CHAIN:
             case EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN:
-			if (CreateClassDatas[ourclass]->CanUseArmor[ARMOR_TYPE_CHAIN] == 0)
+			if (CreateClassDatas[ourclass].CanUseArmor[ARMOR_TYPE_CHAIN] == 0)
             {
                 if (showMessage==TRUE) MessageAdd ("^005That armor is too heavy for you to wear.");
                 canUse=FALSE;
@@ -5125,7 +5125,7 @@ E_Boolean InventoryCheckClassCanUseArmor (T_inventoryItemStruct *p_inv,
 			case EQUIP_ARMOR_TYPE_BRACING_CLOTH:
 			case EQUIP_ARMOR_TYPE_BREASTPLATE_CLOTH:
 			case EQUIP_ARMOR_TYPE_LEGGINGS_CLOTH:
-			if (CreateClassDatas[ourclass]->CanUseArmor[ARMOR_TYPE_LEATHER] == 0)
+			if (CreateClassDatas[ourclass].CanUseArmor[ARMOR_TYPE_LEATHER] == 0)
             {
                 if (showMessage==TRUE) MessageAdd ("^005You cannot wear light armor.");
                 canUse=FALSE;

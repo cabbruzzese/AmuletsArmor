@@ -3347,7 +3347,7 @@ T_void ClientDoSteal(T_void)
     DebugRoutine("ClientDoSteal") ;
 
     /* Apply class based modifier. */
-	tmod = CreateClassDatas[StatsGetPlayerClassType()]->ThiefModifier;
+	tmod = CreateClassDatas[StatsGetPlayerClassType()].ThiefModifier;
 	stealPickSkill = (T_word16)((float)StatsGetPlayerStealthTotal() * tmod);
 	
 

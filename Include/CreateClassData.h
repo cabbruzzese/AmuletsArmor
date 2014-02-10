@@ -10,6 +10,7 @@
 #define MAXCLASSTITLELENGTH 64
 #define MAXCLASSDESCRLENGTH 384
 #define MAXLEVELTITLELENGTH 128
+#define MAXITEMNAMELENGTH	64
 
 #define NUM_CLASSES 14
 #define NUM_ATTRIBUTES 6 //Str, Spd, Mgc, Acc, Stl, Con
@@ -43,10 +44,10 @@ typedef enum
 } E_ArmorTypes;
 
 typedef struct {
-	char *name;
+	char name[MAXITEMNAMELENGTH];
 	T_word16 num;
 }ItemListEntry;
-ItemListEntry *ItemList;
+ItemListEntry ItemList[128];
 int ItemListCount;
 
 typedef struct {
@@ -69,19 +70,18 @@ typedef struct {
 	T_byte8 SpellSystem;
 	T_byte8 Attributes[NUM_ATTRIBUTES];
 	T_byte8 Advancement[NUM_ATTRIBUTES];
-	T_byte8 *LevelTitles[NUM_TITLES_PER_CLASS];
+	T_byte8 LevelTitles[NUM_TITLES_PER_CLASS][MAXLEVELTITLELENGTH];
 	T_bitmap *Picture;
-	StartingItemData* StartingItems;
+	StartingItemData *StartingItems;
 	int	StartingItemsCount;
 	E_Boolean CanUseWeapon[EQUIP_WEAPON_TYPE_UNKNOWN];
 	E_Boolean CanUseArmor[NUM_ARMOR_TYPES];
 }CreateClassData;
 
-CreateClassData *CreateClassDatas[NUM_CLASSES];
+CreateClassData CreateClassDatas[NUM_CLASSES];
 
 
-CreateClassData *NewCreateClassData (T_byte8 classnum);
-E_Boolean CreateClassDatasLoaded();
+T_void InitCreateClassData (T_byte8 classnum);
 T_void LoadCreateClassDatas(T_void);
 T_void DestroyCreateClassDatas(T_void);
 
