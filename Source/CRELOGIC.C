@@ -356,6 +356,11 @@ typedef struct {
 	/*Time before forgetting about hidden enemies*/
 	E_Boolean losingInterest;
 	T_word32 timeTargetInterest;
+
+	float missileDelayMod;
+	T_word16 meleeDamage;
+	E_effectDamageType damageResist;
+
 } T_creatureState ;
 
 /* Callback routine called each time a creature updates based on the */
@@ -774,6 +779,9 @@ T_void CreatureAttachToObject(T_3dObject *p_obj)
                 p_creature->lastX = p_creature->lastY = 0x7FFE ;
                 p_creature->wasStolenFrom = FALSE ;
                 p_creature->allowFall = TRUE ;
+				p_creature->missileDelayMod = 1;
+				p_creature->meleeDamage = p_logic->meleeDamage;
+				p_creature->damageResist = p_logic->damageResist;
 
                 Collide3dUpdateLineOfSightLast(
                     &p_creature->sight,
@@ -1275,7 +1283,7 @@ updateTime += (updateTime>>1) ;
                                     p_creature,
                                     p_logic,
                                     p_obj,
-									p_logic->meleeDamage + p_obj->power) ;
+									p_creature->meleeDamage + p_obj->power) ;
                                 isGone = TRUE ;
                             } else {
                                 IHandleBlockedMove(
@@ -2116,7 +2124,7 @@ static T_void INavStraightLine(
         (T_sword16)ObjectGetY16(p_obj),
         (T_sword16)(ObjectGetZ16(p_obj) + (ObjectGetHeight(p_obj) >> 1)),
         (T_word16)ObjectGetRadius(p_obj),
-        (T_word16)p_logic->meleeDamage,
+        (T_word16)p_creature->meleeDamage,
         ObjectGetServerId(p_obj),
         p_logic->damageType) ;
 
@@ -2182,7 +2190,7 @@ static T_void INavCloud(
         (T_sword16)ObjectGetY16(p_obj),
         (T_sword16)(ObjectGetZ16(p_obj) + (ObjectGetHeight(p_obj) >> 1)),
         (T_word16)ObjectGetRadius(p_obj),
-        (T_word16)p_logic->meleeDamage,
+        (T_word16)p_creature->meleeDamage,
         ObjectGetServerId(p_obj),
         p_logic->damageType) ;
 
@@ -3445,7 +3453,7 @@ static E_Boolean ITargetExplodeOnCollision(
             (T_sword16)ObjectGetY16(p_obj),
             (T_sword16)(ObjectGetZ16(p_obj) + (ObjectGetHeight(p_obj) >> 1)),
             (T_word16)p_logic->maxMeleeRange,
-            (T_word16)p_logic->meleeDamage,
+            (T_word16)p_creature->meleeDamage,
             ObjectGetServerId(p_obj),
             p_logic->damageType) ;
 
@@ -3536,7 +3544,7 @@ static E_Boolean ITargetScream(
                         (T_sword16)ObjectGetY16(p_obj),
                         (T_sword16)(ObjectGetZ16(p_obj) + (ObjectGetHeight(p_obj) >> 1)),
                         (T_word16)p_logic->maxMeleeRange,
-                        (T_word16)p_logic->meleeDamage,
+                        (T_word16)p_creature->meleeDamage,
                         ObjectGetServerId(p_obj),
                         p_logic->damageType) ;
 
@@ -3709,7 +3717,7 @@ static T_void IShootAtTarget(
             }
         }
         /* Set up the "wait" time for the next missile. */
-        p_creature->missileDelayCount = p_logic->missileAttackDelay ;
+		p_creature->missileDelayCount = (T_word16)((float)p_logic->missileAttackDelay * p_creature->missileDelayMod);
     }
 
     DebugEnd() ;
@@ -3816,7 +3824,7 @@ static T_void ICreatureDelayedAttack(T_creatureState *p_creature)
             (T_sword16)(frontY>>16),
             p_creature->targetAttackZ,
             3,
-            p_logic->meleeDamage,
+            p_creature->meleeDamage,
             ObjectGetServerId(p_obj),
             p_logic->damageType) ;
     }
@@ -3890,7 +3898,10 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             p_creature->timeCheckBerserk = SyncTimeGet() + 700 ;
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_DISPEL_MAGIC:
-                            /* Does not affect creatures. */
+							//remove immunities
+							if (p_creature->damageResist > 0)
+								MessageAdd("Your enemy appears less threatening.");
+							p_creature->damageResist = 0;
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_EARTHBIND:
                             /* Only effects flying creatures. */
@@ -3934,14 +3945,14 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                     /* Go through the different types of damage */
                     if (type & EFFECT_DAMAGE_NORMAL)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_NORMAL)
+                        if (p_creature->damageResist & EFFECT_DAMAGE_NORMAL)
                             numResists++ ;
                     }
 
                     /* Check for fire based damages. */
                     if (type & EFFECT_DAMAGE_FIRE)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_FIRE)
+                        if (p_creature->damageResist & EFFECT_DAMAGE_FIRE)
                             numResists++ ;
                         else
                             /* Fire damage does +25% */
@@ -3950,15 +3961,25 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 
                     if (type & EFFECT_DAMAGE_ACID)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_ACID)
+                        if (p_creature->damageResist & EFFECT_DAMAGE_ACID)
                             numResists++ ;
-                        /* !!! Currently creatures have no harmful */
-                        /* effect towards acid. */
+                        
+						//acid lowers melee weapon damage. 
+						// (But never below 1)
+						if (p_creature->meleeDamage > 100)
+						{	
+							MessageAdd("Your foe's weapon crumbles.");
+							if ((T_sword32)p_creature->meleeDamage - (damageAmt / 5) < 100)
+								p_creature->meleeDamage = 100;
+							else
+								p_creature->meleeDamage -= (damageAmt / 5);
+						}
+
                     }
 
                     if (type & EFFECT_DAMAGE_POISON)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_POISON)  {
+                        if (p_creature->damageResist & EFFECT_DAMAGE_POISON)  {
                             numResists++ ;
                         } else {
                             /* Poison is transferred into the poison level. */
@@ -3968,7 +3989,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 
                     if (type & EFFECT_DAMAGE_ELECTRICITY)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_ELECTRICITY)  {
+                        if (p_creature->damageResist & EFFECT_DAMAGE_ELECTRICITY)  {
                             numResists++ ;
                         } else {
                             /* Electricity does additional damage based */
@@ -3994,17 +4015,26 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 
                     if (type & EFFECT_DAMAGE_MANA_DRAIN)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_MANA_DRAIN)  {
+                        if (p_creature->damageResist & EFFECT_DAMAGE_MANA_DRAIN)  {
                             numResists++ ;
-                        } else {
-                            /* !!! Warning! Mana drain does nothing to */
-                            /* creatures currently. */
+                        } else 
+						{
+							//if this monster has an attack delay
+							if (p_logic->missileAttackDelay > 0)
+							{
+								MessageAdd("The enemy's voice stutters.");
+								//increase attack delay by 50%
+								p_creature->missileDelayMod += (float)0.5;
+
+								//reset current attack delay
+								p_creature->missileDelayCount = (T_word16)((float)p_logic->missileAttackDelay * p_creature->missileDelayMod);
+							}
                         }
                     }
 
                     if (type & EFFECT_DAMAGE_PIERCING)  {
                         numEffects++ ;
-                        if (p_logic->damageResist & EFFECT_DAMAGE_PIERCING)  {
+                        if (p_creature->damageResist & EFFECT_DAMAGE_PIERCING)  {
                             numResists++ ;
                         } else {
                             /* Piercing usually depends on the amount */
@@ -5294,7 +5324,7 @@ T_void CreatureGoSplat(
 
         /* Take out any resistances (if not special) */
         if ((damageType & EFFECT_DAMAGE_SPECIAL) == 0)
-            damageType &= (~(p_creature->p_logic->damageResist)) ;
+            damageType &= (~(p_creature->damageResist)) ;
 
         if (damageType != 0)  {
             /* Go ahead and go splat on everything else */
