@@ -49,6 +49,7 @@ static T_void EffectAddPlayerEffect (T_word16 data1,
                                      T_void*  p_owner);
 
 static T_void EffectRemovePlayerEffect (T_void *p_owner);
+static E_Boolean EffectRemovePlayerEffectByType (T_word16 type);
 
 static E_Boolean EffectDestroyElement (T_doubleLinkListElement killme);
 
@@ -276,7 +277,28 @@ E_Boolean Effect(E_effectType effecttype,
         break;
 
         case EFFECT_MOD_PLAYER_WATER:
-        StatsChangePlayerWater((T_sword16)power);
+	        StatsChangePlayerWater((T_sword16)power);
+
+			//if player drank water
+			if ((T_sword16)power > 0)
+			{
+				//if electric damage is active
+				if (EffectPlayerEffectIsActive(PLAYER_EFFECT_ELECTRICITY_ATTACK))
+				{
+					//shock player
+					StatsTakeDamage(EFFECT_DAMAGE_ELECTRICITY, 200);
+					MessageAdd ("^004Drinking the water shocks you.");
+				}
+				
+				//if fire damage is active
+				if (EffectPlayerEffectIsActive(PLAYER_EFFECT_FIRE_ATTACK))
+				{
+					//Remove fire effects
+					EffectRemovePlayerEffectByType(PLAYER_EFFECT_FIRE_ATTACK);
+					MessageAdd ("^004Drinking the water smolders the fire inside.");
+				}
+			}
+
         break;
 
         case EFFECT_MOD_PLAYER_HEALTH:
@@ -1006,6 +1028,54 @@ static T_void EffectAddPlayerEffect (T_word16 data1,
     DebugEnd();
 }
 
+//finds player effects of a given type and ends them
+//returns true if any found
+#define MAX_PEFFECTS_OF_TYPE 16
+static E_Boolean EffectRemovePlayerEffectByType (T_word16 type)
+{
+    T_playerEffectStruct *p_effect;
+    T_doubleLinkListElement element;
+	E_Boolean retvalue = FALSE;
+	T_playerEffectStruct *p_effects[MAX_PEFFECTS_OF_TYPE];
+	T_doubleLinkListElement elements[MAX_PEFFECTS_OF_TYPE];
+	T_byte8 p_effectsCount = 0, i;
+
+    DebugRoutine ("EffectRemovePlayerEffectByType");
+
+	element=DoubleLinkListGetFirst (G_playerEffectsList);
+
+    while (element != DOUBLE_LINK_LIST_ELEMENT_BAD)
+    {
+        p_effect=DoubleLinkListElementGetData (element);
+        DebugCheck (p_effect != NULL);
+		if (p_effect->type == type)
+        {
+			//track element and effect
+			elements[p_effectsCount] = element;
+			p_effects[p_effectsCount] = p_effect;
+			p_effectsCount++;
+
+			//set as found
+			retvalue = TRUE;
+        }
+
+        // get next element
+        element=DoubleLinkListElementGetNext(element);
+    }
+
+	//remove all found elements
+	for (i = 0; i < p_effectsCount; i++)
+	{
+		//remove effect
+		EffectStopPlayerEffect(p_effects[i]);
+
+		// remove this element from the list
+		EffectDestroyElement (elements[i]);
+	}
+
+	DebugEnd();
+	return retvalue;
+}
 
 /* internal routine: ends a player effect ID p_owner */
 static T_void EffectRemovePlayerEffect (T_void *p_owner)
