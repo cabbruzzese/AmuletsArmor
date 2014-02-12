@@ -1343,13 +1343,6 @@ T_void SkillsCastSpell (T_void)
 	//get first rune
 	runenum = G_curspell[0];
 
-	//ariticial leveling for debugging
-	//if (runenum == 0)
-	//{
-		//StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
-		//StatsChangePlayerMana(StatsGetPlayerMaxMana());
-	//}
-
 	switch(StatsGetPlayerSkillSystem())
 	{
 	case SKILL_SYSTEM_BARBARIAN:
@@ -1405,6 +1398,16 @@ T_void SpellsCastSpell (T_buttonID buttonID)
         MessageAdd("Dead players do not cast spells.") ;
     } else {
         element = DoubleLinkListGetFirst (G_spellsList);
+
+		
+		//ariticial leveling for debugging. Can only exist in debug
+#ifndef NDEBUG
+		/*if (G_curspell[0] == 0)
+		{
+			StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
+			StatsChangePlayerMana(StatsGetPlayerMaxMana());
+		}*/
+#endif
 
 		if (StatsGetPlayerSkillLogic()->UsesSpells == FALSE)
 		{

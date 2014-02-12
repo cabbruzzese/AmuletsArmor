@@ -301,6 +301,10 @@ E_Boolean Effect(E_effectType effecttype,
 
         break;
 
+		case EFFECT_REMOVE_SPECIFIC_SPELL:
+		EffectRemovePlayerEffectByType(data1);
+		break;
+
         case EFFECT_MOD_PLAYER_HEALTH:
         StatsChangePlayerHealth ((T_sword16)power);
         break;

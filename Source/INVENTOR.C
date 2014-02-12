@@ -4675,7 +4675,12 @@ T_void InventorySetDefaultInventoryForClass(T_void)
 
 	}
 
-    InventoryReorder(INVENTORY_PLAYER,FALSE);
+	//debug items for testing
+#ifndef NDEBUG
+	//InventoryAddObjectToInventory (INVENTORY_PLAYER,306,1);
+
+    //InventoryReorder(INVENTORY_PLAYER,FALSE);
+#endif
 
     /* iterate through the player's inventory and equip anything that */
     /* needs to be equipped */
