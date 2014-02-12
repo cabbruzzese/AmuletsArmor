@@ -2130,7 +2130,7 @@ T_void ClientHandleKeyboard(E_keyboardEvent event, T_word16 scankey)
                             }
                         }
                         if (removedNotes==TRUE) {
-                            MessageAdd ("^007 Journal help pages removed");
+                            MessageAdd ("^007Journal help pages removed");
                         }
                     }
                 }
