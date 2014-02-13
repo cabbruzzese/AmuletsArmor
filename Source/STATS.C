@@ -1040,7 +1040,12 @@ T_void StatsChangePlayerFood (T_sword16 amt)
 
 T_void StatsChangePlayerWater(T_sword16 amt)
 {
+	T_sword16 startingWater;
+	T_sword16 dehydratedLevel;
     DebugRoutine ("StatsChangePlayerWater");
+
+	startingWater = G_activeStats->Water;
+	dehydratedLevel = G_activeStats->MaxWater / 2;
 
     DebugCheck (amt < 5000 && amt > -5000);
     if (amt > 0)
@@ -1060,6 +1065,20 @@ T_void StatsChangePlayerWater(T_sword16 amt)
         else G_activeStats->Water -= amt;
         if (amt > 50) MessageAdd ("^014Your feel your throat dry up.");
     }
+
+	//Apply moving change...
+	//if we fell below 50%
+	if (startingWater >= dehydratedLevel && G_activeStats->Water < dehydratedLevel)
+	{
+		//notify of speed change
+		MessageAdd("^014You thirst for water.");
+		StatsCalcPlayerMovementSpeed();
+	}
+	//or raise above it
+	else if (startingWater < dehydratedLevel && G_activeStats->Water >= dehydratedLevel)
+	{
+		StatsCalcPlayerMovementSpeed();
+	}
 
     /* update bottom status bar */
     BannerStatusBarUpdate();
@@ -1261,6 +1280,10 @@ T_void StatsUpdatePlayerStatistics (T_void)
             G_activeStats->Health += (T_sword32)hregen;
             if (G_activeStats->Health > G_activeStats->MaxHealth)
               G_activeStats->Health = G_activeStats->MaxHealth;
+
+			//if starving inflict damage
+			if (fratio == 0)
+				StatsChangePlayerHealth(-100);
 
             G_activeStats->Mana += (T_sword32)mregen;
             if (G_activeStats->Mana > G_activeStats->MaxMana)
@@ -2206,6 +2229,13 @@ T_void StatsCalcPlayerMovementSpeed (T_void)
 
     G_activeStats->MaxVRunning = G_activeStats->MaxVWalking + (G_activeStats->MaxVWalking/2);
     G_activeStats->MaxVWalking /= 2; // new rule, make walking speed even slower
+
+	if (G_activeStats->Water < (G_activeStats->MaxWater / 2))
+	{
+		//75% speed reduction when dehydrated
+		G_activeStats->MaxVRunning = (G_activeStats->MaxVRunning * 2) / 3;
+		G_activeStats->MaxVWalking = (G_activeStats->MaxVWalking * 2) / 3;
+	}
 
     DebugEnd();
 }
