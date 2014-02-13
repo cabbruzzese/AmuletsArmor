@@ -757,16 +757,16 @@ T_void PerformNinjaSkill(T_byte8 runenum)
 			}
 			break;
 		case KEY_SCAN_CODE_KEYPAD_5:
-			spellpower = 0;
-			spellduration = 0;
-			spellcost = 1000;
+			spellpower = 1;
+			spellduration = StatsGetPlayerStealthTotal() * 3;
+			spellcost = 950;
 
 			if (manaleft >= spellcost)
 			{
 				MessageAdd("Smoke Cloud Activated");
-				Effect (EFFECT_CREATE_PROJECTILE,
+				Effect (EFFECT_AREA_OF_EFFECT,
 					EFFECT_TRIGGER_CAST,
-					EFFECT_MISSILE_CONFUSION,
+					EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_CONFUSE,
 					spellduration,
 					spellpower,
 					NULL);
@@ -1148,8 +1148,8 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 			break;
 
 		case KEY_SCAN_CODE_KEYPAD_2:
-			spellcost = 500;
-			spellpower = 200 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
+			spellcost = 0;//500;
+			spellpower = 400 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
 			//duration used as range
 			spellduration = StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH)*2;
 
@@ -1160,8 +1160,8 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 				Effect(EFFECT_AREA_OF_EFFECT,
 						EFFECT_TRIGGER_CAST,
 						EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_PUSH,
-						5000,
-						5000,
+						spellduration,
+						spellpower,
 						NULL);
 
 				skillsucess = TRUE;

@@ -334,6 +334,17 @@ E_Boolean Effect(E_effectType effecttype,
 
 		case EFFECT_AREA_OF_EFFECT:
 			ClientDoAreaOfeffect(data1, data2, data3, p_owner);
+
+			if (data1 == (EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_CONFUSE))
+			{
+		        ColorAddGlobal (-25,-25,-25);
+	            ClientSyncSendActionAreaSound(1004,500,FALSE);
+			}
+			else if (data1 == (EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_PUSH))
+			{
+				ColorAddGlobal (15,15,7);
+				SoundPlayByNumber(SOUND_PLAYER_WAR_CRY_SET+(rand()%3),255);
+			}
 			break;
 
         case EFFECT_CREATE_PROJECTILE:
