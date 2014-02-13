@@ -978,7 +978,7 @@ static T_void EffectAddPlayerEffect (T_word16 data1,
     duration=data2;
     power=data3;
 
-    DebugCheck (duration < MAX_EFFECT_DURATION);
+    DebugCheck (duration <= MAX_EFFECT_DURATION);
 //    DebugCheck (power < MAX_EFFECT_POWER);
 
     if (duration > MAX_EFFECT_DURATION) duration = MAX_EFFECT_DURATION;

@@ -1443,9 +1443,9 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 				
                 /* figure duration of spell */
                 spellduration = p_spell->duration + (p_spell->durationmod*charlevel);
-                if (spellduration > MAX_EFFECT_DURATION) spellduration = MAX_EFFECT_DURATION;
 				if (spellduration > 0)
 					spellduration += charmagic * 20;
+                if (spellduration > MAX_EFFECT_DURATION) spellduration = MAX_EFFECT_DURATION;
 
                 /* figure power of spell */
                 spellpower = p_spell->power + (p_spell->powermod*charlevel) + (charmagic / 15);
