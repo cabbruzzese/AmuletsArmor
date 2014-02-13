@@ -3528,6 +3528,20 @@ T_byte8 StatsGetPlayerSpeedTotal()
 	return (T_byte8)retvalue;
 }
 
+T_word16 StatsGetPlayerMagicBonus()
+{
+	T_word16 retvalue;
+	DebugRoutine("StatsGetPlayerMagicBonus");
+
+	retvalue = StatsGetPlayerMagicTotal() - 30;
+	if (retvalue < 0)
+		retvalue = 0;
+	
+	DebugEnd();
+
+	return retvalue;
+}
+
 E_Boolean SkillLogicsInitialized = FALSE;
 T_SkillLogic *StatsGetPlayerSkillLogic(T_void)
 {

@@ -374,6 +374,8 @@ T_byte8 StatsGetPlayerMagicTotal(T_void);
 T_byte8 StatsGetPlayerStealthTotal(T_void);
 T_byte8 StatsGetPlayerSpeedTotal(T_void);
 
+T_word16 StatsGetPlayerMagicBonus();
+
 T_void StatsChangePlayerHeartBeat(T_sword16 amt);
 
 

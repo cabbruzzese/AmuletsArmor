@@ -1368,6 +1368,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
     T_resource res;
     T_spellStruct *p_spell, *p_spell_obj;
     T_word32 spellpower, spellduration;
+	T_word16 magicBonus;
 	T_sword16 spellcost;
     T_sword16 spelldif;
     T_byte8 charlevel, charmagic;
@@ -1440,6 +1441,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 /* get level of character */
                 charlevel = StatsGetPlayerLevel();
 				charmagic = StatsGetPlayerMagicTotal();
+				magicBonus = StatsGetPlayerMagicBonus();
 				
                 /* figure duration of spell */
                 spellduration = p_spell->duration + (p_spell->durationmod*charlevel);
@@ -1448,13 +1450,13 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 if (spellduration > MAX_EFFECT_DURATION) spellduration = MAX_EFFECT_DURATION;
 
                 /* figure power of spell */
-                spellpower = p_spell->power + (p_spell->powermod*charlevel) + (charmagic / 15);
+                spellpower = p_spell->power + (p_spell->powermod*charlevel) + (magicBonus / 2);
                 if (spellpower > MAX_EFFECT_POWER) spellpower = MAX_EFFECT_POWER;
 
                 /* figure casting cost of spell */
-                spellcost = (T_sword16)(p_spell->cost + (p_spell->costmod*charlevel) - (charmagic * 2));
-				if (spellcost < 100)
-					spellcost = 100;
+                spellcost = (T_sword16)(p_spell->cost + (p_spell->costmod*charlevel) - (magicBonus * 10));
+				if (spellcost < 150)
+					spellcost = 150;
 
                 /* figure difficulty of spell */
                 spelldif = charmagic + p_spell->hardness + (2 * charlevel);
@@ -1502,11 +1504,19 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 							
 							//remove bonus power value from all attack spelltypes
 							spellpower -= 1;
-							//scale back to a reasonable damage modifier
+							//scales bonus up to a reasonable damage modifier
 							spellpower *= 30;
+							
+							//max spell level damage is original magic cost
+							if (spellpower > p_spell->cost)
+							{
+								spellpower = p_spell->cost;
+							}
 						}
 						else
+						{
 							p_spell_obj = p_spell;
+						}
 
 						/* create spell effect */
                         Effect (p_spell->type,
