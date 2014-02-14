@@ -3530,7 +3530,7 @@ T_byte8 StatsGetPlayerSpeedTotal()
 
 T_word16 StatsGetPlayerMagicBonus()
 {
-	T_word16 retvalue;
+	T_sword16 retvalue;
 	DebugRoutine("StatsGetPlayerMagicBonus");
 
 	retvalue = StatsGetPlayerMagicTotal() - 30;
@@ -3539,7 +3539,7 @@ T_word16 StatsGetPlayerMagicBonus()
 	
 	DebugEnd();
 
-	return retvalue;
+	return (T_word16)retvalue;
 }
 
 E_Boolean SkillLogicsInitialized = FALSE;
