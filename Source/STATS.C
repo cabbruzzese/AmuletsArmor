@@ -3089,7 +3089,7 @@ T_void    StatsAddPlayerNotePage    (T_word16 whichpage)
     }
     else
     {
-        MessageAdd ("^007 You already have this journal entry");
+        MessageAdd ("^007You already have this journal entry");
     }
 
     NotesGotoPageID (whichpage);

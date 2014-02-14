@@ -696,7 +696,7 @@ T_void PerformNinjaSkill(T_byte8 runenum)
 			break;
 
 		case KEY_SCAN_CODE_KEYPAD_2:
-			spellpower = 0;
+			spellpower = StatsGetPlayerMagicTotal() + (StatsGetPlayerStealthTotal() / 2);
 			spellduration = 150 * StatsGetPlayerMagicTotal();
 			spellcost = NinjaSkillSpells[1].cost;
 
