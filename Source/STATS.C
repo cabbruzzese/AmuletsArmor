@@ -799,6 +799,14 @@ T_void StatsCalcPlayerRunes (T_void)
 	T_byte8 runenum;
 	DebugRoutine("StatsCalcPlayerRunes");
 
+
+	//don't give runes to regular magic classes
+	if (StatsGetPlayerSkillLogic()->CanPickupRunes == TRUE)
+	{
+		DebugEnd();
+		return;
+	}
+
 	skilllevel = StatsGetPlayerSkillLevel();
 	if (skilllevel > 9)
 		skilllevel = 9;
