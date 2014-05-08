@@ -200,7 +200,7 @@ E_Boolean Effect(E_effectType effecttype,
 			break;
         case EFFECT_READY_WEAPON:
 //        OverlaySetAnimation (data1);
-        if (data2==0) StatsSetWeaponBaseDamage (2);
+        if (data2==0) StatsSetWeaponBaseDamage (CreateClassDatas[StatsGetPlayerClassType()].BasePunchDamage);
         else StatsSetWeaponBaseDamage ((T_sbyte8)data2);
         StatsSetWeaponBaseSpeed ((T_sbyte8)data3);
 
