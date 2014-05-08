@@ -623,14 +623,15 @@ T_void InventoryUseItemInMouseHand (T_buttonID buttonID)
 							/* create the effect use */
 							InventoryDoEffect  (EFFECT_TRIGGER_READY, EQUIP_LOCATION_MOUSE_HAND);
 
-							//remove dagger
-							InventoryDestroyItemInMouseHand();
+							//remove dagger and reload next, if available
+							InventoryDestroyItemInMouseHandAndReload();
 
 							/* fist attack sound */
 							SoundPlayByNumber (SOUND_SWING_SET4+(rand()%3),200);
 
 							//update heartbeat
 							StatsChangePlayerHeartBeat(HEARTRATE_ATTACK);
+
 						}
 					}
 				}
@@ -845,6 +846,33 @@ T_inventoryItemStruct* InventoryCheckItemInMouseHand (T_void)
     return (retvalue);
 }
 
+T_void InventoryDestroyItemInMouseHandAndReload (T_void)
+{
+	T_inventoryItemStruct *p_inv=NULL;
+	T_inventoryItemStruct *r_inv=NULL;
+	T_word16 spawnType;
+	//T_inventoryItemStruct *r_inv2;
+
+	DebugRoutine ("InventoryDestroyItemInMouseHandAndReload");
+
+	//Check if another similar item exists
+	p_inv = (T_inventoryItemStruct *)DoubleLinkListElementGetData(G_inventoryLocations[EQUIP_LOCATION_MOUSE_HAND]);
+	spawnType = p_inv->object->spawnType;
+
+	//Remove current item
+	InventoryDestroyItemInMouseHand();
+
+	r_inv = GetFirstItemFromInventory(spawnType);
+
+	//equip next
+	if (r_inv != NULL)
+	{	
+		InventoryRemoveObjectFromInventory(INVENTORY_PLAYER, spawnType, 1);
+		InventoryCreateObjectInHand(spawnType);
+	}
+
+	DebugEnd();
+}
 
 T_void InventoryDestroyItemInMouseHand (T_void)
 {

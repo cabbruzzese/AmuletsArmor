@@ -211,6 +211,7 @@ T_void InventorySetMouseHandPointer(T_doubleLinkListElement element);
 T_void InventoryClearObjectInMouseHand(T_void);
 T_void InventorySetObjectInMouseHand(T_doubleLinkListElement element);
 T_void InventoryDestroyItemInMouseHand(T_void);
+T_void InventoryDestroyItemInMouseHandAndReload(T_void);
 T_void InventoryAutoStoreItemInMouseHand(T_void);
 E_Boolean InventoryAutoEquipItemInMouseHand(T_void);
 
