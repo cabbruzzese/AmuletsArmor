@@ -159,14 +159,19 @@ E_Boolean Effect(E_effectType effecttype,
 	        ClientSyncSendActionAreaSound(SOUND_SHEATH_DAGGER,500, FALSE);
 			
 			
-			//base weapon damage (accuracy * damage / 2) * dmg mod
-			//dmg = (T_sword16)(G_activeStats->Attributes[ATTRIBUTE_ACCURACY] * (T_word16)((float)data2 / 2));
-			//power = (T_word16)((float)dmg * CreateClassDatas[G_activeStats->ClassType]->DamageModifier);
-
 			if (p_owner!=NULL)
 				p_object=(T_3dObject *)p_owner;
 
-			p_object->spawnType = p_object->objectType;
+			//Breakage based on damage
+			//12 damage (6 in game) and higher weapons never break. The rest range between 80% and 99%
+			//  (Damage is 1/2 in game. So 12 and higher never break)
+			//  Iron weapons are 6 damage. 6 is 20% of 30. And so 6 is 80%.
+			//  30 - 12 is 18. So all values are +18. Making 6 + 18 = 24 (80%) and 12 + 18 = 30 (100%)
+			//	
+			//  0 damage weapons are magical, they should never break
+			p_object->spawnType = 0;
+			if (data2 == 0 || (rand()%30 <= (data2 + 18)))
+				p_object->spawnType = p_object->objectType;
 
 			data1 = EFFECT_BOLT_NORMAL;
 

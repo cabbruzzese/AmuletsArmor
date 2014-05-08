@@ -850,25 +850,32 @@ T_void InventoryDestroyItemInMouseHandAndReload (T_void)
 {
 	T_inventoryItemStruct *p_inv=NULL;
 	T_inventoryItemStruct *r_inv=NULL;
-	T_word16 spawnType;
+	T_word16 objType;
+	T_sword16 weight;
 	//T_inventoryItemStruct *r_inv2;
 
 	DebugRoutine ("InventoryDestroyItemInMouseHandAndReload");
 
 	//Check if another similar item exists
 	p_inv = (T_inventoryItemStruct *)DoubleLinkListElementGetData(G_inventoryLocations[EQUIP_LOCATION_MOUSE_HAND]);
-	spawnType = p_inv->object->spawnType;
+
+	//copy needed values before destroying object
+	weight = -ObjectGetWeight(p_inv->object);
+	objType = p_inv->object->objectType;
 
 	//Remove current item
 	InventoryDestroyItemInMouseHand();
-
-	r_inv = GetFirstItemFromInventory(spawnType);
-
+	
+	r_inv = GetFirstItemFromInventory(objType);
 	//equip next
 	if (r_inv != NULL)
 	{	
-		InventoryRemoveObjectFromInventory(INVENTORY_PLAYER, spawnType, 1);
-		InventoryCreateObjectInHand(spawnType);
+		//remove one of the items and copy it into the hand
+		InventoryRemoveObjectFromInventory(INVENTORY_PLAYER, objType, 1);
+		InventoryCreateObjectInHand(objType);
+
+		//remove weight of item being duplicated
+		StatsChangePlayerLoad (weight);
 	}
 
 	DebugEnd();
@@ -5245,6 +5252,28 @@ E_Boolean InventoryWeaponIsBow (T_void)
     return (isBow);
 }
 
+T_byte8 InventoryFindWeaponDamage(T_inventoryItemStruct *p_inv)
+{
+	T_byte8 retvalue = 0;
+	int i;
+	DebugRoutine("InventoryFindWeaponDamage");
+
+	if (ObjectIsWeapon(p_inv->object))
+	{
+		for (i=0;i<MAX_ITEM_EFFECTS;i++)
+		{
+			if (p_inv->itemdesc.effectTriggerOn[i]==EFFECT_TRIGGER_READY)
+			{
+				retvalue = (T_byte8)p_inv->itemdesc.effectData[i][2];
+			}
+		}
+	}
+	//EFFECT_READY_WEAPON
+
+	DebugEnd();
+
+	return 0;
+}
 
 /* @} */
 /*-------------------------------------------------------------------------*

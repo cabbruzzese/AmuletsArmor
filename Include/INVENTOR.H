@@ -139,6 +139,8 @@ T_void InventoryUseItemInReadyHand(T_buttonID buttonID);
 E_Boolean InventoryCanUseItem(T_inventoryItemStruct *p_inv);
 T_void InventoryUseItem(T_inventoryItemStruct *p_inv);
 
+T_byte8 InventoryFindWeaponDamage(T_inventoryItemStruct *p_inv);
+
 E_Boolean InventoryCanTakeItem(T_3dObject *item);
 E_Boolean InventoryTakeItemFromWorld(T_3dObject *item, E_Boolean autoStore);
 T_void InventoryAutoTakeObject(T_3dObject *p_obj);
