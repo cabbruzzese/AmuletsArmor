@@ -591,7 +591,7 @@ T_spellStruct NinjaSkillSpells[9] =
 	},
 	{ // poison hands
 		0,0,0,0,0,0,0,0,
-		0,0,2000
+		0,0,1500
 	},
 	{ // lava walk
 		0,0,0,0,0,0,0,0,
@@ -603,11 +603,11 @@ T_spellStruct NinjaSkillSpells[9] =
 	},
 	{ // spirit warrior stat 1
 		0,0,0,0,0,0,0,0,
-		0,0,4000
+		0,0,3500
 	},
 	{ // spirit warrior stat 2
 		0,0,0,0,0,0,0,0,
-		0,0,4000
+		0,0,3500
 	}
 };
 
@@ -1403,11 +1403,11 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 		
 		//ariticial leveling for debugging. Can only exist in debug
 #ifndef NDEBUG
-		/*if (G_curspell[0] == 0)
-		{
-			StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
-			StatsChangePlayerMana(StatsGetPlayerMaxMana());
-		}*/
+		//if (G_curspell[0] == 0)
+		//{
+			//StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
+			//StatsChangePlayerMana(StatsGetPlayerMaxMana());
+		//}
 #endif
 
 		if (StatsGetPlayerSkillLogic()->UsesSpells == FALSE)

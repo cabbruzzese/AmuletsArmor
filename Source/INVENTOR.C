@@ -4803,14 +4803,6 @@ T_void InventorySetDefaultInventoryForClass(T_void)
     /* Add 'spell group listing' page */
     StatsAddPlayerNotePage(99);
 
-    /* spells for regular version */
-	//if (StatsGetPlayerSkillSystem() == SPELL_SYSTEM_MAGE && StatsGetPlayerClassType() == CLASS_BARBARIAN)
-	//{
-		//StatsAddPlayerNotePage(100); /* Deflect */
-        //StatsAddPlayerNotePage(125); /* Wolf Speed */
-        //StatsAddPlayerNotePage(131); /* Giant Strength */
-	//}
-	//else 
 	if (StatsGetPlayerSkillSystem() == SKILL_SYSTEM_MAGIC_MAGE)
     {
         StatsAddPlayerNotePage(100); /* Deflect */
