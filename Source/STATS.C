@@ -205,16 +205,11 @@ T_void StatsCalcClassStats (T_void)
    /* calculate maxvwalking */
    StatsCalcPlayerMovementSpeed();
 
-   G_activeStats->RegenHealth = G_activeStats->Attributes[ATTRIBUTE_CONSTITUTION]*
-                                (G_activeStats->Level+5);
-
-   G_activeStats->RegenMana = G_activeStats->Attributes[ATTRIBUTE_MAGIC]*
-                              (G_activeStats->Level+5);
+   StatsRestoreRegenValues();
+   
    /* set some class specific bonuses */
    
    classtypeid = StatsGetPlayerClassType();
-   G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[classtypeid].RegenHealthModifier);
-   G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[classtypeid].RegenManaModifier);
    G_activeStats->JumpPower = (T_sword16)((float)G_activeStats->JumpPower * CreateClassDatas[classtypeid].JumpModifier);
    
    /* set class name / title */
@@ -923,14 +918,7 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
             if (G_activeStats->MaxMana > 30000) G_activeStats->MaxMana = 30000;
 
             /* update regeneration rates */
-            G_activeStats->RegenHealth = G_activeStats->Attributes[ATTRIBUTE_CONSTITUTION]*
-                                         (G_activeStats->Level+5);
-
-            G_activeStats->RegenMana = G_activeStats->Attributes[ATTRIBUTE_MAGIC]*
-                                       (G_activeStats->Level+5);
-            G_activeStats->RegenHealth = (T_sword16)((float)G_activeStats->RegenHealth * CreateClassDatas[G_activeStats->ClassType].RegenHealthModifier);
-		    G_activeStats->RegenMana = (T_sword16)((float)G_activeStats->RegenMana * CreateClassDatas[G_activeStats->ClassType].RegenManaModifier);
-
+            StatsLevelRegenValues(old_attributes[ATTRIBUTE_CONSTITUTION], old_attributes[ATTRIBUTE_MAGIC]);
 
             /* update max load */
             StatsCalcPlayerMaxLoad();
@@ -977,6 +965,85 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
     DebugEnd();
 }
 
+T_sword16 StatsCalcRegenHealth (T_byte8 stat, T_byte8 level)
+{
+	T_sword16 retval;
+
+	DebugRoutine("StatsCalcRegenHealth");
+
+    retval = stat * (level + 5);
+    retval = (T_sword16)((float)retval * CreateClassDatas[G_activeStats->ClassType].RegenHealthModifier);
+
+	DebugEnd();
+
+	return retval;
+}
+T_sword16 StatsCalcRegenHealthDiff (T_byte8 stat, T_byte8 level)
+{
+	T_sword16 retval;
+
+	DebugRoutine("StatsCalcRegenHealthDiff");
+
+	retval = G_activeStats->RegenHealth - StatsCalcRegenHealth(stat, level);
+
+	DebugEnd();
+
+	return retval;
+}
+
+T_sword16 StatsCalcRegenMana (T_byte8 stat, T_byte8 level)
+{
+	T_sword16 retval;
+
+	DebugRoutine("StatsCalcRegenMana");
+
+    retval = stat * (level + 5);
+	retval = (T_sword16)((float)retval * CreateClassDatas[G_activeStats->ClassType].RegenManaModifier);
+
+	DebugEnd();
+
+	return retval;
+}
+
+T_sword16 StatsCalcRegenManaDiff (T_byte8 stat, T_byte8 level)
+{
+	T_sword16 retval;
+
+	DebugRoutine("StatsCalcRegenManaDiff");
+
+	retval = G_activeStats->RegenMana - StatsCalcRegenMana(stat, level);
+
+	DebugEnd();
+
+	return retval;
+}
+
+T_void StatsRestoreRegenValues()
+{
+	DebugRoutine("StatsRestoreRegenValues");
+
+	/* update regeneration rates */
+	G_activeStats->RegenHealth = StatsCalcRegenHealth(G_activeStats->Attributes[ATTRIBUTE_CONSTITUTION], G_activeStats->Level);
+	G_activeStats->RegenMana = StatsCalcRegenMana(G_activeStats->Attributes[ATTRIBUTE_MAGIC], G_activeStats->Level);
+
+	DebugEnd();
+}
+
+T_void StatsLevelRegenValues (T_byte8 con, T_byte8 magic)
+{
+	T_sword16 healthDiff, manaDiff;
+	DebugRoutine("StatsLevelRegenValues");
+
+	healthDiff = StatsCalcRegenHealthDiff(con, G_activeStats->Level - 1);
+	manaDiff = StatsCalcRegenManaDiff(magic, G_activeStats->Level - 1);
+
+	StatsRestoreRegenValues();
+
+	G_activeStats->RegenHealth += healthDiff;
+	G_activeStats->RegenMana += manaDiff;
+
+	DebugEnd();
+}
 
 T_void StatsChangePlayerLoad (T_sword16 amt)
 {
@@ -3401,9 +3468,12 @@ E_Boolean StatsLoadCharacter (T_byte8 selected)
             fread (G_activeStats,sizeof(T_playerStats),1,fin);
             /* get the inventory items */
             InventoryReadItemsList(fin);
-            fclose (fin);
+            fclose (fin); 
             G_activeCharacter=selected;
             G_lastLoadedCharacter = selected ;
+
+			//Recalculate regen values
+			StatsRestoreRegenValues();
 
             /* LES: 03/28/96 */
             /* Update all the equiped body parts. */

@@ -332,6 +332,13 @@ E_Boolean StatsSaveCharacter(T_byte8 selected);
 E_Boolean StatsDeleteCharacter(T_byte8 selected);
 T_void StatsUnloadCharacter(T_void) ;
 
+T_sword16 StatsCalcRegenHealth (T_byte8 stat, T_byte8 level);
+T_sword16 StatsCalcRegenHealthDiff (T_byte8 stat, T_byte8 level);
+T_sword16 StatsCalcRegenMana (T_byte8 stat, T_byte8 level);
+T_sword16 StatsCalcRegenManaDiff (T_byte8 stat, T_byte8 level);
+T_void StatsRestoreRegenValues(T_void);
+T_void StatsLevelRegenValues (T_byte8 con, T_byte8 magic);
+
 T_void StatsSetPassword(
            T_byte8 selected,
            T_byte8 password[MAX_SIZE_PASSWORD]) ;
