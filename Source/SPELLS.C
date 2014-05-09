@@ -211,6 +211,12 @@ T_void SkillLogicsInitialize(T_void)
 	G_SkillLogics[SKILL_SYSTEM_NINJA].UsesSpells = FALSE;
 	G_SkillLogics[SKILL_SYSTEM_NINJA].CanPickupRunes = FALSE;
 	G_SkillLogics[SKILL_SYSTEM_NINJA].RuneType = SPELL_SYSTEM_MAGE;
+	//Necro
+	G_SkillLogics[SKILL_SYSTEM_NECRO].UsesRunes = TRUE;
+	G_SkillLogics[SKILL_SYSTEM_NECRO].IsMultiRune = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NECRO].UsesSpells = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NECRO].CanPickupRunes = FALSE;
+	G_SkillLogics[SKILL_SYSTEM_NECRO].RuneType = SPELL_SYSTEM_MAGE;
 
 	DebugEnd();
 }
@@ -662,6 +668,297 @@ T_spellStruct MonkSkillSpells[12] =
 		0,0,3000
 	}
 };
+
+T_spellStruct NecroSkillSpells[11] =
+{
+	{ // Necrosis 
+		0,0,0,0,0,0,0,0,
+		0,0,1500
+	},
+	{ // Necrosis 
+		0,0,0,0,0,0,0,0,
+		0,0,1500
+	},
+	{ // Necrosis 
+		0,0,0,0,0,0,0,0,
+		0,0,1500
+	},
+	{ // ghost form 
+		0,0,0,0,0,0,0,0,
+		0,0,3500
+	},
+	{ // ghost form 
+		0,0,0,0,0,0,0,0,
+		0,0,3500
+	},
+	{ // ghost form 
+		0,0,0,0,0,0,0,0,
+		0,0,6000
+	},
+	{ // demon form 
+		0,0,0,0,0,0,0,0,
+		0,0,6000
+	},
+	{ // demon form 
+		0,0,0,0,0,0,0,0,
+		0,0,6000
+	},
+	{ // demon form 
+		0,0,0,0,0,0,0,0,
+		0,0,6000
+	},
+	{ // demon form 
+		0,0,0,0,0,0,0,0,
+		0,0,6000
+	},
+	{ // the bargain
+		0,0,0,0,0,0,0,0,
+		0,0,1000
+	}
+};
+
+T_void PerformNecroSkill(T_byte8 runenum)
+{
+	E_Boolean skillsucess = FALSE;
+	E_Boolean failpenalty = FALSE;
+	T_sword16 spellcost = 0;
+	T_sword16 spellpower = 0;
+	T_sword16 spellduration = 0;
+	T_sword32 manaleft;
+	DebugRoutine("PerformNecroSkill");
+
+	manaleft = StatsGetManaLeft();
+	switch (runenum)
+	{
+		case KEY_SCAN_CODE_KEYPAD_1:
+			spellpower = (T_sword16)(2.5 * StatsGetPlayerMagicTotal());
+			spellduration = 0;
+			spellcost = 1000 - spellpower;
+			if (spellcost < 500)
+				spellcost = 500;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Arrow of Pain Activated");
+				Effect (EFFECT_CREATE_PROJECTILE,
+					EFFECT_TRIGGER_CAST,
+					EFFECT_MISSILE_LIGHTNING_BOLT,
+					spellduration,
+					spellpower,
+					NULL);
+
+				skillsucess = TRUE;
+			}
+			break;
+
+		case KEY_SCAN_CODE_KEYPAD_2:
+			spellpower = 600;
+			spellduration = 0;
+			spellcost = 300;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Escape Activated");
+
+				Effect (EFFECT_JUMP_FORWARD,
+						EFFECT_TRIGGER_CAST,
+						0,
+						0,
+						spellpower,
+						NULL);
+
+				skillsucess = TRUE;
+			}
+			break;
+
+		case KEY_SCAN_CODE_KEYPAD_3:
+			spellpower = 0;
+			spellduration = (100 * StatsGetPlayerMagicTotal());
+			spellcost = NecroSkillSpells[0].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Necrosis Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_POISON_ATTACK,
+					spellduration,
+					1,
+					&NecroSkillSpells[0]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_ACID_ATTACK,
+					spellduration,
+					1,
+					&NecroSkillSpells[1]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_MANA_DRAIN_ATTACK,
+					spellduration,
+					1,
+					&NecroSkillSpells[2]);
+
+				skillsucess = TRUE;	
+			}
+			break;
+
+		case KEY_SCAN_CODE_KEYPAD_4:
+			spellpower = 1;
+			spellduration = 150 * StatsGetPlayerMagicTotal();
+			spellcost = NinjaSkillSpells[4].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Summon Ghost Activated");
+				/*Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_POISON_ATTACK,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[4]);*/
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_5:
+			spellpower = (T_sword16)(3 * StatsGetPlayerMagicTotal());
+			spellduration = 180;
+			spellcost = 2000;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Foul Air Activated");
+				Effect (EFFECT_AREA_OF_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					EFFECT_DAMAGE_POISON,
+					spellduration,
+					spellpower,
+					NULL);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_6:
+			spellpower = 0;
+			spellduration = 100 * StatsGetPlayerMagicTotal();
+			spellcost = NecroSkillSpells[3].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Ghost Form Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_FLY,
+					spellduration,
+					spellpower,
+					&NecroSkillSpells[3]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_INVISIBLE,
+					spellduration,
+					spellpower,
+					&NecroSkillSpells[4]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_PIERCING_ATTACK,
+					spellduration,
+					spellpower,
+					&NecroSkillSpells[5]);
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_7:
+			spellpower = 25;
+			spellduration = (75 * StatsGetPlayerSpeedTotal()) + (75 * StatsGetPlayerMagicTotal());
+			spellcost = NinjaSkillSpells[6].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Summon Skeleton Activated");
+				/*Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_SPEED_MOD,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[6]);*/
+
+				skillsucess = TRUE;
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_8:
+			spellpower = 0;
+			spellduration = (100 * StatsGetPlayerMagicTotal());
+			spellcost = NecroSkillSpells[6].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Demon Form Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_FIRE_ATTACK,
+					spellduration,
+					spellpower,
+					&NecroSkillSpells[6]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_LAVA_WALK,
+					spellduration,
+					1,
+					&NecroSkillSpells[7]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_STRENGTH_MOD,
+					spellduration,
+					50,
+					&NecroSkillSpells[8]);
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_SPEED_MOD,
+					spellduration,
+					50,
+					&NecroSkillSpells[9]);
+
+				skillsucess = TRUE;	
+			}
+			break;
+		case KEY_SCAN_CODE_KEYPAD_9:
+			spellpower = 0;
+			spellduration = (100 * StatsGetPlayerMagicTotal());
+			spellcost = NecroSkillSpells[10].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("The Bargain Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_DEATH_WARD,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[10]);
+
+				skillsucess = TRUE;
+			}
+			break;
+	}
+
+	if (skillsucess == TRUE)
+	{
+		StatsChangePlayerMana (-(spellcost));
+		StatsChangePlayerHeartBeat(HEARTRATE_SPELL);
+	}
+	else if (failpenalty == TRUE && manaleft >= spellcost)
+	{
+		MessageAdd("Skill failed.");
+		StatsChangePlayerMana (-(spellcost / 2));
+		StatsChangePlayerHeartBeat(HEARTRATE_SPELL_FAIL);
+	}
+	else if (spellcost > 0)
+	{
+		MessageAdd("Too exhausted to perform skill.");
+	}
+	DebugEnd();
+}
 
 T_void PerformNinjaSkill(T_byte8 runenum)
 {
@@ -1126,7 +1423,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 				spellcost = manaleft;
 				spellpower = spellcost / 140;
 			
-				MessageAdd("Battle rage activated");
+				MessageAdd("Battle rage Activated");
 				//strength boost
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
 						EFFECT_TRIGGER_CAST,
@@ -1155,7 +1452,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Break Free activated");
+				MessageAdd("Break Free Activated");
 
 				Effect(EFFECT_AREA_OF_EFFECT,
 						EFFECT_TRIGGER_CAST,
@@ -1175,7 +1472,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Giant Leap activated");
+				MessageAdd("Giant Leap Activated");
 
 				Effect (EFFECT_PLAYER_LEAP,
 						EFFECT_TRIGGER_CAST,
@@ -1195,7 +1492,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Attract activated");
+				MessageAdd("Attract Activated");
 
 				Effect (EFFECT_CREATE_PROJECTILE,
 						EFFECT_TRIGGER_CAST,
@@ -1215,7 +1512,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Hurl Insults activated");
+				MessageAdd("Hurl Insults Activated");
 
 				Effect (EFFECT_CREATE_PROJECTILE,
 						EFFECT_TRIGGER_CAST,
@@ -1235,7 +1532,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Smash Armor activated");
+				MessageAdd("Smash Armor Activated");
 
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
 						EFFECT_TRIGGER_CAST,
@@ -1255,7 +1552,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Shout of Courage activated");
+				MessageAdd("Shout of Courage Activated");
 
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
 						EFFECT_TRIGGER_CAST,
@@ -1275,7 +1572,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Rush activated");
+				MessageAdd("Rush Activated");
 
 				Effect (EFFECT_JUMP_FORWARD,
 						EFFECT_TRIGGER_CAST,
@@ -1295,7 +1592,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Fury of the Gods activated");
+				MessageAdd("Fury of the Gods Activated");
 
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
 						EFFECT_TRIGGER_CAST,
@@ -1354,6 +1651,9 @@ T_void SkillsCastSpell (T_void)
 	case SKILL_SYSTEM_MONK:
 		PerformMonkSkill(runenum);
 		break;
+	case SKILL_SYSTEM_NECRO:
+		PerformNecroSkill(runenum);
+		break;
 	default:
 		break;
 	}
@@ -1403,11 +1703,11 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 		
 		//ariticial leveling for debugging. Can only exist in debug
 #ifndef NDEBUG
-		//if (G_curspell[0] == 0)
-		//{
-			//StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
-			//StatsChangePlayerMana(StatsGetPlayerMaxMana());
-		//}
+		if (G_curspell[0] == 0)
+		{
+			StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
+			StatsChangePlayerMana(StatsGetPlayerMaxMana());
+		}
 #endif
 
 		if (StatsGetPlayerSkillLogic()->UsesSpells == FALSE)

@@ -27,7 +27,8 @@ typedef enum
 	SKILL_SYSTEM_MAGIC_ARCANE,
 	SKILL_SYSTEM_BARBARIAN,
 	SKILL_SYSTEM_MONK,
-	SKILL_SYSTEM_NINJA
+	SKILL_SYSTEM_NINJA,
+	SKILL_SYSTEM_NECRO
 } E_skillSystemType;
 
 typedef struct
@@ -39,7 +40,7 @@ typedef struct
 	E_spellsSpellSystemType RuneType;
 } T_SkillLogic;
 
-T_SkillLogic G_SkillLogics[SKILL_SYSTEM_NINJA + 1];
+T_SkillLogic G_SkillLogics[SKILL_SYSTEM_NECRO + 1];
 T_void SkillLogicsInitialize(T_void);
 
 typedef enum

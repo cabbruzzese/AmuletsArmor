@@ -350,6 +350,11 @@ E_Boolean Effect(E_effectType effecttype,
 				ColorAddGlobal (15,15,7);
 				SoundPlayByNumber(SOUND_PLAYER_WAR_CRY_SET+(rand()%3),255);
 			}
+			else if (data1 == EFFECT_DAMAGE_POISON)
+			{
+				ColorAddGlobal (0,25,0);
+				ClientSyncSendActionAreaSound(1008,500,FALSE);
+			}
 			break;
 
         case EFFECT_CREATE_PROJECTILE:

@@ -12,7 +12,7 @@
 #define MAXLEVELTITLELENGTH 128
 #define MAXITEMNAMELENGTH	64
 
-#define NUM_CLASSES 14
+#define NUM_CLASSES 15
 #define NUM_ATTRIBUTES 6 //Str, Spd, Mgc, Acc, Stl, Con
 #define NUM_TITLES_PER_CLASS 20
 #define NUM_ARMOR_TYPES 3
@@ -33,6 +33,7 @@ typedef enum
 	CLASS_BARBARIAN,
 	CLASS_MONK,
 	CLASS_NINJA,
+	CLASS_NECRO,
     CLASS_UNKNOWN
 } E_statsClassType;
 
@@ -45,13 +46,13 @@ typedef enum
 
 typedef struct {
 	char name[MAXITEMNAMELENGTH];
-	T_word16 num;
+	T_word32 num;
 }ItemListEntry;
 ItemListEntry ItemList[128];
 int ItemListCount;
 
 typedef struct {
-	T_word16 num;
+	T_word32 num;
 	T_byte8 count;
 } StartingItemData;
 
