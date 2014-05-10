@@ -33,6 +33,8 @@
 #include "SYNCTIME.H"
 #include "TICKER.H"
 #include "VIEWFILE.H"
+#include "EFX.H"
+#include "SYNCMEM.H"
 
 #define MAX_PLAYERS 4
 #define SYNC_TIMING (70*1)
@@ -187,6 +189,90 @@ T_3dObject *ServerProjectileAdd(
     DebugEnd ();
 
     return p_obj ;
+}
+
+T_3dObject *ServerPerformSummonMonster(
+          T_3dObject *p_objSource,
+          T_word16 angle,
+          T_word16 type,
+		  T_word16 duration,
+          T_3dObject *p_target)
+{
+	T_3dObject *p_obj ;
+    T_sword32 x, y ;
+	T_sword32 obj_x, obj_y, obj_z;
+	T_word16 obj_ownerObjID, spawnchecks;
+	E_Boolean goodPos;
+	T_doubleLinkListElement element ;
+    T_creatureState *p_creature ;
+
+	DebugRoutine("ServerPerformSummonMonster");
+
+	goodPos = FALSE;
+	spawnchecks = 0;
+	while(goodPos == FALSE && spawnchecks < 60)
+	{
+		ObjectGetForwardPosition(
+			 p_objSource,
+			 100,
+			 &x,
+			 &y) ;
+
+		obj_x = (x>>16) ;
+		obj_y = (y>>16) ;
+		obj_z = ObjectGetZ16(p_objSource) + 10;
+
+		//Adjust position on subsequent tries
+		obj_x += (T_word16)(goodPos / 5) * 25;
+		obj_y += (goodPos % 5) * 25;
+		
+		goodPos = TRUE;
+		if (Collide3dObjectToXYCheckLineOfSightWithZ(
+						  p_objSource,
+						  obj_x,
+						  obj_y,
+						  obj_z) == TRUE)  
+		{
+			goodPos = FALSE;	
+		}
+
+		spawnchecks ++;
+	}
+
+	//if can't find a spawn location close enough, dump out
+	if (goodPos == FALSE)
+	{
+		DebugEnd();
+		MessageAdd("Monster Couldn't Spawn");
+		return NULL;
+	}
+
+	obj_ownerObjID = ObjectGetServerId(p_objSource) ;
+
+	p_obj = ServerCreateObjectGlobal(type, obj_x, obj_y, obj_z);
+	p_obj->ownerID = obj_ownerObjID;
+
+	//Looks like we are attacking.
+    if ((ObjectGetStance(p_obj) == STANCE_STAND) || (ObjectGetStance(p_obj) == STANCE_WALK))  
+        ObjectSetStance(p_obj, STANCE_ATTACK) ; 
+
+	//set monster timeout to duration	
+    element = ICreatureFindViaObjectPtr(p_obj) ;
+    if (element != DOUBLE_LINK_LIST_ELEMENT_BAD)  
+	{
+        p_creature = (T_creatureState *)DoubleLinkListElementGetData(element);
+		if (duration > 0)
+		{
+			p_creature->healthDecayRate = (T_word16)((float)p_creature->p_logic->hitPoints / (float)duration);
+			if (p_creature->healthDecayRate < 1)
+				p_creature->healthDecayRate = 1;
+		}
+	}
+
+
+	DebugEnd();
+
+	return p_obj;
 }
 
 //Finds enemies in range and dishes out effect

@@ -666,6 +666,37 @@ static T_void IClientSyncDoPlayerAction(
 				p_actionData[1],
 				p_actionData[2],
 				p_actionData[3]);
+
+			/* Alert creatures of my attack. */
+			if (!p_playerObj->attributes & OBJECT_ATTR_STEALTHY)
+				CreaturesHearSoundOfPlayer(p_playerObj, 1500) ;
+			break;
+		case PLAYER_ACTION_SUMMON_MONSTER:
+			/* Determine if we have a target and what angle to target. */
+            if (p_actionData[1] != 0)  {
+                p_target = ObjectFind(p_actionData[1]) ;
+                if (p_target)  {
+                    angle =
+                        MathArcTangent(
+                            ObjectGetX16(p_target) - ObjectGetX16(p_playerObj),
+                            ObjectGetY16(p_target) - ObjectGetY16(p_playerObj)) ;
+                } else {
+                    angle = ObjectGetAngle(p_playerObj) ;
+                }
+            } else {
+                p_target = NULL ;
+                angle = ObjectGetAngle(p_playerObj) ;
+            }			           
+
+			ServerPerformSummonMonster(p_playerObj,
+                angle,
+				p_actionData[0], /*monster type*/
+				p_actionData[2], //duration
+                (p_actionData[1] != 0) ? ObjectFind(p_actionData[1]) : NULL);
+
+			/* Alert creatures of my attack. */
+			if (!p_playerObj->attributes & OBJECT_ATTR_STEALTHY)
+				CreaturesHearSoundOfPlayer(p_playerObj, 1500) ;
 			break;
         case PLAYER_ACTION_ACTIVATE_FORWARD:
             MapGetForwardWallActivationType(
@@ -1077,6 +1108,23 @@ T_void ClientSyncSendActionAreaOfEffect(
         range,
         power,
 		0) ;
+
+    DebugEnd() ;
+}
+
+T_void ClientSyncSendSummonMonster(
+           T_word16 monstertype,
+           T_word16 target,
+		   T_word16 duration)
+{
+	DebugRoutine("ClientSyncSendSummonMonster") ;
+
+    IClientSyncSendAction(
+        PLAYER_ACTION_SUMMON_MONSTER,
+        monstertype,
+        target,
+        duration,
+        0) ;
 
     DebugEnd() ;
 }

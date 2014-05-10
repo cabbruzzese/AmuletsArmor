@@ -389,6 +389,48 @@ T_void ClientDoAreaOfeffect(T_word16 type,
 	DebugEnd();
 }
 
+T_void ClientSummonMonster(
+        T_word16 duration,
+        T_word16 monstertype,
+		T_void* p_owner)
+{
+    T_3dObject *p_target ;
+    T_word16 target ;
+	T_3dObject *p_object;
+
+    DebugRoutine("ClientSummonMonster") ;
+
+	if (p_owner)
+		p_object=(T_3dObject *)p_owner;
+	else
+		p_object=NULL;
+
+    if (ClientIsInView())
+    {
+        G_attackComplete = FALSE ;
+
+        /* See if there is a target in view. */
+        p_target = ViewGetMiddleTarget() ;
+        /* If we have a target and it is passable, don't target it. */
+        if (p_target)  {
+            if (ObjectIsPassable(p_target))
+                p_target = NULL ;
+            if (!((ObjectIsCreature(p_target)) || (ObjectIsPlayer(p_target))))
+                p_target = NULL ;
+        }
+        if (p_target)
+            target = ObjectGetServerId(p_target) ;
+        else
+            target = 0 ;
+
+		ClientSyncSendSummonMonster(
+            monstertype,
+            target,
+			duration);
+    }
+    DebugEnd() ;
+}
+
 /* LES: 06/12/96 Created. */
 T_void ClientCreateProjectile (
            E_effectMissileType type,

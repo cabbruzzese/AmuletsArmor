@@ -23,6 +23,11 @@ T_void ClientSyncSendActionMeleeAttack(
            E_effectDamageType damageType,
            T_word16 target) ;
 
+T_void ClientSyncSendSummonMonster(
+           T_word16 monstertype,
+           T_word16 target,
+		   T_word16 duration);
+
 T_void ClientSyncSendActionMissileAttack(
            T_word16 missileType,
            T_word16 target,

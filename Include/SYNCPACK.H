@@ -70,7 +70,8 @@ typedef T_byte8 T_playerAction ;
 #define PLAYER_ACTION_PICK_LOCK             18
 #define PLAYER_ACTION_ID_SELF               19
 #define PLAYER_ACTION_AREA_OF_EFFECT		20
-#define PLAYER_ACTION_UNKNOWN               21
+#define PLAYER_ACTION_SUMMON_MONSTER		21
+#define PLAYER_ACTION_UNKNOWN               22
 
 /* Fully available SYNC packet.  Only data elements that change are sent. */
 typedef struct {

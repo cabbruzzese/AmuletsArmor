@@ -91,25 +91,7 @@ typedef struct {
     E_Boolean init ;
 } T_creaturesStruct ;
 
-typedef enum {
-    NAV_LOGIC_PKG_NONE,
-    NAV_LOGIC_PKG_BERSERKER_A,
-    NAV_LOGIC_PKG_BERSERKER_B,
-    NAV_LOGIC_PKG_BARBARIAN_GUARD,
-    NAV_LOGIC_PKG_BARBARIAN_ARCHER,
-    NAV_LOGIC_PKG_NEUTRAL_WANDERER,
-    NAV_LOGIC_PKG_SCAREDY_CAT,
-    NAV_LOGIC_PKG_ROAMING_GUARD,
-    NAV_LOGIC_PKG_COMBO_FIGHTER_ARCHER,
-    NAV_LOGIC_PKG_BARBARIAN_ARCHER_B,
-    NAV_LOGIC_PKG_DIPPER,
-    NAV_LOGIC_PKG_TELEPORTER,
-    NAV_LOGIC_PKG_HOMING,
-    NAV_LOGIC_PKG_STRAIGHT_LINE,
-    NAV_LOGIC_PKG_CLOUD,
-    NAV_LOGIC_PKG_APPROACH_AND_SHOOT,
-    NAV_LOGIC_PKG_UNKNOWN
-} E_navigateLogicPackage ;
+
 
 typedef enum {
     TARGET_LOGIC_STATE_DO_NOTHING,
@@ -119,106 +101,11 @@ typedef enum {
     TARGET_LOGIC_STATE_UNKNOWN
 } E_targetLogicState ;
 
-typedef enum {
-    TARGET_LOGIC_PACKAGE_NONE,
-    TARGET_LOGIC_PACKAGE_STANDARD_HIT_OR_SHOOT,
-    TARGET_LOGIC_PACKAGE_SUICIDE_EXPLOSION,
-    TARGET_LOGIC_PACKAGE_EXPLODE_ON_COLLISION,
-    TARGET_LOGIC_PACKAGE_SCREAM,
-    TARGET_LOGIC_PACKAGE_SUMMON_CREATURE,
-    TARGET_LOGIC_PACKAGE_CONSTANT_DAMAGE,
-    TARGET_LOGIC_PACKAGE_UNKNOWN
-} E_targetLogicPackage ;
 
-typedef enum {
-    DEATH_LOGIC_NONE,
-    DEATH_LOGIC_SINK,
-    DEATH_LOGIC_FAST_DISAPPEAR,
-    DEATH_LOGIC_NORMAL_DECAY,
-    DEATH_LOGIC_UNKNOWN
-} E_deathLogic ;
 
-typedef T_void (*T_monsterUpdateCallback)(T_void *p_data) ;
 
-typedef enum {
-    TREASURE_TYPE_NONE,
-    TREASURE_TYPE_1_PLAT,
-    TREASURE_TYPE_1_GOLD,
-    TREASURE_TYPE_1_SILVER,
-    TREASURE_TYPE_5_COPPER,
-    TREASURE_TYPE_SHADOW,
-    TREASURE_TYPE_LICH,
-    TREASURE_TYPE_EXIGUUS, /* Cemetary wizard */
-    TREASURE_TYPE_BAD_KNIGHT,
-    TREASURE_TYPE_MITHRIL_BAD_KNIGHT,
-    TREASURE_TYPE_EVIL_ORANGE_WIZARD,
-    TREASURE_TYPE_BLUE_WIZARD,
-    TREASURE_TYPE_DRUID,
-    TREASURE_TYPE_POISON_DRUID,
-    TREASURE_TYPE_EVIL_KNIGHT,
-    TREASURE_TYPE_SILVER_EVIL_KNIGHT,
-    TREASURE_TYPE_ELK,
-    TREASURE_TYPE_ELF_ARCHER,
-    TREASURE_TYPE_VITORIX,
-    TREASURE_TYPE_JUGURTHA,
-    TREASURE_TYPE_EVIL_ARCHER,
-    TREASURE_TYPE_ELYMAS,
-    TREASURE_TYPE_MIGHTY_HUNTER,
-    TREASURE_TYPE_MATTAN,
-    TREASURE_TYPE_MAMMA_DRAGON,
-    TREASURE_TYPE_KOA_FOOTMAN,
-    TREASURE_TYPE_KOA_HORSEMAN,
-    TREASURE_TYPE_BRONZE_EVIL_KNIGHT,
-    TREASURE_TYPE_TROJAN,
-    TREASURE_TYPE_UNKNOWN
-} E_treasureType ;
 
-typedef struct {
-    T_word32 objectType ;
-    E_navigateLogicPackage navigateLogic ;
-    E_targetLogicPackage targetLogic ;
-    E_Boolean canFly ;
-    E_Boolean ignoreWalls ;
-    T_word32 acceleration ;
-    T_word32 maxVelocity ;
-    T_word32 updateTime ;
-    T_word32 stepSize ;
-    T_word32 maxMeleeRange ;
-    T_word32 minMissileRange ;
-    T_word32 maxMissileRange ;
-    T_word32 meleeAttackDelay ;
-    T_word32 missileAttackDelay ;
-    T_word16 hitPoints ;
-    T_word16 regenRate ;
-//    E_effectMissileType missileType ;
-    T_word16 missileType ;
-    E_effectDamageType damageType ;
-    T_word16 meleeDamage;
-    T_monsterUpdateCallback callback ;
-    E_effectDamageType damageResist ;
-    T_word32 hurtHealth ;
-    E_equipArmorTypes armorType ;
-    E_treasureType treasureToDrop ;
-    T_word32 visionField ;
-    T_word32 wanderSound;
-    T_word32 attackSound;
-    T_word32 attackSound2;
-    T_word32 hurtSound;
-    T_word32 hurtSound2;
-    T_word32 targetSound;
-    T_word32 dieSound;
-    T_word16 faceDelay ;
-    E_Boolean explodeOnCollision ;
-    E_Boolean canHurtSelf ;
-    E_deathLogic deathLogic ;
-    T_word16 decayObject ;
-    T_word16 stayOnSectorType ;
-    T_byte8 chanceAttackCreature ;
-    T_byte8 chanceContinueAttack ;
-    T_word16 efxAtDeath ;
-    T_byte8 bloodEffect ;
-    E_Boolean canOpenDoors ;
-} T_creatureLogic ;
+
 
 /* Include in the data of data that makes up the creature logic. */
 #include "credata.h"
@@ -227,14 +114,7 @@ typedef struct {
 #define SCANB_TURN_RATE                10
 #define NUM_UPDATES_DO_BLOCK_MOVEMENT  5
 
-typedef enum {
-    SCANB_FACING_LEFT_90,
-    SCANB_FACING_LEFT_45,
-    SCANB_FACING_MIDDLE,
-    SCANB_FACING_RIGHT_45,
-    SCANB_FACING_RIGHT_90,
-    SCANB_FACING_UNKNOWN
-} E_scanBFacing ;
+
 
 static T_sword16 G_scanBFacingAngleArray[SCANB_FACING_UNKNOWN] = {
                      -INT_ANGLE_90,
@@ -244,124 +124,8 @@ static T_sword16 G_scanBFacingAngleArray[SCANB_FACING_UNKNOWN] = {
                      INT_ANGLE_90
 } ;
 
-typedef enum {
-    SCANB_DIR_TURN_LEFT,
-    SCANB_DIR_TURN_RIGHT
-} E_scanBDir ;
 
-typedef enum {
-    BLOCK_TURN_DIR_NONE,
-    BLOCK_TURN_DIR_LEFT,
-    BLOCK_TURN_DIR_RIGHT,
-    BLOCK_TURN_DIR_UNKNOWN
-} E_blockTurnDir ;
 
-typedef struct {
-    E_Boolean targetAcquired ;
-    T_word32 targetID ;
-    T_sword16 targetX, targetY, targetZ ;
-    T_word32 lastTargetID ;
-    T_word32 targetDistance ;
-    T_word16 targetAngle ; /* Angle is based on map axis, */
-                           /* not creature facing */
-    E_Boolean canSeeTarget ;
-    T_word16 health ;
-    T_creatureLogic *p_logic ;
-    T_word16 objectID ;
-    T_3dObject *p_obj ;
-    T_word32 lastUpdateTime ;
-    E_scanBFacing scanBFacing ;
-    E_scanBDir scanBDir ;
-    T_byte8 scanBCount ;
-    E_Boolean moveBlocked ;
-    E_blockTurnDir blockTurnDir ;
-    T_byte8 blockCount ;
-    T_byte8 faceDelayCount ;
-    E_Boolean targettingActive ;
-    T_word16 meleeDelayCount ;
-    T_word16 missileDelayCount ;
-    T_word16 poisonLevel ;
-    E_Boolean markedForDestroy ;
-
-    /* The following flag is set by IUpdateTarget when the target */
-    /* for the creature is at a position in front of the creature. */
-    E_Boolean canMeleeHitTarget ;
-
-    /* Flag that tells if the creature is running away. */
-    E_Boolean isFleeing ;
-
-    /* Flag telling if the creature is fully dipped into the */
-    /* ground / water. */
-    E_Boolean isDipped ;
-
-    /* Flag telling if the creature is fully out of the water / ground. */
-    E_Boolean isUndipped ;
-
-    /* Note when we died for decaying objects. */
-    T_word32 timeOfDeath ;
-
-    /* Flag to say this creature is immune to all damage. */
-    E_Boolean immuneToDamage ;
-
-    /* Teleport information (if a teleporter) */
-    T_objectGeneratorPosition *p_teleportList ;
-    T_word16 lengthTeleportList ;
-    T_word16 teleportPosition ;
-    T_word32 lastTeleportTime ;
-
-    /* Creature summoning info. */
-    T_word32 timeToSummon ;
-
-    /* Creature is slowed? and how long. */
-    E_Boolean isSlowed ;
-    T_word32 timeSlowEnds ;
-
-    /* Creature is earthbound? and how long. */
-    E_Boolean isEarthbound ;
-    T_word32 timeEarthboundEnds ;
-
-    /* Last time homing worked. */
-    T_word32 timeLastHoming ;
-
-    /* Last time checked for walls. */
-    T_word32 lastWallCheck ;
-
-    /* Area sound attached to object. */
-    T_areaSound areaSound ;
-
-    /* Time of last wandering sound. */
-    T_word32 lastWanderSound ;
-
-    /* Z location of where to hit enemy. */
-    T_sword16 targetAttackZ ;
-
-    /* Delayed attack time (in absolute time) */
-    T_word32 delayedAttackTime ;
-
-    /* Keep track of the last target's view info. */
-    T_lineOfSightLast sight ;
-
-    /* Last location. */
-    T_sword16 lastX, lastY ;
-
-    /* Flag stolen items from this guy. */
-    E_Boolean wasStolenFrom ;
-
-    /* Flag to say if gravity will make this creature fall. */
-    E_Boolean allowFall ;
-
-    /* Time to update berserk state */
-    T_word32 timeCheckBerserk ;
-
-	/*Time before forgetting about hidden enemies*/
-	E_Boolean losingInterest;
-	T_word32 timeTargetInterest;
-
-	float missileDelayMod;
-	T_word16 meleeDamage;
-	E_effectDamageType damageResist;
-
-} T_creatureState ;
 
 /* Callback routine called each time a creature updates based on the */
 /* type of navigation package attached to the creature type. */
@@ -390,7 +154,7 @@ typedef E_Boolean (*T_creatureDeathRoutine)(
 
 /* Internal prototypes: */
 static T_creatureLogic *ICreatureLogicFind(T_word16 objectType) ;
-static T_doubleLinkListElement ICreatureFindViaObjectPtr(T_3dObject *p_obj) ;
+
 
 static T_void INavNone(
                   T_creatureState *p_creature,
@@ -579,6 +343,12 @@ static T_word16 IFindClosestCreature(
                     T_sword16 x,
                     T_sword16 y,
                     T_creatureState *p_exclude) ;
+static T_word16 IFindClosestCreatureInSight(
+                    T_sword16 x,
+                    T_sword16 y,
+                    T_creatureState *p_exclude,
+					E_Boolean checkOwner) ;
+
 
 /* Array of callbacks, one per type of target logic package. */
 static T_creatureTargetRoutine G_creatureTargetRoutineArray[] = {
@@ -618,12 +388,26 @@ static T_creatureDeathRoutine G_creatureDeathRoutine[] = {
 } ;
 
 /* Standard creature scan routine. */
+static T_void ICreatureScanAPerform(
+                  T_creatureState *p_creature,
+                  T_creatureLogic *p_logic,
+                  T_3dObject *p_obj) ;
+static T_void ICreatureScanBPerform(
+                  T_creatureState *p_creature,
+                  T_creatureLogic *p_logic,
+                  T_3dObject *p_obj) ;
+
 static T_player ICreatureScanA(
                   T_creatureState *p_creature,
                   T_creatureLogic *p_logic,
                   T_3dObject *p_obj) ;
 
 static T_void ICreatureScanB(
+                  T_creatureState *p_creature,
+                  T_creatureLogic *p_logic,
+                  T_3dObject *p_obj) ;
+
+static T_void ICreatureScanC(
                   T_creatureState *p_creature,
                   T_creatureLogic *p_logic,
                   T_3dObject *p_obj) ;
@@ -779,6 +563,8 @@ T_void CreatureAttachToObject(T_3dObject *p_obj)
                 p_creature->lastX = p_creature->lastY = 0x7FFE ;
                 p_creature->wasStolenFrom = FALSE ;
                 p_creature->allowFall = TRUE ;
+				p_creature->healthDecayRate = 0;
+				p_creature->healthDecayRateLast = 0;
 				p_creature->missileDelayMod = 1;
 				p_creature->meleeDamage = p_logic->meleeDamage;
 				p_creature->damageResist = p_logic->damageResist;
@@ -892,7 +678,7 @@ static T_creatureLogic *ICreatureLogicFind(T_word16 objectType)
  *  creature that has the given object pointer.
  *
  *<!-----------------------------------------------------------------------*/
-static T_doubleLinkListElement ICreatureFindViaObjectPtr(T_3dObject *p_obj)
+T_doubleLinkListElement ICreatureFindViaObjectPtr(T_3dObject *p_obj)
 {
     T_doubleLinkListElement element ;
     T_doubleLinkListElement nextElement ;
@@ -1136,6 +922,22 @@ T_sword32 lx, ly, lz ;
                     if (doSectorDamage)
                         CreatureTakeSectorDamage(p_logic, p_obj) ;
 
+					//Do health decay damage
+					if (p_creature->healthDecayRate > 0)  
+					{
+						p_creature->healthDecayRateLast++;
+						if (p_creature->healthDecayRateLast >= HEALTH_DECAY_RATE_TICKS)
+						{
+							CreatureTakeDamage(
+								p_obj,
+								p_creature->healthDecayRate * HEALTH_DECAY_RATE_TICKS,
+								EFFECT_DAMAGE_NORMAL,
+								0) ;
+
+							p_creature->healthDecayRateLast = 0;
+						}
+					}
+
                     /* First, update gravity if the creature cannot fly. */
                     if (p_logic->canFly == FALSE) {
                         if (ObjectGetZ(p_obj)
@@ -1377,7 +1179,7 @@ static T_void INavBerserkerA(
     /* Check to see if we have a target or the target is lost. */
     /* If we have a target, update info about that target. */
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanA(p_creature, p_logic, p_obj) ;
+        ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1429,7 +1231,7 @@ static T_void INavBerserkerB(
     /* Check to see if we have a target or the target is lost. */
     /* If we have a target, update info about that target. */
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanB(p_creature, p_logic, p_obj) ;
+        ICreatureScanBPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1462,7 +1264,7 @@ static T_void INavBarbarianGuard(
     /* Check to see if we have a target or the target is lost. */
     /* If we have a target, update info about that target. */
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanB(p_creature, p_logic, p_obj) ;
+        ICreatureScanBPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1512,7 +1314,7 @@ static T_void INavBarbarianArcherB(
     /* Check to see if we have a target or the target is lost. */
     /* If we have a target, update info about that target. */
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanA(p_creature, p_logic, p_obj) ;
+        ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1560,7 +1362,7 @@ static T_void INavBarbarianArcher(
     /* Check to see if we have a target or the target is lost. */
     /* If we have a target, update info about that target. */
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanA(p_creature, p_logic, p_obj) ;
+        ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1675,7 +1477,7 @@ static T_void INavComboFighterArcher(
     DebugCheck(p_obj != NULL) ;
 
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanA(p_creature, p_logic, p_obj) ;
+        ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1727,7 +1529,7 @@ static T_void INavApproachAndShoot(
     DebugCheck(p_obj != NULL) ;
 
     if (p_creature->targetAcquired == FALSE)  {
-        ICreatureScanA(p_creature, p_logic, p_obj) ;
+        ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -1785,7 +1587,7 @@ static T_void INavDipper(
         /* If we don't have a target, dip down into the ground. */
         ICreatureDip(p_creature, p_logic, p_obj) ;
 
-        ICreatureScanA(p_creature, p_logic, p_obj) ;
+        ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
         p_creature->meleeDelayCount = 5 ;
         p_creature->missileDelayCount = 5 ;
     }
@@ -2219,6 +2021,16 @@ static T_void IUpdateTarget(T_creatureState *p_creature)
         return ;
     }
 */
+	//can't hit player if owned
+	if (p_creature->targetID != 0 && p_creature->targetID == p_creature->p_obj->ownerID)
+	{
+		p_creature->targetAcquired = FALSE ;
+		p_creature->targetID = 0;
+
+		DebugEnd();
+		return;
+	}
+
     /* Note that we can't hit the target unless further */
     /* in the code says we can. */
     p_creature->canMeleeHitTarget = FALSE ;
@@ -2401,6 +2213,29 @@ static T_void IUpdateTarget(T_creatureState *p_creature)
     }
 
     DebugEnd() ;
+}
+
+static T_void ICreatureScanAPerform(
+                  T_creatureState *p_creature,
+                  T_creatureLogic *p_logic,
+                  T_3dObject *p_obj)
+{
+	if (p_obj->ownerID != 0 && ObjectIsPlayer(ObjectFind(p_obj->ownerID)))
+		ICreatureScanC(p_creature, p_logic, p_obj);
+	else
+		ICreatureScanA(p_creature, p_logic, p_obj);
+		
+}
+
+static T_void ICreatureScanBPerform(
+                  T_creatureState *p_creature,
+                  T_creatureLogic *p_logic,
+                  T_3dObject *p_obj)
+{
+	if (p_obj->ownerID != 0 && ObjectIsPlayer(ObjectFind(p_obj->ownerID)))
+		ICreatureScanC(p_creature, p_logic, p_obj);
+	else
+		ICreatureScanB(p_creature, p_logic, p_obj);
 }
 
 static T_player ICreatureScanA(
@@ -2611,6 +2446,62 @@ static T_void ICreatureScanB(
         /* the middle. */
         p_creature->scanBFacing = SCANB_FACING_MIDDLE ;
         p_creature->scanBCount = 0 ;
+    }
+
+    DebugEnd() ;
+}
+
+/*scan that only looks for monsters*/
+static T_void ICreatureScanC(
+                  T_creatureState *p_creature,
+                  T_creatureLogic *p_logic,
+                  T_3dObject *p_obj)
+{
+    T_word16 monsterDistance = 0xFFFF ;
+    T_3dObject *p_monsterObj ;
+    T_sword16 creatureX, creatureY ;
+    T_word16 tempId;
+    T_word16 creatureAngle ;
+
+    DebugRoutine("ICreatureScanC") ;
+
+    DebugCheck(p_creature != NULL) ;
+    DebugCheck(p_logic != NULL) ;
+    DebugCheck(p_obj != NULL) ;
+
+    creatureX = ObjectGetX16(p_obj) ;
+    creatureY = ObjectGetY16(p_obj) ;
+    creatureAngle = ObjectGetAngle(p_obj) ;
+
+	/* Looks for next monster in the field of vision */
+	tempId = IFindClosestCreatureInSight(creatureX, creatureY, p_creature, TRUE);
+
+    /* Did we find a monster? */
+    if (tempId > 0)  
+	{
+        /* Yes, a monster was found. */
+		/* Make this the target and update its stats. */
+		p_monsterObj = ObjectFind(tempId);
+
+        if (ObjectGetStance(p_monsterObj) != STANCE_DIE)  
+		{
+            p_creature->targetID = tempId;
+
+            /* Make sure we have the target location. */
+            p_creature->targetX = ObjectGetX16(p_monsterObj) ;
+            p_creature->targetY = ObjectGetY16(p_monsterObj) ;
+            p_creature->targetZ = ObjectGetZ16(p_monsterObj) ;
+            Collide3dUpdateLineOfSightLast(
+                &p_creature->sight,
+                p_monsterObj) ;
+            p_creature->targetAcquired = TRUE ;
+
+            IUpdateTarget(p_creature) ;
+
+            /* Yell for getting a target (if a sound). */
+            if (p_logic->targetSound != 0)
+                ICreatureMakeSound(p_obj, p_logic->targetSound) ;
+        }
     }
 
     DebugEnd() ;
@@ -2840,7 +2731,7 @@ static T_void IWanderAndScan(
     IWander(p_creature, p_logic, p_obj) ;
 
     /* Then scan for target. */
-    ICreatureScanA(p_creature, p_logic, p_obj) ;
+    ICreatureScanAPerform(p_creature, p_logic, p_obj) ;
 
     DebugEnd() ;
 }
@@ -4070,7 +3961,12 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                     }
 
 					//sneak attacks
+					//there is an attacker, it is not the target,
+					//  it is not the owner of this creature
+					//  it is a player
+					//  the player is alive
 					if ((ownerID != 0) && (ownerID != p_creature->targetID) && 
+						p_creature->p_obj->ownerID != ownerID &&
 						ObjectIsPlayer(ObjectFind(ownerID)) &&
 						ClientIsDead() == FALSE) // cant sneakattack with dying blow
 					{
@@ -4081,6 +3977,18 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                     /* Can only do true damage up to the creatures health. */
                     if (damageAmt > p_creature->health)
                         damageAmt = p_creature->health ;
+
+					//if owner did damage, percent chance we turn on him
+					if (ownerID != 0 && ObjectGetServerId(PlayerGetObject()) &&
+						ownerID == p_creature->p_obj->ownerID)
+					{
+						//5% chance
+						if (rand() % 20 == 1)
+						{
+							p_creature->p_obj->ownerID = 0;
+							IConsiderTargetChange(p_creature, p_creature->p_logic, p_creature->p_obj, ownerID);
+						}
+					}
 
                     /* Check to see if this player did the damage and if */
                     /* so, give him the experience of the damage. */
@@ -4999,6 +4907,61 @@ static T_void IDoEfxAtDeath(
                    FALSE,
                    0) ;
     }
+}
+
+static T_word16 IFindClosestCreatureInSight(
+                    T_sword16 x,
+                    T_sword16 y,
+                    T_creatureState *p_exclude,
+					E_Boolean checkOwner)
+{
+	T_doubleLinkListElement element ;
+    T_creatureState *p_creature ;
+    T_word16 distance = 0xFFFF ;
+    T_word16 closest = 0 ;
+    T_word16 newDistance;
+
+    DebugRoutine("IFindClosestCreatureInSight") ;
+
+    element = DoubleLinkListGetFirst(G_creatureList) ;
+    while (element != DOUBLE_LINK_LIST_ELEMENT_BAD)  
+	{
+        p_creature = (T_creatureState *)DoubleLinkListElementGetData(element) ;
+        if (p_creature != p_exclude) 
+		{
+            if (!CreatureIsMissile(p_creature->p_obj))  
+			{
+				//if we're not checking owners, 
+				// or our owner is not assigned
+				// or we don't have the same owner
+				if (checkOwner == FALSE || 
+					p_exclude->p_obj->ownerID == 0 ||
+					(p_exclude->p_obj->ownerID != p_creature->p_obj->ownerID))
+					{
+					/* Is there a line of sight?  Can the creature */
+					/* see the monster without walls being in the way? */
+					if (Collide3dObjectToObjectCheckLineOfSight(p_exclude->p_obj, p_creature->p_obj) == FALSE)  
+					{
+						newDistance = CalculateDistance(x,
+												y,
+												ObjectGetX16(p_creature->p_obj),
+												ObjectGetY16(p_creature->p_obj));
+
+						if (newDistance < distance)  
+						{
+							distance = newDistance ;
+							closest = ObjectGetServerId(p_creature->p_obj) ;
+						}
+					}
+				}
+            }
+        }
+
+        element = DoubleLinkListElementGetNext(element) ;
+    }
+    DebugEnd() ;
+
+    return closest;
 }
 
 /* 05/20/96: Find the creature closest to the given x and y position. */

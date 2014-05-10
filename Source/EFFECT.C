@@ -154,6 +154,14 @@ E_Boolean Effect(E_effectType effecttype,
 
     switch (effecttype)
     {
+		case EFFECT_SUMMON_MONSTER:
+			ClientSyncSendActionAreaSound(1004,500,FALSE);
+
+			//if (p_owner)
+				//p_object=(T_3dObject *)p_owner;
+
+			ClientSummonMonster(data2, data3, p_owner) ;
+			break;
 		case EFFECT_THROWING_DAGGER:
 			//sound
 	        ClientSyncSendActionAreaSound(SOUND_SHEATH_DAGGER,500, FALSE);

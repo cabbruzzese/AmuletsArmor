@@ -44,6 +44,13 @@ T_3dObject *ServerShootProjectile(
 		  T_word16 daggertype,
 		  T_word16 power) ;
 
+T_3dObject *ServerPerformSummonMonster(
+          T_3dObject *p_objSource,
+          T_word16 angle,
+          T_word16 type,
+		  T_word16 duration,
+          T_3dObject *p_target);
+
 T_void ServerPerformAreaOfEffect(
           T_3dObject *p_objSource,
 		  T_word16 type,

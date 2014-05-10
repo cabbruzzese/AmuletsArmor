@@ -752,26 +752,50 @@ T_void PerformNecroSkill(T_byte8 runenum)
 			break;
 
 		case KEY_SCAN_CODE_KEYPAD_2:
-			spellpower = 600;
-			spellduration = 0;
-			spellcost = 300;
+			spellduration = 20 * StatsGetPlayerMagicTotal();
+			spellcost = 1200;
+			
+			if (StatsGetPlayerLevel() < 10)
+				spellpower = 1017;//Wolf					
+			else if (StatsGetPlayerLevel() < 14)
+				spellpower = 1007;//Gargoyle
+			else
+				spellpower = 1023;//Griffon
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Escape Activated");
+				MessageAdd("Summon Beast Activated");
+				Effect (EFFECT_SUMMON_MONSTER,
+					EFFECT_TRIGGER_CAST,
+					0,
+					spellduration,
+					spellpower,
+					NULL);
 
-				Effect (EFFECT_JUMP_FORWARD,
-						EFFECT_TRIGGER_CAST,
-						0,
-						0,
-						spellpower,
-						NULL);
+				skillsucess = TRUE;
+			}
+			break;			
+
+		case KEY_SCAN_CODE_KEYPAD_3:
+			spellpower = 0;
+			spellduration = (30 * StatsGetPlayerMagicTotal());
+			spellcost = NecroSkillSpells[10].cost;
+
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("The Bargain Activated");
+				Effect (EFFECT_ADD_PLAYER_EFFECT,
+					EFFECT_TRIGGER_CAST,
+					PLAYER_EFFECT_DEATH_WARD,
+					spellduration,
+					spellpower,
+					&NinjaSkillSpells[10]);
 
 				skillsucess = TRUE;
 			}
 			break;
 
-		case KEY_SCAN_CODE_KEYPAD_3:
+		case KEY_SCAN_CODE_KEYPAD_4:
 			spellpower = 0;
 			spellduration = (100 * StatsGetPlayerMagicTotal());
 			spellcost = NecroSkillSpells[0].cost;
@@ -801,36 +825,22 @@ T_void PerformNecroSkill(T_byte8 runenum)
 				skillsucess = TRUE;	
 			}
 			break;
-
-		case KEY_SCAN_CODE_KEYPAD_4:
-			spellpower = 1;
-			spellduration = 150 * StatsGetPlayerMagicTotal();
-			spellcost = NinjaSkillSpells[4].cost;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Summon Ghost Activated");
-				/*Effect (EFFECT_ADD_PLAYER_EFFECT,
-					EFFECT_TRIGGER_CAST,
-					PLAYER_EFFECT_POISON_ATTACK,
-					spellduration,
-					spellpower,
-					&NinjaSkillSpells[4]);*/
-
-				skillsucess = TRUE;
-			}
-			break;
+			
 		case KEY_SCAN_CODE_KEYPAD_5:
-			spellpower = (T_sword16)(3 * StatsGetPlayerMagicTotal());
-			spellduration = 180;
-			spellcost = 2000;
+			spellduration = 10 * StatsGetPlayerMagicTotal();
+			spellcost = 1800;
+
+			if (StatsGetPlayerLevel() < 8)
+				spellpower = 1003;//Ghost					
+			else
+				spellpower = 1025;//Skeleton
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("Foul Air Activated");
-				Effect (EFFECT_AREA_OF_EFFECT,
+				MessageAdd("Summon Undead Activated");
+				Effect (EFFECT_SUMMON_MONSTER,
 					EFFECT_TRIGGER_CAST,
-					EFFECT_DAMAGE_POISON,
+					0,
 					spellduration,
 					spellpower,
 					NULL);
@@ -838,9 +848,10 @@ T_void PerformNecroSkill(T_byte8 runenum)
 				skillsucess = TRUE;
 			}
 			break;
+
 		case KEY_SCAN_CODE_KEYPAD_6:
 			spellpower = 0;
-			spellduration = 100 * StatsGetPlayerMagicTotal();
+			spellduration = 25 * StatsGetPlayerMagicTotal();
 			spellcost = NecroSkillSpells[3].cost;
 
 			if (manaleft >= spellcost)
@@ -854,7 +865,7 @@ T_void PerformNecroSkill(T_byte8 runenum)
 					&NecroSkillSpells[3]);
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
 					EFFECT_TRIGGER_CAST,
-					PLAYER_EFFECT_INVISIBLE,
+					PLAYER_EFFECT_TRANSLUCENT,
 					spellduration,
 					spellpower,
 					&NecroSkillSpells[4]);
@@ -868,27 +879,30 @@ T_void PerformNecroSkill(T_byte8 runenum)
 				skillsucess = TRUE;
 			}
 			break;
+
 		case KEY_SCAN_CODE_KEYPAD_7:
-			spellpower = 25;
-			spellduration = (75 * StatsGetPlayerSpeedTotal()) + (75 * StatsGetPlayerMagicTotal());
-			spellcost = NinjaSkillSpells[6].cost;
-
-			if (manaleft >= spellcost)
-			{
-				MessageAdd("Summon Skeleton Activated");
-				/*Effect (EFFECT_ADD_PLAYER_EFFECT,
-					EFFECT_TRIGGER_CAST,
-					PLAYER_EFFECT_SPEED_MOD,
-					spellduration,
-					spellpower,
-					&NinjaSkillSpells[6]);*/
-
-				skillsucess = TRUE;
-			}
+			spellpower = (T_sword16)(7 * StatsGetPlayerMagicTotal());
+ 			spellduration = 180;
+ 			spellcost = 2500;
+ 
+ 			if (manaleft >= spellcost)
+ 			{
+ 				MessageAdd("Foul Air Activated");
+ 				Effect (EFFECT_AREA_OF_EFFECT,
+ 					EFFECT_TRIGGER_CAST,
+ 					EFFECT_DAMAGE_POISON,
+ 					spellduration,
+ 					spellpower,
+ 					NULL);
+ 
+ 				skillsucess = TRUE;
+ 			}
+ 			break;
 			break;
+
 		case KEY_SCAN_CODE_KEYPAD_8:
 			spellpower = 0;
-			spellduration = (100 * StatsGetPlayerMagicTotal());
+			spellduration = (25 * StatsGetPlayerMagicTotal());
 			spellcost = NecroSkillSpells[6].cost;
 
 			if (manaleft >= spellcost)
@@ -912,34 +926,34 @@ T_void PerformNecroSkill(T_byte8 runenum)
 					spellduration,
 					50,
 					&NecroSkillSpells[8]);
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
-					EFFECT_TRIGGER_CAST,
-					PLAYER_EFFECT_SPEED_MOD,
-					spellduration,
-					50,
-					&NecroSkillSpells[9]);
 
 				skillsucess = TRUE;	
 			}
 			break;
+
 		case KEY_SCAN_CODE_KEYPAD_9:
-			spellpower = 0;
-			spellduration = (100 * StatsGetPlayerMagicTotal());
-			spellcost = NecroSkillSpells[10].cost;
+			spellduration = 10 * StatsGetPlayerMagicTotal();
+			spellcost = 4000;
+
+			if (StatsGetPlayerLevel() < 18)
+				spellpower = 1005;//Wyvern					
+			else 
+				spellpower = 1021;//dragon
 
 			if (manaleft >= spellcost)
 			{
-				MessageAdd("The Bargain Activated");
-				Effect (EFFECT_ADD_PLAYER_EFFECT,
+				MessageAdd("Summon Hellspawn Activated");
+				Effect (EFFECT_SUMMON_MONSTER,
 					EFFECT_TRIGGER_CAST,
-					PLAYER_EFFECT_DEATH_WARD,
+					0,
 					spellduration,
 					spellpower,
-					&NinjaSkillSpells[10]);
+					NULL);
 
 				skillsucess = TRUE;
 			}
 			break;
+
 	}
 
 	if (skillsucess == TRUE)
