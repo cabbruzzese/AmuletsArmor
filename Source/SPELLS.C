@@ -953,6 +953,21 @@ T_void PerformNecroSkill(T_byte8 runenum)
 				skillsucess = TRUE;
 			}
 			break;
+		default:
+			//blood letting
+			skillsucess = TRUE;
+			spellcost = 0;
+			spellpower = 250;
+
+			if (StatsGetPlayerHealth() > spellpower)
+			{
+				MessageAdd("Bloodletting Activated");
+				StatsTakeDamage(EFFECT_DAMAGE_NORMAL, spellpower);
+
+				StatsChangePlayerMana(spellpower * 2);
+			}
+
+			break;
 
 	}
 
