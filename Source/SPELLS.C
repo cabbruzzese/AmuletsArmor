@@ -731,11 +731,11 @@ T_void PerformNecroSkill(T_byte8 runenum)
 	switch (runenum)
 	{
 		case KEY_SCAN_CODE_KEYPAD_1:
-			spellpower = (T_sword16)(2.5 * StatsGetPlayerMagicTotal());
+			spellpower = (T_sword16)(StatsGetPlayerMagicTotal());
 			spellduration = 0;
-			spellcost = 1000 - spellpower;
-			if (spellcost < 500)
-				spellcost = 500;
+			spellcost = 750 - spellpower;
+			if (spellcost < 350)
+				spellcost = 350;
 
 			if (manaleft >= spellcost)
 			{
@@ -752,8 +752,8 @@ T_void PerformNecroSkill(T_byte8 runenum)
 			break;
 
 		case KEY_SCAN_CODE_KEYPAD_2:
-			spellduration = 20 * StatsGetPlayerMagicTotal();
-			spellcost = 1200;
+			spellduration = 30 * StatsGetPlayerMagicTotal();
+			spellcost = 600;
 			
 			if (StatsGetPlayerLevel() < 10)
 				spellpower = 1017;//Wolf					
@@ -827,10 +827,10 @@ T_void PerformNecroSkill(T_byte8 runenum)
 			break;
 			
 		case KEY_SCAN_CODE_KEYPAD_5:
-			spellduration = 10 * StatsGetPlayerMagicTotal();
-			spellcost = 1800;
+			spellduration = 25 * StatsGetPlayerMagicTotal();
+			spellcost = 850;
 
-			if (StatsGetPlayerLevel() < 8)
+			if (rand() % 2 == 1)
 				spellpower = 1003;//Ghost					
 			else
 				spellpower = 1025;//Skeleton
@@ -932,7 +932,7 @@ T_void PerformNecroSkill(T_byte8 runenum)
 			break;
 
 		case KEY_SCAN_CODE_KEYPAD_9:
-			spellduration = 10 * StatsGetPlayerMagicTotal();
+			spellduration = 15 * StatsGetPlayerMagicTotal();
 			spellcost = 4000;
 
 			if (StatsGetPlayerLevel() < 18)
@@ -1719,8 +1719,8 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 #ifndef NDEBUG
 		if (G_curspell[0] == 0)
 		{
-			StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
-			StatsChangePlayerMana(StatsGetPlayerMaxMana());
+			//StatsChangePlayerExperience(StatsGetPlayerExpNeeded() - StatsGetPlayerExperience());
+			//StatsChangePlayerMana(StatsGetPlayerMaxMana());
 		}
 #endif
 

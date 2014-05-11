@@ -897,9 +897,17 @@ T_sword32 lx, ly, lz ;
 
                     /* Do delayed attack if time. */
                     if ((p_creature->delayedAttackTime != 0) &&
-                        (p_creature->delayedAttackTime <= SyncTimeGet()))  {
+                        (p_creature->delayedAttackTime <= SyncTimeGet()))  
+					{
                         ICreatureDelayedAttack(p_creature) ;
                         p_creature->delayedAttackTime = 0 ;
+
+						//check if target is dead
+						if (p_creature->targetID == 0 || ObjectGetStance(ObjectFind(p_creature->targetID)) == STANCE_DIE )
+						{
+							p_creature->targetID = 0;
+							p_creature->targetAcquired = FALSE;
+						}
                     }
 
                     /* Do poisoning if it is time. */
@@ -4929,7 +4937,8 @@ static T_word16 IFindClosestCreatureInSight(
         p_creature = (T_creatureState *)DoubleLinkListElementGetData(element) ;
         if (p_creature != p_exclude) 
 		{
-            if (!CreatureIsMissile(p_creature->p_obj))  
+			//if the target is not a missile, and is still alive
+            if (!CreatureIsMissile(p_creature->p_obj) && ObjectGetStance(p_creature->p_obj) != STANCE_DIE)
 			{
 				//if we're not checking owners, 
 				// or our owner is not assigned
@@ -4937,7 +4946,7 @@ static T_word16 IFindClosestCreatureInSight(
 				if (checkOwner == FALSE || 
 					p_exclude->p_obj->ownerID == 0 ||
 					(p_exclude->p_obj->ownerID != p_creature->p_obj->ownerID))
-					{
+				{
 					/* Is there a line of sight?  Can the creature */
 					/* see the monster without walls being in the way? */
 					if (Collide3dObjectToObjectCheckLineOfSight(p_exclude->p_obj, p_creature->p_obj) == FALSE)  
@@ -4946,6 +4955,8 @@ static T_word16 IFindClosestCreatureInSight(
 												y,
 												ObjectGetX16(p_creature->p_obj),
 												ObjectGetY16(p_creature->p_obj));
+
+						
 
 						if (newDistance < distance)  
 						{
