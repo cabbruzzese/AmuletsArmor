@@ -223,8 +223,13 @@ T_3dObject *ServerPerformSummonMonster(
 		obj_z = ObjectGetZ16(p_objSource) + 10;
 
 		//Adjust position on subsequent tries
-		obj_x += (T_word16)(goodPos / 5) * 25;
-		obj_y += (goodPos % 5) * 25;
+		if (spawnchecks <= 3)
+			obj_z += spawnchecks * 25;
+		else
+		{
+			obj_x += (T_word16)((spawnchecks - 3) / 5) * 25;
+			obj_y += ((spawnchecks - 3) % 5) * 25;
+		}
 		
 		goodPos = TRUE;
 		if (Collide3dObjectToXYCheckLineOfSightWithZ(
