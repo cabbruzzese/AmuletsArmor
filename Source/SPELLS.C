@@ -731,23 +731,25 @@ T_void PerformNecroSkill(T_byte8 runenum)
 	switch (runenum)
 	{
 		case KEY_SCAN_CODE_KEYPAD_1:
-			spellpower = (T_sword16)(StatsGetPlayerMagicTotal());
-			spellduration = 0;
-			spellcost = 750 - spellpower;
-			if (spellcost < 350)
-				spellcost = 350;
+			//blood letting
+			skillsucess = TRUE;
+			spellcost = 0;
+			spellpower = 250;
 
-			if (manaleft >= spellcost)
+			//if we have enough health, and have lost enough mana
+			if (StatsGetPlayerHealth() > spellpower && (StatsGetPlayerMaxMana() - StatsGetPlayerMana()) > 100)
 			{
-				MessageAdd("Arrow of Pain Activated");
-				Effect (EFFECT_CREATE_PROJECTILE,
-					EFFECT_TRIGGER_CAST,
-					EFFECT_MISSILE_LIGHTNING_BOLT,
-					spellduration,
-					spellpower,
-					NULL);
+				if (InventoryHasDagger())
+				{
+					MessageAdd("Bloodletting Activated");
+					StatsTakeDamage(EFFECT_DAMAGE_NORMAL, spellpower);
 
-				skillsucess = TRUE;
+					StatsChangePlayerMana(spellpower * 2);
+				}
+				else
+				{
+					MessageAdd("A dagger is needed to perform Bloodletting");
+				}
 			}
 			break;
 
@@ -773,6 +775,9 @@ T_void PerformNecroSkill(T_byte8 runenum)
 					NULL);
 
 				skillsucess = TRUE;
+
+				//give a tiny bit of xp
+				StatsChangePlayerExperience(spellcost);
 			}
 			break;			
 
@@ -846,6 +851,9 @@ T_void PerformNecroSkill(T_byte8 runenum)
 					NULL);
 
 				skillsucess = TRUE;
+
+				//give a tiny bit of xp
+				StatsChangePlayerExperience(spellcost);
 			}
 			break;
 
@@ -951,22 +959,41 @@ T_void PerformNecroSkill(T_byte8 runenum)
 					NULL);
 
 				skillsucess = TRUE;
+
+				//No XP from spawning dragons. That would just be lame.
 			}
 			break;
 		default:
-			//blood letting
-			skillsucess = TRUE;
-			spellcost = 0;
-			spellpower = 250;
+			spellcost = 450;
 
-			if (StatsGetPlayerHealth() > spellpower)
+			if (StatsGetPlayerLevel() < 8)
 			{
-				MessageAdd("Bloodletting Activated");
-				StatsTakeDamage(EFFECT_DAMAGE_NORMAL, spellpower);
-
-				StatsChangePlayerMana(spellpower * 2);
+				spellduration = EFFECT_MISSILE_ACID_BALL;
+				spellpower = (T_sword16)(1.5 * StatsGetPlayerMagicTotal());
+			}
+			else if (StatsGetPlayerLevel() < 14)
+			{
+				spellduration = EFFECT_MISSILE_LIGHTNING_BOLT;
+				spellpower = (T_sword16)StatsGetPlayerMagicTotal();
+			}
+			else
+			{
+				spellduration = EFFECT_MISSILE_HOMING_DEATHBALL;
+				spellpower = 0;
 			}
 
+			if (manaleft >= spellcost)
+			{
+				MessageAdd("Blast of Pain Activated");
+				Effect (EFFECT_CREATE_PROJECTILE,
+					EFFECT_TRIGGER_CAST,
+					spellduration, //missile type
+					0,
+					spellpower, //damage bonus
+					NULL);
+
+				skillsucess = TRUE;
+			}
 			break;
 
 	}

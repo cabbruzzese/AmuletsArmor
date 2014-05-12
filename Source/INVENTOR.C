@@ -517,6 +517,38 @@ E_Boolean InventoryContainsItem (T_word32 type)
 	return retvalue;
 }
 
+E_Boolean InventoryHasDagger (T_void)
+{
+	E_Boolean retval;
+	T_inventoryItemStruct *testInv=NULL;
+	T_doubleLinkListElement element;
+	
+	DebugRoutine("InventoryHasDagger");
+
+	//get first item
+    element=DoubleLinkListGetFirst(G_inventories[INVENTORY_PLAYER].itemslist);
+
+	retval = FALSE;
+
+	//traverse whole list
+    while (retval == FALSE && element!=DOUBLE_LINK_LIST_BAD)
+    {
+		//get current item
+        testInv=(T_inventoryItemStruct *)DoubleLinkListElementGetData(element);
+
+		//weapons
+		if (ObjectIsWeapon(testInv->object) && testInv->itemdesc.subtype == EQUIP_WEAPON_TYPE_DAGGER)
+			retval = TRUE;
+
+		//find next item
+        element=DoubleLinkListElementGetNext(element);
+    }
+
+	DebugEnd();
+
+	return retval;
+}
+
 T_inventoryItemStruct *GetFirstItemFromInventory(T_word32 type)
 {
 	T_inventoryItemStruct *retvalue=NULL;

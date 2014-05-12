@@ -132,6 +132,7 @@ T_3dObject* InventoryCheckObjectInEquipmentArea(T_word16 x, T_word16 y);
 T_inventoryItemStruct* InventoryCheckItemInInventoryArea(T_word16 x, T_word16 y);
 E_Boolean InventoryCanUseItemInReadyHand(T_void);
 E_Boolean InventoryContainsItem (T_word32 type);
+E_Boolean InventoryHasDagger (T_void);
 T_inventoryItemStruct *GetFirstItemFromInventory(T_word32 type);
 T_void InventoryUseAlternativeItem(T_buttonID buttonID);
 T_void InventoryUseItemInMouseHand(T_buttonID buttonID);
