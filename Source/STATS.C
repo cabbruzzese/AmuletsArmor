@@ -1885,6 +1885,52 @@ T_void StatsSetArmorValue (E_equipLocations location, T_byte8 value)
     DebugEnd();
 }
 
+//Checks all equiped slots for armor types. 
+// Cannot be used during the "unready" action because the 
+//  item has to be equiped for the entire unready duration.
+//  Removing armor is considered an unready action.
+E_FullArmorType GetFullArmorType(T_void)
+{
+	E_FullArmorType retvalue = FULL_ARMOR_MIXED;
+	E_equipArmorTypes head, larm, rarm, chest, legs;
+	
+	DebugRoutine("GetFullArmorType");
+
+	head = InventoryGetArmorType(EQUIP_LOCATION_HEAD);
+	larm = InventoryGetArmorType(EQUIP_LOCATION_LEFT_ARM);
+	rarm = InventoryGetArmorType(EQUIP_LOCATION_RIGHT_ARM);
+	chest = InventoryGetArmorType(EQUIP_LOCATION_CHEST);
+	legs = InventoryGetArmorType(EQUIP_LOCATION_LEGS);
+
+	if (head == EQUIP_ARMOR_TYPE_HELMET_PLATE &&
+		larm == EQUIP_ARMOR_TYPE_BRACING_PLATE &&
+		rarm == EQUIP_ARMOR_TYPE_BRACING_PLATE &&
+		chest == EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE &&
+		legs == EQUIP_ARMOR_TYPE_LEGGINGS_PLATE)
+	{
+		retvalue = FULL_ARMOR_PLATE;
+	}
+	else if (head == EQUIP_ARMOR_TYPE_HELMET_CHAIN &&
+			 larm == EQUIP_ARMOR_TYPE_BRACING_CHAIN &&
+			 rarm == EQUIP_ARMOR_TYPE_BRACING_CHAIN &&
+			 chest == EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN &&
+			 legs == EQUIP_ARMOR_TYPE_LEGGINGS_CHAIN)
+	{
+		retvalue = FULL_ARMOR_CHAIN;
+	}
+	else if (head == EQUIP_ARMOR_TYPE_UNKNOWN &&
+			 larm == EQUIP_ARMOR_TYPE_BRACING_CLOTH &&
+			 rarm == EQUIP_ARMOR_TYPE_BRACING_CLOTH &&
+			 chest == EQUIP_ARMOR_TYPE_BREASTPLATE_CLOTH &&
+			 legs == EQUIP_ARMOR_TYPE_LEGGINGS_CLOTH)
+	{
+		retvalue = FULL_ARMOR_LEATHER;
+	}
+	
+	DebugEnd();
+
+	return retvalue;
+}
 
 T_byte8 GetArmorPenaltyValue(T_byte8 platepenalty, T_byte8 chainpenalty, T_byte8 leatherpenalty)
 {
@@ -1925,6 +1971,7 @@ T_byte8 GetArmorPenaltyValue(T_byte8 platepenalty, T_byte8 chainpenalty, T_byte8
 	}
 	
 	DebugEnd();
+
 	return retvalue;
 }
 
@@ -1949,6 +1996,7 @@ T_byte8 StatsGetArmorPenaltySpeed()
 
 T_void StatsCalcAverageArmorValue (T_void)
 {
+	T_word16 divisor=12;
     T_word16 Alev=0;
     T_word16 shield=0;
 
@@ -1959,8 +2007,8 @@ T_void StatsCalcAverageArmorValue (T_void)
         if (shield > 90) shield=90;
     }
 
-    Alev+=(G_activeStats->ArmorValues[EQUIP_LOCATION_HEAD]*2 > shield*2 ?
-           G_activeStats->ArmorValues[EQUIP_LOCATION_HEAD]*2 : shield*2);
+	//never calculate helmets, but always add them. They are a bonus.
+	Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_HEAD] * 1.5;
 
     Alev+=(G_activeStats->ArmorValues[EQUIP_LOCATION_RIGHT_ARM]*2 > shield*2 ?
            G_activeStats->ArmorValues[EQUIP_LOCATION_RIGHT_ARM]*2 : shield*2);
@@ -1974,17 +2022,7 @@ T_void StatsCalcAverageArmorValue (T_void)
     Alev+=(G_activeStats->ArmorValues[EQUIP_LOCATION_CHEST]*4 > shield*4 ?
            G_activeStats->ArmorValues[EQUIP_LOCATION_CHEST]*4 : shield*4);
 
-//    Alev+=(G_activeStats->ArmorValues[EQUIP_LOCATION_SHIELD_HAND]*2 > shield*2 ?
-//           G_activeStats->ArmorValues[EQUIP_LOCATION_SHIELD_HAND]*2 : shield*2);
-
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_RIGHT_ARM]*2;
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_LEFT_ARM]*2;
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_LEGS]*4;
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_RIGHT_LEG]*3;
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_LEFT_LEG]*3;
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_CHEST]*4;
-//    Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_SHIELD_HAND]*2;
-    Alev/=14;
+    Alev/=divisor;
 
     G_activeStats->ArmorLevel = (T_byte8)Alev;
     /* redraw equip screen if necessary */

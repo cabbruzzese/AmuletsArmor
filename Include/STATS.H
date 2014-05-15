@@ -58,6 +58,13 @@ typedef enum
     ADVENTURE_UNKNOWN
 } E_statsAdventureNumber;
 
+typedef enum
+{
+	FULL_ARMOR_LEATHER,
+	FULL_ARMOR_CHAIN,
+	FULL_ARMOR_PLATE,
+	FULL_ARMOR_MIXED
+} E_FullArmorType;
 
 /* saved character ID list to be loaded from server */
 #define MAX_CHARACTERS_PER_SERVER 5
@@ -394,6 +401,8 @@ T_word16 StatsFindPastPlace(T_word16 adventureNumber) ;
 
 T_SkillLogic *StatsGetPlayerSkillLogic(T_void);
 T_byte8 StatsGetPlayerSkillLevel(T_void);
+
+E_FullArmorType GetFullArmorType(T_void);
 
 #endif /* SERVER_ONLY */
 

@@ -448,6 +448,46 @@ static E_Boolean G_init = FALSE ;
 static FILE *G_fp ;
 #endif
 
+E_Boolean CreatureIsSummoned (T_creatureState *p_creature)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("CreatureIsSummoned");
+
+	retvalue = TRUE;
+
+	if (p_creature->p_obj->ownerID == 0)
+		retvalue = FALSE;
+	else if (ObjectIsPlayer(ObjectFind(p_creature->p_obj->ownerID)) == FALSE)
+		retvalue = FALSE;
+
+	DebugEnd();
+
+	return retvalue;
+}
+
+E_Boolean AttackerIsPlayer (T_creatureState *p_creature, T_word16 ownerID)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("AttackerIsPlayer");
+
+	retvalue = TRUE;
+
+	//if not player
+	if (ObjectIsPlayer(ObjectFind(ownerID)) == FALSE)
+		retvalue = FALSE;
+
+	//If attacker is a player, but he is attacking his own creature
+	if (CreatureIsSummoned(p_creature))
+		if (ownerID == p_creature->p_obj->ownerID)
+			retvalue = FALSE; //assume he is hostile	
+
+	DebugEnd();
+
+	return retvalue;
+}
+
 /*-------------------------------------------------------------------------*
  * Routine:  CreaturesInitialize
  *-------------------------------------------------------------------------*/
@@ -2115,7 +2155,6 @@ static T_void IUpdateTarget(T_creatureState *p_creature)
 				//set timer
 				if (p_creature->losingInterest == FALSE)
 				{
-					//MessageAdd("Losing interest");
 					p_creature->losingInterest = TRUE;
 					p_creature->timeTargetInterest = SyncTimeGet() + 400 + (rand() % 400);
 
@@ -2124,7 +2163,8 @@ static T_void IUpdateTarget(T_creatureState *p_creature)
 				{
 					if (p_creature->timeTargetInterest < SyncTimeGet())
 					{
-						MessageAdd("The enemy has lost track of your movements.");
+						if (AttackerIsPlayer(p_creature, p_creature->targetID))
+							MessageAdd("The enemy has lost track of your movements.");
 
 						p_creature->losingInterest = FALSE;
 
@@ -3799,7 +3839,8 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         case EFFECT_DAMAGE_SPECIAL_DISPEL_MAGIC:
 							//remove immunities
 							if (p_creature->damageResist > 0)
-								MessageAdd("Your enemy appears less threatening.");
+								if (AttackerIsPlayer(p_creature, ownerID))
+									MessageAdd("Your enemy appears less threatening.");
 							p_creature->damageResist = 0;
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_EARTHBIND:
@@ -3867,7 +3908,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						// (But never below 1)
 						if (p_creature->meleeDamage > 100)
 						{	
-							MessageAdd("Your foe's weapon crumbles.");
+							if (AttackerIsPlayer(p_creature, ownerID))
+								MessageAdd("Your foe's weapon crumbles.");
+
 							if ((T_sword32)p_creature->meleeDamage - (damageAmt / 5) < 100)
 								p_creature->meleeDamage = 100;
 							else
@@ -3921,7 +3964,10 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//if this monster has an attack delay
 							if (p_logic->missileAttackDelay > 0)
 							{
-								MessageAdd("The enemy's voice stutters.");
+								//only display message for player if this is the first hit
+								if (AttackerIsPlayer(p_creature, ownerID) && p_creature->missileDelayMod == 1)
+									MessageAdd("The enemy's voice stutters.");
+
 								//increase attack delay by 50%
 								p_creature->missileDelayMod += (float)0.5;
 
@@ -3973,9 +4019,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 					//  it is not the owner of this creature
 					//  it is a player
 					//  the player is alive
-					if ((ownerID != 0) && (ownerID != p_creature->targetID) && 
+					if (ownerID != 0 && ownerID != p_creature->targetID &&
 						p_creature->p_obj->ownerID != ownerID &&
-						ObjectIsPlayer(ObjectFind(ownerID)) &&
+						AttackerIsPlayer(p_creature, ownerID) &&
 						ClientIsDead() == FALSE) // cant sneakattack with dying blow
 					{
 						damageAmt *= 5;

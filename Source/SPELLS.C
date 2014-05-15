@@ -693,23 +693,23 @@ T_spellStruct NecroSkillSpells[11] =
 	},
 	{ // ghost form 
 		0,0,0,0,0,0,0,0,
-		0,0,6000
+		0,0,3500
 	},
 	{ // demon form 
 		0,0,0,0,0,0,0,0,
-		0,0,6000
+		0,0,4500
 	},
 	{ // demon form 
 		0,0,0,0,0,0,0,0,
-		0,0,6000
+		0,0,4500
 	},
 	{ // demon form 
 		0,0,0,0,0,0,0,0,
-		0,0,6000
+		0,0,4500
 	},
 	{ // demon form 
 		0,0,0,0,0,0,0,0,
-		0,0,6000
+		0,0,4500
 	},
 	{ // the bargain
 		0,0,0,0,0,0,0,0,
@@ -889,9 +889,9 @@ T_void PerformNecroSkill(T_byte8 runenum)
 			break;
 
 		case KEY_SCAN_CODE_KEYPAD_7:
-			spellpower = (T_sword16)(7 * StatsGetPlayerMagicTotal());
- 			spellduration = 180;
- 			spellcost = 2500;
+			spellpower = (T_sword16)(8 * StatsGetPlayerMagicTotal());
+ 			spellduration = 200;
+ 			spellcost = 1100;
  
  			if (manaleft >= spellcost)
  			{
@@ -941,12 +941,22 @@ T_void PerformNecroSkill(T_byte8 runenum)
 
 		case KEY_SCAN_CODE_KEYPAD_9:
 			spellduration = 15 * StatsGetPlayerMagicTotal();
-			spellcost = 4000;
 
 			if (StatsGetPlayerLevel() < 18)
-				spellpower = 1005;//Wyvern					
+			{
+				spellcost = 1200;
+				spellpower = 1005;//Wyvern
+
+				//give a tiny bit of xp
+				StatsChangePlayerExperience(spellcost);
+			}
 			else 
+			{
+				spellcost = 3000;
 				spellpower = 1021;//dragon
+
+				//No xp for summoning dragons. Having a dragon is reward enough.
+			}
 
 			if (manaleft >= spellcost)
 			{
@@ -959,8 +969,6 @@ T_void PerformNecroSkill(T_byte8 runenum)
 					NULL);
 
 				skillsucess = TRUE;
-
-				//No XP from spawning dragons. That would just be lame.
 			}
 			break;
 		default:
