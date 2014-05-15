@@ -2008,7 +2008,7 @@ T_void StatsCalcAverageArmorValue (T_void)
     }
 
 	//never calculate helmets, but always add them. They are a bonus.
-	Alev+=G_activeStats->ArmorValues[EQUIP_LOCATION_HEAD] * 1.5;
+	Alev+=(T_word16)((float)G_activeStats->ArmorValues[EQUIP_LOCATION_HEAD] * 1.5);
 
     Alev+=(G_activeStats->ArmorValues[EQUIP_LOCATION_RIGHT_ARM]*2 > shield*2 ?
            G_activeStats->ArmorValues[EQUIP_LOCATION_RIGHT_ARM]*2 : shield*2);
