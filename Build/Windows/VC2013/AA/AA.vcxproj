@@ -43,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>..\..\..\..\Lib\SDL-1.2.15\lib\x86;..\..\..\..\Lib\SDL_net-1.2.8\lib\x86;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;..\..\..\..\Lib\SDL_net-1.2.8\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;..\..\..\..\Lib\SDL_net-1.2.8\include;..\..\..\..\Lib\zlib-1.2.8-dll\contrib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>..\..\..\..\Lib\SDL-1.2.15\lib\x86;..\..\..\..\Lib\SDL_net-1.2.8\lib\x86;$(LibraryPath)</LibraryPath>
@@ -54,7 +54,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\Include;..\..\..\..\Lib\SDL-1.2.15\include;..\..\..\..\Lib\SDL_net-1.2.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\Include;..\..\..\..\Lib\SDL-1.2.15\include;..\..\..\..\Lib\SDL_net-1.2.8\include;..\..\..\..\Lib\zlib-1.2.8-dll\include;..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip;..\..\..\..\Lib\lodepng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\..\Include;..\..\..\..\Lib\SDL-1.2.15\include;..\..\..\..\Lib\SDL_net-1.2.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\Include;..\..\..\..\Lib\SDL-1.2.15\include;..\..\..\..\Lib\SDL_net-1.2.8;..\..\..\..\Lib\zlib-1.2.8-dll\include;..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip;..\..\..\..\Lib\lodepng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAsManaged>false</CompileAsManaged>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -139,6 +139,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Lib\lodepng\lodepng.c" />
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\ioapi.c" />
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\iowin32.c" />
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\mztools.c" />
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\unzip.c" />
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\zip.c" />
     <ClCompile Include="..\..\..\..\Source\3D_COLLI.C" />
     <ClCompile Include="..\..\..\..\Source\3D_IO.C" />
     <ClCompile Include="..\..\..\..\Source\3D_TRIG.C" />
@@ -150,7 +156,6 @@
     <ClCompile Include="..\..\..\..\Source\AREASND.C" />
     <ClCompile Include="..\..\..\..\Source\BANKUI.C" />
     <ClCompile Include="..\..\..\..\Source\BANNER.C" />
-    <ClCompile Include="..\..\..\..\Source\BitmapLoader.c" />
     <ClCompile Include="..\..\..\..\Source\BUTTON.C" />
     <ClCompile Include="..\..\..\..\Source\CLIENT.C" />
     <ClCompile Include="..\..\..\..\Source\CLI_RECV.C" />
@@ -203,6 +208,7 @@
     <ClCompile Include="..\..\..\..\Source\PEOPHERE.C" />
     <ClCompile Include="..\..\..\..\Source\PICS.C" />
     <ClCompile Include="..\..\..\..\Source\PLAYER.C" />
+    <ClCompile Include="..\..\..\..\Source\PNG.c" />
     <ClCompile Include="..\..\..\..\Source\PROFILE.C" />
     <ClCompile Include="..\..\..\..\Source\PROMPT.C" />
     <ClCompile Include="..\..\..\..\Source\RANDOM.C" />
@@ -254,7 +260,6 @@
     <ClInclude Include="..\..\..\..\Include\AREASND.H" />
     <ClInclude Include="..\..\..\..\Include\BANKUI.H" />
     <ClInclude Include="..\..\..\..\Include\BANNER.H" />
-    <ClInclude Include="..\..\..\..\Include\BitmapLoader.h" />
     <ClInclude Include="..\..\..\..\Include\BUTTON.H" />
     <ClInclude Include="..\..\..\..\Include\CLIENT.H" />
     <ClInclude Include="..\..\..\..\Include\CLI_RECV.H" />
@@ -326,6 +331,7 @@
     <ClInclude Include="..\..\..\..\Include\PEOPHERE.H" />
     <ClInclude Include="..\..\..\..\Include\PICS.H" />
     <ClInclude Include="..\..\..\..\Include\PLAYER.H" />
+    <ClInclude Include="..\..\..\..\Include\PNG.h" />
     <ClInclude Include="..\..\..\..\Include\PROFILE.H" />
     <ClInclude Include="..\..\..\..\Include\PROMPT.H" />
     <ClInclude Include="..\..\..\..\Include\RANDOM.H" />
@@ -377,6 +383,7 @@
     <ClInclude Include="..\..\..\..\Include\VIEWFILE.H" />
     <ClInclude Include="..\..\..\..\Include\VIEWREGN.H" />
     <ClInclude Include="..\..\..\..\Include\VM.H" />
+    <ClInclude Include="..\..\..\..\Lib\lodepng\lodepng.h" />
     <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\begin_code.h" />
     <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\close_code.h" />
     <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL.h" />
@@ -418,6 +425,14 @@
     <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_types.h" />
     <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_version.h" />
     <ClInclude Include="..\..\..\..\Lib\SDL-1.2.15\include\SDL_video.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\crypt.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\ioapi.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\iowin32.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\mztools.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\unzip.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\zip.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\include\zconf.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\include\zlib.h" />
     <ClInclude Include="..\..\..\..\Source\Win32\ipx_client.h" />
     <ClInclude Include="DIRECT.H" />
     <ClInclude Include="options.hpp" />
@@ -425,6 +440,7 @@
   <ItemGroup>
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDL.lib" />
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDLmain.lib" />
+    <Library Include="..\..\..\..\Lib\zlib-1.2.8-dll\lib\zdll.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="anaicon.ico" />

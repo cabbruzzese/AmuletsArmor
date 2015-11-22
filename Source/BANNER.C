@@ -431,7 +431,7 @@ T_void BannerOpenForm(E_bannerFormType formtype)
 
             if (PictureExist(stmp)) {
                 res = PictureFind(stmp);
-                p_data = PictureLockQuick(res);
+                p_data = PictureLockByResource(res);
                 DebugCheck(p_data != NULL);
                 GrDrawBitmap(PictureToBitmap(p_data), 215, 27);
                 PictureUnlockAndUnfind(res);
@@ -945,7 +945,7 @@ T_void PotionUpdate(T_void)
 
         /* Lock in and draw the next picture. */
         res = G_potionPics[potionFrame];
-        p_data = PictureLockQuick(res);
+        p_data = PictureLockByResource(res);
         DebugCheck(p_data != NULL);
         if (p_data != NULL) {
             GrDrawBitmap(PictureToBitmap(p_data), 61, 0);   //155
@@ -1793,8 +1793,7 @@ T_void BannerAddSpellButton(T_byte8 slot)
             155,
             155,
             155 };
-	
-	E_spellsSpellSystemType spellSystem;
+    E_spellsSpellSystemType spellSystem;
 
     T_byte8 keycode, picno;
     T_byte8 stmp[32];
@@ -1811,20 +1810,21 @@ T_void BannerAddSpellButton(T_byte8 slot)
 
     if (G_bannerButtonsCreated == TRUE) {
         switch (spellSystem) {
-			case SPELL_SYSTEM_MAGE:
-			    picno = slot;
+            case SPELL_SYSTEM_MAGE:
+                picno = slot;
                 break;
 
-			case SPELL_SYSTEM_CLERIC:
+            case SPELL_SYSTEM_CLERIC:
                 picno = slot + 9;
                 break;
 
-			case SPELL_SYSTEM_ARCANE:
+            case SPELL_SYSTEM_ARCANE:
                 if (slot < 4)
                     picno = slot;
                 else
                     picno = slot + 5;
                 break;
+
             default:
 				break;
         }

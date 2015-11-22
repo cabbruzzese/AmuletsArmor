@@ -109,73 +109,26 @@ T_void InitCreateClassData (T_byte8 classnum)
 	DebugEnd();
 }
 
-T_bitmap* LoadImageFromRes(T_byte8 classnum)
+char* FindClassImage(T_byte8 classnum)
 {
-	T_resource res;
-    T_byte8 stmp[64];
-    T_byte8 *p_data;
+	char* filename = malloc(MAXPICFILENAMELENGTH);
+	char stmp[MAXPICFILENAMELENGTH];
 
-    DebugRoutine ("LoadImageFromRes");
+    DebugRoutine ("FindClassImage");
 
-    sprintf (stmp,"UI/CREATEC/CHAR%02d", classnum);
+	sprintf(stmp, "UI/CREATEC/CHAR%02d", classnum);
     if (PictureExist (stmp))
     {
-        res=PictureFind(stmp);
-        p_data=PictureLockQuick (res);
-        PictureUnlockAndUnfind (res);
 	}
 	else
 	{
-		p_data = NULL;
+		sprintf(stmp, "classes/%i.png", (int)classnum);
 	}
+
+	strcpy(filename, stmp);
 
 	DebugEnd();
-
-	return PictureToBitmap(p_data);
-}
-
-T_bitmap* LoadImage(T_byte8 classnum)
-{
-	BITMAPINFOHEADER bmpheader;
-	T_byte8 *p_data, *f_data, *tempptr;
-	T_bitmap *bmp_data = (T_bitmap*)MemAlloc(sizeof(T_bitmap));
-	T_bitmap *retval;
-	int i = 0;
-
-	char filename[32];
-
-	DebugRoutine("LoadImage");
-
-	sprintf(filename, "./classes/%i.bmp", (int)classnum);
-
-	p_data = LoadBitmapFile(filename, &bmpheader);
-	if (p_data != NULL)
-	{
-		bmp_data->sizex = (T_word16)bmpheader.biWidth;
-		bmp_data->sizey = (T_word16)bmpheader.biHeight;
-		f_data = (T_byte8*)MemAlloc(bmpheader.biSizeImage + 2);
-		tempptr = f_data;
-		f_data[0] = (int)bmpheader.biWidth;
-		f_data[1] = 0;
-		f_data[2] = (int)bmpheader.biHeight;
-		f_data[3] = 0;
-		f_data+=4;
-		for (i = bmpheader.biHeight; i > 0; i--)
-		{
-			memcpy(&f_data[(bmpheader.biHeight-i)*bmpheader.biWidth], 
-				   &p_data[i*bmpheader.biWidth], 
-				   bmpheader.biWidth);
-		}
-		retval = (T_bitmap *)tempptr;
-	}
-	else
-	{
-		retval = NULL;
-	}
-
-	DebugEnd();
-
-	return retval;
+	return filename;
 }
 
 T_void ReadClassData(T_byte8 classnum)
@@ -196,7 +149,7 @@ T_void ReadClassData(T_byte8 classnum)
 	int adv[NUM_ATTRIBUTES];
 	int i, j;
 	int magic, canUseFlag;
-	T_bitmap *pictureData;
+	char* picturePath;
 	float num;
 	float  hmod, manamod, jmod, dmod, movemod, tmod, pdmg;
 
@@ -396,15 +349,12 @@ T_void ReadClassData(T_byte8 classnum)
 	CreateClassDatas[classnum].ThiefModifier = tmod;
 	CreateClassDatas[classnum].BasePunchDamage = (int)pdmg;
 
-	pictureData = LoadImage(classnum);
-	if (pictureData == NULL)
-		pictureData = LoadImageFromRes(classnum);
+	picturePath = FindClassImage(classnum);
 
-	CreateClassDatas[classnum].Picture = pictureData;
+	CreateClassDatas[classnum].PicturePath = picturePath;
 
 	fp=NULL;
 	item=NULL;
-	pictureData=NULL;
 
 	DebugEnd();
 }
@@ -429,9 +379,12 @@ T_void LoadCreateClassDatas(T_void)
 
 T_void DestroyCreateClassDatas(T_void)
 {
-	//int i;
-
 	DebugRoutine("DestroyCreateClassDatas");
+
+	for (int i = 0; i < CLASS_UNKNOWN; i++)
+	{
+		free(CreateClassDatas[i].PicturePath);
+	}
 
 
 	DebugEnd();

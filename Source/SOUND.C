@@ -321,7 +321,7 @@ T_void SoundFinish(T_void)
  *  @param filename -- Name of background song to play.
  *
  *<!-----------------------------------------------------------------------*/
-T_void SoundSetBackgroundMusic(T_byte8 *filename)
+T_void SoundSetBackgroundMusic(const char *filename)
 {
     W32 newSong;
     char realFilename[80] ;
@@ -355,7 +355,7 @@ T_void SoundSetBackgroundMusic(T_byte8 *filename)
                         break;
 
                     case MUSIC_TYPE_STREAM_IO:
-                        ISoundStartStreamIO(filename) ;
+                        ISoundStartStreamIO((T_byte8 *)filename) ;
     //                    SoundSetBackgroundVolume(G_musicVolume) ;
                         break ;
 
@@ -1394,7 +1394,7 @@ static T_void IBackgroundMusicDone(void *data)
     MemCheck(8203);
 }
 
-T_void SoundSetBackgroundMusic(T_byte8 *filename)
+T_void SoundSetBackgroundMusic(const char *filename)
 {
     T_byte8 realFilename[80] ;
     T_file file;

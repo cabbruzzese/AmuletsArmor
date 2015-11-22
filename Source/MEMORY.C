@@ -15,8 +15,8 @@
  *<!-----------------------------------------------------------------------*/
 #ifndef NDEBUG
 #ifdef WIN32
-#define _MEM_CHECK_FULL_
-#define _MEM_RECORD_ROUTINES_
+///#define _MEM_CHECK_FULL_
+///#define _MEM_RECORD_ROUTINES_
 //#define COMPILE_OPTION_OUTPUT_ALLOCATION
 #endif
 #endif
@@ -72,7 +72,7 @@ static E_Boolean IMemFindFreeSpace(T_void) ;
 T_word32 FreeMemory(T_void) ;
 
 #ifdef _MEM_CHECK_FULL_
-#define MAX_BLOCK_LIST 20000
+#define MAX_BLOCK_LIST 200000
 static T_memBlockHeader *G_blockList[MAX_BLOCK_LIST] ;
 static T_word16 G_numBlocks = 0 ;
 static T_word16 G_firstFree = 0xFFFF ;
@@ -112,7 +112,9 @@ T_void *MemAlloc(T_word32 size)
     T_byte8 *p_memory ;
     T_memBlockHeader *p_header ;
     E_Boolean memFound ;
+#if _MEM_CHECK_FULL_
     T_word16 next ;
+#endif
     const char *p_name ;
     long line ;
 
@@ -246,7 +248,9 @@ T_void MemFree(T_void *p_data)
 {
     T_byte8 *p_bytes ;
     T_memBlockHeader *p_header ;
+#if _MEM_CHECK_FULL_
     T_word16 pos ;
+#endif
 
     DebugRoutine("MemFree") ;
     DebugCheck(p_data != NULL) ;
@@ -522,7 +526,9 @@ static E_Boolean IMemFindFreeSpace(T_void)
 {
     E_Boolean answer = FALSE ;
     T_memBlockHeader *p_header ;
+#if _MEM_CHECK_FULL_
     T_word16 pos ;
+#endif
 
     DebugRoutine("IMemFindFreeSpace") ;
 

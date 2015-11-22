@@ -35,9 +35,9 @@ T_TxtboxID TxtboxCreate (T_word16 x1,
                          T_word16 y1,
                          T_word16 x2,
                          T_word16 y2,
-                         T_byte8 *fontname,
+                         const char *fontname,
                          T_word32 maxlength,
-                         T_byte8 hotkey,
+                         T_word16 hotkey,
                          E_Boolean numericonly,
                          E_TxtboxJustify justify,
                          E_TxtboxMode boxmode,
@@ -81,7 +81,7 @@ T_TxtboxID TxtboxCreate (T_word16 x1,
             GraphicSetPostCallBack (p_Txtbox->p_graphicID, TxtboxDrawCallBack, i);
             DebugCheck (p_Txtbox->p_graphicID!=NULL);
             p_graphic=(T_graphicStruct *)p_Txtbox->p_graphicID;
-            DebugCheck (p_graphic->graphicpic==NULL);
+            DebugCheck(p_graphic->png==PNG_BAD);
 
             /* allocate inital data char */
             p_Txtbox->data = MemAlloc(sizeof(T_byte8)*2);
@@ -122,7 +122,7 @@ T_TxtboxID TxtboxCreate (T_word16 x1,
                 p_Txtbox->mode==Txtbox_MODE_EDIT_FIELD ||
                 p_Txtbox->mode==Txtbox_MODE_FIXED_WIDTH_FIELD)
             {
-                DebugCheck (p_Txtbox->justify==FALSE);
+                DebugCheck (p_Txtbox->justify==Txtbox_JUSTIFY_LEFT);
             }
 
 
@@ -1024,7 +1024,7 @@ T_void TxtboxBackSpace (T_TxtboxID TxtboxID)
 
 
 
-T_void TxtboxAppendString (T_TxtboxID TxtboxID, T_byte8 *data)
+T_void TxtboxAppendString (T_TxtboxID TxtboxID, const char *data)
 {
     T_byte8 val;
     T_word16 i;
@@ -1055,7 +1055,7 @@ T_void TxtboxAppendString (T_TxtboxID TxtboxID, T_byte8 *data)
 }
 
 
-T_void TxtboxSetData (T_TxtboxID TxtboxID, T_byte8 *string)
+T_void TxtboxSetData (T_TxtboxID TxtboxID, const char *string)
 {
     T_TxtboxStruct *p_Txtbox;
     T_word16 i,cnt=0;
@@ -1906,18 +1906,24 @@ T_void TxtboxDrawCallBack(T_graphicID graphicID, T_word16 index)
 //    bcolor2=p_Txtbox->textshadow;
 
     /* figure out our last color */
-    for (i=0;i<p_Txtbox->linestarts[startline];i++)
-    {
-        if (p_Txtbox->data[i]>128)
+    if (startline < endline) {
+        for (i=0;i<p_Txtbox->linestarts[startline];i++)
         {
-            newcolor=p_Txtbox->data[i]-128;
-            if (newcolor < MAX_EXTENDED_COLORS)
+            if (p_Txtbox->data[i]>128)
             {
-                newcolor=G_extendedColors[newcolor];
-                p_Txtbox->textcolor=(T_byte8)newcolor;
-                p_Txtbox->htextcolor=(T_byte8)newcolor;
-             }
+                newcolor=p_Txtbox->data[i]-128;
+                if (newcolor < MAX_EXTENDED_COLORS)
+                {
+                    newcolor=G_extendedColors[newcolor];
+                    p_Txtbox->textcolor=(T_byte8)newcolor;
+                    p_Txtbox->htextcolor=(T_byte8)newcolor;
+                 }
+            }
         }
+    } else {
+        newcolor=G_extendedColors[1]; // white
+        p_Txtbox->textcolor=(T_byte8)newcolor;
+        p_Txtbox->htextcolor=(T_byte8)newcolor;
     }
 
     /* loop through the data lines, drawing each line */

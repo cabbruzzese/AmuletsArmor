@@ -76,37 +76,34 @@ T_void PicturesFinish(T_void)
  *  @return Pointer to picture data.
  *
  *<!-----------------------------------------------------------------------*/
-typedef struct {
-    T_byte8 resID[4] ;         /* Should contain "ReS"+'\0' id */
-    T_byte8 p_resourceName[14] ; /* Case sensitive, 13 characters + '\0' */
-    T_word32 fileOffset ;
-    T_word32 size ;              /* Size in bytes. */
-    T_word16 lockCount ;         /* 0 = unlocked. */
-    T_byte8 resourceType ;
-    T_byte8 *p_data ;
-    T_resourceFile resourceFile ;      /* Resource file this is from. */
-    T_void *ownerDir ;        /* Locked in owner directory (or NULL) */
-} T_resourceEntry ;
-
 T_byte8 *PictureLock(T_byte8 *name, T_resource *res)
 {
     T_resource found ;
     T_byte8 *where = NULL ;
+    char pngName[200];
+    char *p;
 
     DebugRoutine("PictureLock") ;
     DebugCheck(name != NULL) ;
     DebugCheck(res != NULL) ;
     DebugCheck(G_picturesActive == TRUE) ;
 
+    // Convert all pictures into .png file names
+    strcpy(pngName, name);
+    p = strchr(pngName, '.');
+    if (!p)
+        p = pngName + strlen(pngName);
+    strcpy(p, ".png");
+
     /* Look up the picture in the index. */
 //printf("> %s\n", name) ;
-    found = ResourceFind(G_pictureResFile, name) ;
+    found = ResourceFind(G_pictureResFile, pngName) ;
 //printf("Locking pic %s (%p) for %s\n", name, found, DebugGetCallerName()) ;
     if (found == RESOURCE_BAD)  {
 #ifndef NDEBUG
-        printf("Cannot find picture named '%s'\n", name) ;
+        printf("Cannot find picture named '%s'\n", pngName) ;
 #endif
-        found = ResourceFind(G_pictureResFile, "DRK42") ;
+        found = ResourceFind(G_pictureResFile, "DRK42.png") ;
     }
 
 DebugCheck(found != RESOURCE_BAD) ;
@@ -140,7 +137,7 @@ DebugCheck(found != RESOURCE_BAD) ;
  *  @return Pointer to picture data.
  *
  *<!-----------------------------------------------------------------------*/
-T_byte8 *PictureLockData(T_byte8 *name, T_resource *res)
+T_byte8 *PictureLockData(const char *name, T_resource *res)
 {
     T_resource found ;
     T_byte8 *where = NULL ;
@@ -163,6 +160,49 @@ DebugCheck(found != RESOURCE_BAD) ;
     /* If we found it, we need to lock it in memory. */
     if (found != RESOURCE_BAD)
         where = ResourceLock(found) ;
+
+    /* Record the resource we got the data from.  Needed for unlocking. */
+    *res = found ;
+
+    DebugEnd() ;
+
+    /* Return a pointer to the data part. */
+    return where ;
+}
+
+T_byte8 *PictureLockPNGAsPIC(T_byte8 *name, T_resource *res)
+{
+    T_resource found ;
+    T_byte8 *where = NULL ;
+    char pngName[200];
+    char *p;
+
+    DebugRoutine("PictureLockData") ;
+    DebugCheck(name != NULL) ;
+    DebugCheck(res != NULL) ;
+    DebugCheck(G_picturesActive == TRUE) ;
+
+    // Convert all pictures into .png file names
+    strcpy(pngName, name);
+    p = strchr(pngName, '.');
+    if (!p)
+        p = pngName + strlen(pngName);
+    strcpy(p, ".png");
+
+    /* Look up the picture in the index. */
+    found = ResourceFind(G_pictureResFile, pngName) ;
+#ifndef NDEBUG
+    if (found == RESOURCE_BAD)  {
+        printf("Cannot find picture named '%s'\n", pngName) ;
+        found = ResourceFind(G_pictureResFile, "DRK42.png") ;
+    }
+#endif
+
+    DebugCheck(found != RESOURCE_BAD) ;
+
+    /* If we found it, we need to lock it in memory. */
+    if (found != RESOURCE_BAD)
+        where = ResourceLock(found);
 
     /* Record the resource we got the data from.  Needed for unlocking. */
     *res = found ;
@@ -207,7 +247,7 @@ T_void PictureUnlock(T_resource res)
  *  @return TRUE = found, FALSE = not found
  *
  *<!-----------------------------------------------------------------------*/
-E_Boolean PictureExist(T_byte8 *name)
+E_Boolean PictureExist(const char *name)
 {
     E_Boolean picExist ;
     T_resource res ;
@@ -276,7 +316,7 @@ T_void PictureGetXYSize(T_void *p_picture, T_word16 *sizeX, T_word16 *sizeY)
  *      RESOURCE_BAD
  *
  *<!-----------------------------------------------------------------------*/
-T_resource PictureFind(T_byte8 *name)
+T_resource PictureFind(const char *name)
 {
     T_resource res ;
 
@@ -340,7 +380,7 @@ T_void PictureUnlockAndUnfind(T_resource res)
  *  takes the resource handle of an already found picture (from
  *  PictureFind).
  *
- *  NOTE: 
+ *  NOTE:
  *  Do NOT call GrDrawBitmap (or similar) with the returned pointer
  *  from this routine.  Use PictureToBitmap to get the correct pointer.
  *
@@ -349,7 +389,7 @@ T_void PictureUnlockAndUnfind(T_resource res)
  *  @return Pointer to resource data.
  *
  *<!-----------------------------------------------------------------------*/
-T_byte8 *PictureLockQuick(T_resource res)
+T_byte8 *PictureLockByResource(T_resource res)
 {
     T_byte8 *p_where ;
 

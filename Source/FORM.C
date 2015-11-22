@@ -470,6 +470,12 @@ T_void FormLoadFromFile(T_byte8 *filename)
         objtype = 0;
         /* get a line from the main file */
         fgets(tempstr, 128, fp);
+
+		#if (_MSC_VER == 1800)
+		if (strlen(tempstr) == 0)
+			break;
+		#endif
+
         /* strip last (newline) character */
         if (tempstr[strlen(tempstr) - 1] == '\n')
             tempstr[strlen(tempstr) - 1] = '\0';

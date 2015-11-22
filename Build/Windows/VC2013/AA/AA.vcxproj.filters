@@ -326,7 +326,25 @@
     <ClCompile Include="..\..\..\..\Source\CreateClassData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Source\BitmapLoader.c">
+    <ClCompile Include="..\..\..\..\Lib\lodepng\lodepng.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\ioapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\iowin32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\mztools.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\unzip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\zip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\PNG.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -853,9 +871,18 @@
     <ClInclude Include="..\..\..\..\Include\CreateClassData.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Include\BitmapLoader.h">
+    <ClInclude Include="..\..\..\..\Include\PNG.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Lib\lodepng\lodepng.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\crypt.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\ioapi.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\iowin32.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\mztools.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\unzip.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\contrib\minizip\zip.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\include\zconf.h" />
+    <ClInclude Include="..\..\..\..\Lib\zlib-1.2.8-dll\include\zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDL.lib">
@@ -864,6 +891,7 @@
     <Library Include="..\..\..\..\Lib\SDL-1.2.15\lib\x86\SDLmain.lib">
       <Filter>Lib\SDL\lib</Filter>
     </Library>
+    <Library Include="..\..\..\..\Lib\zlib-1.2.8-dll\lib\zdll.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

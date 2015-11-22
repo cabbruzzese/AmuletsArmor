@@ -11,6 +11,7 @@
 #define MAXCLASSDESCRLENGTH 384
 #define MAXLEVELTITLELENGTH 128
 #define MAXITEMNAMELENGTH	64
+#define MAXPICFILENAMELENGTH 96
 
 #define NUM_CLASSES 15
 #define NUM_ATTRIBUTES 6 //Str, Spd, Mgc, Acc, Stl, Con
@@ -72,7 +73,7 @@ typedef struct {
 	T_byte8 Attributes[NUM_ATTRIBUTES];
 	T_byte8 Advancement[NUM_ATTRIBUTES];
 	T_byte8 LevelTitles[NUM_TITLES_PER_CLASS][MAXLEVELTITLELENGTH];
-	T_bitmap *Picture;
+	char *PicturePath;
 	StartingItemData *StartingItems;
 	int	StartingItemsCount;
 	E_Boolean CanUseWeapon[EQUIP_WEAPON_TYPE_UNKNOWN];

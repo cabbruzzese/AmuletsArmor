@@ -16,17 +16,19 @@ T_void PicturesFinish(T_void) ;
 
 T_byte8 *PictureLock(T_byte8 *name, T_resource *res) ;
 
-T_byte8 *PictureLockData(T_byte8 *name, T_resource *res) ;
+T_byte8 *PictureLockData(const char *name, T_resource *res) ;
+
+//T_byte8 *PictureLockPNG(const T_byte8 *name, T_resource *res);
 
 T_void PictureUnlock(T_resource res) ;
 
 #define PictureUnlockData(res)  ResourceUnlock(res)
 
-E_Boolean PictureExist(T_byte8 *name) ;
+E_Boolean PictureExist(const char *name) ;
 
 T_void PictureGetXYSize(T_void *p_picture, T_word16 *sizeX, T_word16 *sizeY) ;
 
-T_resource PictureFind(T_byte8 *name) ;
+T_resource PictureFind(const char *name) ;
 
 T_void PictureUnfind(T_resource res) ;
 
@@ -34,8 +36,7 @@ T_void PictureUnlockAndUnfind(T_resource res) ;
 
 T_byte8 *PictureLockDataQuick(T_resource res) ;
 
-T_byte8 *PictureLockQuick(T_resource res) ;
-
+T_byte8 *PictureLockByResource(T_resource res) ;
 
 T_bitmap *PictureToBitmap(T_byte8 *pic) ;
 
