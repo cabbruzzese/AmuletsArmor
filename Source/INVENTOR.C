@@ -3473,7 +3473,7 @@ T_void   InventoryPlayWeaponAttackSound(T_void)
             }
 
             /* play an attack sound */
-            switch (p_inv->itemdesc.subtype)
+			switch (p_inv->itemdesc.subtype)
             {
 
                 case EQUIP_WEAPON_TYPE_DAGGER:
@@ -5305,6 +5305,123 @@ T_byte8 InventoryFindWeaponDamage(T_inventoryItemStruct *p_inv)
 	DebugEnd();
 
 	return 0;
+}
+
+T_byte8 GetEquippedWeaponType()
+{
+	T_byte8 retval;
+	T_inventoryItemStruct *p_inv = NULL;
+
+	DebugRoutine("GetEquippedWeaponType");
+
+	p_inv = (T_inventoryItemStruct *)DoubleLinkListElementGetData
+		(G_inventoryLocations[EQUIP_LOCATION_READY_HAND]);
+
+	retval = EQUIP_WEAPON_TYPE_NONE;
+
+	if (p_inv != NULL)
+	{
+		retval = p_inv->itemdesc.subtype;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
+E_Boolean IsBluntWeapon()
+{
+	E_Boolean retval;
+	T_byte8 weaponType;
+	T_inventoryItemStruct *p_inv = NULL;
+
+	DebugRoutine("IsBluntWeapon");
+
+	retval = FALSE;
+
+	weaponType = GetEquippedWeaponType();
+	switch (weaponType)
+	{
+	case EQUIP_WEAPON_TYPE_MACE:
+	case EQUIP_WEAPON_TYPE_STAFF:
+		retval = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
+E_Boolean IsDaggerWeapon()
+{
+	E_Boolean retval;
+	T_byte8 weaponType;
+	T_inventoryItemStruct *p_inv = NULL;
+
+	DebugRoutine("IsDaggerWeapon");
+
+	retval = FALSE;
+
+	weaponType = GetEquippedWeaponType();
+	switch (weaponType)
+	{
+	case EQUIP_WEAPON_TYPE_DAGGER:
+		retval = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
+E_Boolean IsBladeWeapon()
+{
+	E_Boolean retval;
+	T_byte8 weaponType;
+	T_inventoryItemStruct *p_inv = NULL;
+
+	DebugRoutine("IsBladeWeapon");
+
+	retval = FALSE;
+
+	weaponType = GetEquippedWeaponType();
+	switch (weaponType)
+	{
+	case EQUIP_WEAPON_TYPE_DAGGER:
+	case EQUIP_WEAPON_TYPE_SHORTSWORD:
+	case EQUIP_WEAPON_TYPE_LONGSWORD:
+		retval = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
+E_Boolean IsAxeWeapon()
+{
+	E_Boolean retval;
+	T_byte8 weaponType;
+	T_inventoryItemStruct *p_inv = NULL;
+
+	DebugRoutine("IsAxeWeapon");
+
+	retval = FALSE;
+
+	weaponType = GetEquippedWeaponType();
+	switch (weaponType)
+	{
+	case EQUIP_WEAPON_TYPE_AXE:
+		retval = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retval;
 }
 
 /* @} */

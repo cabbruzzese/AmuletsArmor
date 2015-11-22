@@ -33,6 +33,7 @@
 #include "SYNCTIME.H"
 #include "TICKER.H"
 #include "VIEW.H"
+#include "INVENTOR.H"
 
 #include "MESSAGE.H"
 
@@ -466,6 +467,76 @@ E_Boolean CreatureIsSummoned (T_creatureState *p_creature)
 	return retvalue;
 }
 
+E_Boolean IsLarge(T_creatureState *p_creature)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("IsLarge");
+
+	retvalue = FALSE;
+
+	switch (p_creature->p_obj->objectType)
+	{
+	case 1022: //Hydra
+	case 1037: //Momma Dragon
+	case 1021: //orange dragon
+	case 37886: //Obsidian Hydra
+	case 1005: //Wyvern
+	case 1007: //Gargoyle
+	case 1008: //Horseback Knight
+	case 1015: //Giant Archer
+		retvalue = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
+E_Boolean IsPlateArmored(T_creatureState *p_creature)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("IsPlateArmored");
+
+	retvalue = FALSE;
+
+	switch (p_creature->p_logic->armorType)
+	{
+	case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
+		retvalue = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
+E_Boolean IsUndead(T_creatureState *p_creature)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("IsUndead");
+
+	retvalue = FALSE;
+
+	switch (p_creature->p_obj->objectType)
+	{
+		case 1025: //lightning skeleton
+		case 1033: //skeleton
+		case 1012: //Banshee
+		case 1003: //ghost/shadow
+			retvalue = TRUE;
+			break;
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
 E_Boolean AttackerIsPlayer (T_creatureState *p_creature, T_word16 ownerID)
 {
 	E_Boolean retvalue;
@@ -482,6 +553,22 @@ E_Boolean AttackerIsPlayer (T_creatureState *p_creature, T_word16 ownerID)
 	if (CreatureIsSummoned(p_creature))
 		if (ownerID == p_creature->p_obj->ownerID)
 			retvalue = FALSE; //assume he is hostile	
+
+	DebugEnd();
+
+	return retvalue;
+}
+
+E_Boolean AtackIsMelee(T_word16 damageObjectType)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("AtackIsMelee");
+
+	retvalue = TRUE;
+
+	if (damageObjectType != EFFECT_ATTACKTYPE_MELEE)
+		retvalue = FALSE;
 
 	DebugEnd();
 
@@ -896,7 +983,8 @@ T_sword32 lx, ly, lz ;
                         p_creature->p_obj,
                         damageAmount,
                         damageType,
-                        0) ;
+                        0,
+						EFFECT_ATTACKTYPE_MISC);
                 }
             }
 
@@ -957,7 +1045,8 @@ T_sword32 lx, ly, lz ;
                                 p_obj,
                                 p_creature->poisonLevel*2,
                                 EFFECT_DAMAGE_NORMAL,
-                                0) ;
+                                0,
+								EFFECT_ATTACKTYPE_MISC);
 
                             if (p_creature->poisonLevel > 5)
                                 p_creature->poisonLevel -= 5 ;
@@ -980,7 +1069,8 @@ T_sword32 lx, ly, lz ;
 								p_obj,
 								p_creature->healthDecayRate * HEALTH_DECAY_RATE_TICKS,
 								EFFECT_DAMAGE_NORMAL,
-								0) ;
+								0,
+								EFFECT_ATTACKTYPE_MISC);
 
 							p_creature->healthDecayRateLast = 0;
 						}
@@ -1105,7 +1195,8 @@ updateTime += (updateTime>>1) ;
                                 p_creature->p_obj,
                                 (updateTime)*30,
                                 EFFECT_DAMAGE_NORMAL,
-                                0);
+                                0,
+								EFFECT_ATTACKTYPE_MISC);
                             /* Creature just died.  Nothing else to */
                             /* do here. */
                             if (p_creature->markedForDestroy)
@@ -1976,7 +2067,8 @@ static T_void INavStraightLine(
         (T_word16)ObjectGetRadius(p_obj),
         (T_word16)p_creature->meleeDamage,
         ObjectGetServerId(p_obj),
-        p_logic->damageType) ;
+        p_logic->damageType,
+		p_creature->p_obj->objectType) ;
 
     DebugEnd() ;
 }
@@ -2042,7 +2134,8 @@ static T_void INavCloud(
         (T_word16)ObjectGetRadius(p_obj),
         (T_word16)p_creature->meleeDamage,
         ObjectGetServerId(p_obj),
-        p_logic->damageType) ;
+        p_logic->damageType,
+		p_creature->p_obj->objectType) ;
 
     DebugEnd() ;
 }
@@ -3394,7 +3487,8 @@ static E_Boolean ITargetExplodeOnCollision(
             (T_word16)p_logic->maxMeleeRange,
             (T_word16)p_creature->meleeDamage,
             ObjectGetServerId(p_obj),
-            p_logic->damageType) ;
+            p_logic->damageType,
+			p_obj->objectType) ;
 
         /* Check if this killed us. */
         if (ICreatureFindViaObjectPtr(p_obj) ==
@@ -3485,7 +3579,8 @@ static E_Boolean ITargetScream(
                         (T_word16)p_logic->maxMeleeRange,
                         (T_word16)p_creature->meleeDamage,
                         ObjectGetServerId(p_obj),
-                        p_logic->damageType) ;
+                        p_logic->damageType,
+						p_creature->p_obj->objectType) ;
 
                     p_creature->immuneToDamage = wasImmune ;
 
@@ -3765,7 +3860,8 @@ static T_void ICreatureDelayedAttack(T_creatureState *p_creature)
             3,
             p_creature->meleeDamage,
             ObjectGetServerId(p_obj),
-            p_logic->damageType) ;
+            p_logic->damageType,
+			p_obj->objectType) ;
     }
 
     DebugEnd() ;
@@ -3776,7 +3872,8 @@ T_void CreatureTakeDamage(
            T_3dObject *p_obj,       /* Creature to affect. */
            T_word32 damage,         /* Amount of damage to do. */
            T_word16 type,            /* Type of damage to do. */
-           T_word16 ownerID)        /* Who is doing the damage. */
+           T_word16 ownerID,
+		   T_sword16 damageObjectType) /* what projectile type is doing the damage. */
 {
     T_creatureState *p_creature ;
     T_creatureLogic *p_logic ;
@@ -4022,10 +4119,67 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 					if (ownerID != 0 && ownerID != p_creature->targetID &&
 						p_creature->p_obj->ownerID != ownerID &&
 						AttackerIsPlayer(p_creature, ownerID) &&
+						AtackIsMelee(damageObjectType) &&
 						ClientIsDead() == FALSE) // cant sneakattack with dying blow
 					{
-						damageAmt *= 5;
-						MessageAdd("Sneak attack!");
+						if (IsDaggerWeapon())
+						{
+							damageAmt *= 7;
+							MessageAdd("Sneak attack!");
+						}
+						else
+						{
+							damageAmt *= 3;
+						}
+					}
+
+					//Melee damage adjustments
+					if (AttackerIsPlayer(p_creature, ownerID) && 
+						AtackIsMelee(damageObjectType))
+					{
+						//Monster Type Damage
+						if (IsUndead(p_creature))
+						{
+							//bonus damage for blunt weapons
+							if (IsBluntWeapon())
+							{
+								damageAmt *= 2;
+							}
+							//less damage for blades
+							else if (IsBladeWeapon())
+							{
+								damageAmt = (T_word32)((double)damageAmt * 0.33);
+							}
+						}
+
+						//Plate Armor enemies
+						if (IsPlateArmored(p_creature))
+						{
+							//axes cause more damage
+							if (IsAxeWeapon() || IsBluntWeapon())
+							{
+								damageAmt = (T_word32)((double)damageAmt * 1.25);
+							}
+							//blades cause less damage
+							else if (IsBladeWeapon())
+							{
+								damageAmt = (T_word32)((double)damageAmt * 0.5);
+							}
+						}
+
+						//Vs Large
+						if (IsLarge(p_creature))
+						{
+							if (IsAxeWeapon(p_creature, ownerID))
+							{
+								damageAmt *= 2;
+							}
+							//daggers cause third damage
+							else if (IsDaggerWeapon())
+							{
+								damageAmt = (T_word32)((double)damageAmt * 0.33);
+							}
+						}
 					}
 
                     /* Can only do true damage up to the creatures health. */
@@ -4051,7 +4205,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 //printf("%d actually done.\n", damageAmt) ;  fflush(stdout) ;
                         if (ownerID == ObjectGetServerId(PlayerGetObject()))  {
                             if (!(type & EFFECT_DAMAGE_SPECIAL))
-                                StatsChangePlayerExperience(damageAmt);
+                                StatsChangePlayerExperience(damageAmt + XP_TOHIT_BONUS);
                         }
 
                         /* Are we going to die? */
@@ -4139,7 +4293,8 @@ static T_void IExplodeSelf(
         (T_word16)p_logic->maxMeleeRange,
         (T_word16)damage,
         (T_word16)ObjectGetOwnerID(p_obj),
-        (T_byte8)p_logic->damageType);
+        (T_byte8)p_logic->damageType,
+		p_creature->p_obj->objectType);
 
     /* Check if this killed us. */
     if (ICreatureFindViaObjectPtr(p_obj) ==
@@ -5157,7 +5312,7 @@ static T_void CreatureTakeSectorDamage(
                 /* Take the damage unless the creature is allowed */
                 /* on these type of sectors. */
                 if (MapGetSectorType(areaSector) & (~p_logic->stayOnSectorType))  {
-                    CreatureTakeDamage(p_obj, damage, damageType, 0) ;
+					CreatureTakeDamage(p_obj, damage, damageType, 0, EFFECT_ATTACKTYPE_MISC);
                 }
             }
         }

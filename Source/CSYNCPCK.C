@@ -623,6 +623,7 @@ static T_void IClientSyncDoPlayerAction(
                 damageInfo.damage = p_actionData[0] /* amount of damage. */ ;
                 damageInfo.type = (T_byte8)p_actionData[1] /* damage type */ ;
                 damageInfo.ownerID = ObjectGetServerId(p_playerObj) ;
+				damageInfo.objectType = EFFECT_ATTACKTYPE_MELEE;
                 ServerDamageObjectXYZ(
                     p_target,
                     (T_word32)(&damageInfo)) ;

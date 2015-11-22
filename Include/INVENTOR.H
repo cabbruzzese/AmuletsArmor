@@ -265,5 +265,10 @@ E_Boolean InventoryDoEffect_Load(
         E_equipLocations location,
 		E_Boolean playerLoad);
 
+E_Boolean IsBluntWeapon();
+E_Boolean IsDaggerWeapon();
+E_Boolean IsBladeWeapon();
+E_Boolean IsAxeWeapon();
+
 #endif
 

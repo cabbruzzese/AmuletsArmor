@@ -26,7 +26,8 @@ T_void CreatureTakeDamage(
            T_3dObject *p_obj,
            T_word32 damage,
            T_word16 type,
-           T_word16 ownerID) ;
+           T_word16 ownerID,
+		   T_sword16 damageObjectType);
 
 #ifdef SERVER_ONLY
 T_3dObject *CreatureLookForPlayer(T_3dObject *p_obj) ;

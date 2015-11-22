@@ -1717,7 +1717,8 @@ T_void ObjMoveUpdateZVel(
                             (T_3dObject *)ObjMoveStruct,
                             square,
                             EFFECT_DAMAGE_NORMAL,
-                            0);
+                            0,
+							EFFECT_ATTACKTYPE_MISC);
                     }
                 }
 

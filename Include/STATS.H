@@ -81,6 +81,8 @@ typedef T_byte8 E_statsCharacterStatus ;
 #define STATS_CHARACTER_NAME_MAX_LENGTH      30 // includes null at end
 #define MAX_SIZE_PASSWORD 12
 
+#define XP_TOHIT_BONUS 125 //Aditional XP with every hit. (more hits = more XP. weaker weapons level faster)
+
 typedef struct
 {
     T_byte8 name[STATS_CHARACTER_NAME_MAX_LENGTH];

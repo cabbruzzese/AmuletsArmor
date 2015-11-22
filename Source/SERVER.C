@@ -298,7 +298,8 @@ T_void ServerPerformAreaOfEffect(
         power,
         (T_word16)ObjectGetOwnerID(p_objSource),
         (T_byte8)type,
-		p_objSource);
+		p_objSource,
+		-1);
 
 	DebugEnd();
 }
@@ -1072,10 +1073,11 @@ T_void ServerDamageAtWithType(
            T_word16 radius,
            T_word16 damage,
            T_word16 ownerID,
-           T_byte8 type)
+           T_byte8 type,
+		   T_sword16 objectType)
 {
 	DebugRoutine("");
-	ServerDamageAtWithTypeExceptOwner(x, y, z, radius, damage, ownerID, type, NULL);
+	ServerDamageAtWithTypeExceptOwner(x, y, z, radius, damage, ownerID, type, NULL, objectType);
 	DebugEnd();
 }
 T_void ServerDamageAtWithTypeExceptOwner(
@@ -1086,7 +1088,8 @@ T_void ServerDamageAtWithTypeExceptOwner(
            T_word16 damage,
            T_word16 ownerID,
            T_byte8 type,
-		   T_3dObject *p_owner)
+		   T_3dObject *p_owner,
+		   T_sword16 objectType)
 {
     T_damageObjInfo damageInfo ;
     T_word16 locked ;
@@ -1100,6 +1103,7 @@ T_void ServerDamageAtWithTypeExceptOwner(
     damageInfo.ownerID = ownerID ;
     damageInfo.damage = damage ;
     damageInfo.type = type ;
+	damageInfo.objectType = objectType;
 
     if (type == (EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_LOCK)) {
         locked = ServerLockDoorsInArea(

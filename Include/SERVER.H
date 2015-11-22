@@ -124,7 +124,8 @@ T_void ServerDamageAtWithType(
            T_word16 radius,
            T_word16 damage,
            T_word16 ownerID,
-           T_byte8 type) ;
+           T_byte8 type,
+		   T_sword16 objectType);
 
 T_void ServerDamageAtWithTypeExceptOwner(
            T_sword16 x,
@@ -134,7 +135,8 @@ T_void ServerDamageAtWithTypeExceptOwner(
            T_word16 damage,
            T_word16 ownerID,
            T_byte8 type,
-		   T_3dObject *p_owner);
+		   T_3dObject *p_owner,
+		   T_sword16 objectType);
 
 #endif
 

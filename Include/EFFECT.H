@@ -75,6 +75,9 @@ typedef enum
     EFFECT_MISSILE_UNKNOWN
 } E_effectMissileType;
 
+#define EFFECT_ATTACKTYPE_MELEE 0
+#define EFFECT_ATTACKTYPE_MISC -1
+
 typedef enum
 {
     EFFECT_TRIGGER_NONE,

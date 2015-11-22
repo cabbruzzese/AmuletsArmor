@@ -48,7 +48,7 @@ static T_word32 G_numNodes = 0 ;
 static T_word32 G_maxNodes = 0 ;
 static E_Boolean G_doOutput = FALSE ;
 
-#define MAX_ALLOCATED_NODES 30000
+#define MAX_ALLOCATED_NODES 300000
 static T_doubleLinkListStruct G_nodes[MAX_ALLOCATED_NODES] ;
 static T_word16 G_firstFreeNode = 0xFFFF ;
 static T_word16 G_numAllocatedNodes = 0 ;
