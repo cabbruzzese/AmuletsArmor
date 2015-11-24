@@ -260,6 +260,14 @@ T_void TownUIStart(T_word32 formNum)
 
         if (iSucceeded) {
             advNum = 1 + StatsGetCurrentQuestNumber();
+			//modulos down to a normal quest number
+			// We just have to assume they are in the same order. 
+			//  i.e. Quest 8 = same level as Quest 1
+			//       Quest 14 = same level as Quest 7
+			while (advNum >= ADVENTURE_UNKNOWN)
+			{
+				advNum -= ADVENTURE_UNKNOWN;
+			}
             if (advNum != (T_word16)-1) { // TODO: Is this comparison correct?
                 if ((advNum > StatsGetCompletedAdventure())&&
                 (advNum < ADVENTURE_UNKNOWN)){
