@@ -266,7 +266,7 @@ T_void TownUIStart(T_word32 formNum)
 			//       Quest 14 = same level as Quest 7
 			while (advNum >= ADVENTURE_UNKNOWN)
 			{
-				advNum -= ADVENTURE_UNKNOWN;
+				advNum -= (ADVENTURE_UNKNOWN - 1);//step back by 7 quest numbers
 			}
             if (advNum != (T_word16)-1) { // TODO: Is this comparison correct?
                 if ((advNum > StatsGetCompletedAdventure())&&
