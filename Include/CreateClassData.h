@@ -72,7 +72,6 @@ typedef struct {
 	T_byte8 Attributes[NUM_ATTRIBUTES];
 	T_byte8 Advancement[NUM_ATTRIBUTES];
 	T_byte8 LevelTitles[NUM_TITLES_PER_CLASS][MAXLEVELTITLELENGTH];
-	T_bitmap *Picture;
 	StartingItemData *StartingItems;
 	int	StartingItemsCount;
 	E_Boolean CanUseWeapon[EQUIP_WEAPON_TYPE_UNKNOWN];
@@ -86,5 +85,6 @@ T_void InitCreateClassData (T_byte8 classnum);
 T_void LoadCreateClassDatas(T_void);
 T_void DestroyCreateClassDatas(T_void);
 
+T_bitmap* GetCharaterImage(T_byte8 classnum);
 
 #endif

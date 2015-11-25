@@ -2149,7 +2149,7 @@ T_word16 StatsGetPlayerAttackDamage (T_void)
 
 T_void StatsDrawCharacterPortrait (T_word16 x1, T_word16 y1)
 {
-	//T_bitmap *bmpdata;
+	T_bitmap *bmpdata;
 
     DebugRoutine ("StatsDrawCharacterPortrait");
 
@@ -2158,13 +2158,15 @@ T_void StatsDrawCharacterPortrait (T_word16 x1, T_word16 y1)
 
     GrScreenSet (GRAPHICS_ACTUAL_SCREEN);
     GrDrawRectangle (x1,y1,x1+115,y1+102,0);
-	if (CreateClassDatas[StatsGetPlayerClassType()].Picture != NULL)
-    {
-        ColorUpdate(0) ;
-		//bmpdata = MakeBitmapCopy(CreateClassDatas[StatsGetPlayerClassType()].Picture);
-        //GrDrawBitmap (bmpdata,x1,y1);
-		GrDrawBitmap (CreateClassDatas[StatsGetPlayerClassType()].Picture,x1,y1);
-    } else
+
+	ColorUpdate(0) ;
+	bmpdata = GetCharaterImage(StatsGetPlayerClassType());
+
+	if (bmpdata != NULL)
+	{
+		GrDrawBitmap(bmpdata, x1, y1);		
+	}
+	else
     {
         /* clear area */
         GrDrawRectangle (x1,y1,x1+115,y1+102,55);

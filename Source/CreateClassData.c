@@ -178,6 +178,23 @@ T_bitmap* LoadImage(T_byte8 classnum)
 	return retval;
 }
 
+T_bitmap* GetCharaterImage(T_byte8 classnum)
+{
+	T_bitmap* pictureData;
+
+	DebugRoutine("GetCharaterImage");
+
+	pictureData = LoadImage(classnum);
+	if (pictureData == NULL)
+	{
+		pictureData = LoadImageFromRes(classnum);
+	}
+
+	DebugEnd();
+
+	return pictureData;
+}
+
 T_void ReadClassData(T_byte8 classnum)
 {
 	FILE *fp;
@@ -196,7 +213,6 @@ T_void ReadClassData(T_byte8 classnum)
 	int adv[NUM_ATTRIBUTES];
 	int i, j;
 	int magic, canUseFlag;
-	T_bitmap *pictureData;
 	float num;
 	float  hmod, manamod, jmod, dmod, movemod, tmod, pdmg;
 
@@ -396,15 +412,8 @@ T_void ReadClassData(T_byte8 classnum)
 	CreateClassDatas[classnum].ThiefModifier = tmod;
 	CreateClassDatas[classnum].BasePunchDamage = (int)pdmg;
 
-	pictureData = LoadImage(classnum);
-	if (pictureData == NULL)
-		pictureData = LoadImageFromRes(classnum);
-
-	CreateClassDatas[classnum].Picture = pictureData;
-
 	fp=NULL;
 	item=NULL;
-	pictureData=NULL;
 
 	DebugEnd();
 }
