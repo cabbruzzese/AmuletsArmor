@@ -5314,14 +5314,17 @@ T_byte8 GetEquippedWeaponType()
 
 	DebugRoutine("GetEquippedWeaponType");
 
-	p_inv = (T_inventoryItemStruct *)DoubleLinkListElementGetData
-		(G_inventoryLocations[EQUIP_LOCATION_READY_HAND]);
-
-	retval = EQUIP_WEAPON_TYPE_NONE;
-
-	if (p_inv != NULL)
+	if (G_inventoryLocations[EQUIP_LOCATION_READY_HAND] != NULL)
 	{
-		retval = p_inv->itemdesc.subtype;
+		p_inv = (T_inventoryItemStruct *)DoubleLinkListElementGetData
+			(G_inventoryLocations[EQUIP_LOCATION_READY_HAND]);
+
+		retval = EQUIP_WEAPON_TYPE_NONE;
+
+		if (p_inv != NULL)
+		{
+			retval = p_inv->itemdesc.subtype;
+		}
 	}
 
 	DebugEnd();
