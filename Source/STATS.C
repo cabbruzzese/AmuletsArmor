@@ -1338,15 +1338,15 @@ T_void StatsUpdatePlayerStatistics (T_void)
 				if (PlayerIsMoving() == FALSE)
 				{
 					//big regen boost
-					mregen *= (float)1.5;
-					hregen *= (float)1.5;
+					mregen *= (float)2.5;
+					hregen *= (float)2.5;
 				}
 				//otherwise
 				else
 				{
 					//small regen boost
-					mregen *= (float)1.2;
-					hregen *= (float)1.2;
+					mregen *= (float)1.7;
+					hregen *= (float)1.7;
 				}
 			}
 
@@ -3658,6 +3658,20 @@ T_word16 StatsGetPlayerMagicBonus()
 	DebugEnd();
 
 	return (T_word16)retvalue;
+}
+
+double StatsGetPlayerMagicBonusPercent()
+{
+	double retvalue;
+	DebugRoutine("StatsGetPlayerMagicBonus");
+
+	retvalue = (120 - (double)StatsGetPlayerMagicTotal()) / 120;
+	if (retvalue < 0)
+		retvalue = 0;
+
+	DebugEnd();
+
+	return retvalue;
 }
 
 E_Boolean SkillLogicsInitialized = FALSE;

@@ -1733,6 +1733,10 @@ T_void SpellsCastSpell (T_buttonID buttonID)
     T_spellStruct *p_spell, *p_spell_obj;
     T_word32 spellpower, spellduration;
 	T_word16 magicBonus;
+	double magicBonusPerc;
+	T_word16 magicBonusDiff;
+	T_word16 magicBonusSum;
+	T_word16 magicBonusCompare;
 	T_sword16 spellcost;
     T_sword16 spelldif;
     T_byte8 charlevel, charmagic;
@@ -1806,6 +1810,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 charlevel = StatsGetPlayerLevel();
 				charmagic = StatsGetPlayerMagicTotal();
 				magicBonus = StatsGetPlayerMagicBonus();
+				magicBonusPerc = StatsGetPlayerMagicBonusPercent();
 				
                 /* figure duration of spell */
                 spellduration = p_spell->duration + (p_spell->durationmod*charlevel);
@@ -1818,8 +1823,39 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 if (spellpower > MAX_EFFECT_POWER) spellpower = MAX_EFFECT_POWER;
 
                 /* figure casting cost of spell */
-				spellcost = (T_sword16)p_spell->cost + (p_spell->costmod*charlevel);
+				spellcost = (T_sword16)p_spell->cost;// +(p_spell->costmod*charlevel);
 				
+				//Reduce mana cost at tiers. Higher level spells get higher mana reduction.
+				//Any mana above 18 can be reduced at 100%
+				magicBonusSum = 0;
+				magicBonusCompare = 1800;
+				if (spellcost > magicBonusCompare)
+				{
+					magicBonusDiff = (T_word16)((spellcost - magicBonusCompare) * magicBonusPerc);
+					magicBonusSum += magicBonusDiff;
+					spellcost = magicBonusCompare;
+				}
+				//mana above 9 reduced at 66%
+				magicBonusCompare = 900;
+				if (spellcost > magicBonusCompare)
+				{
+					magicBonusDiff = (T_word16)(((spellcost - magicBonusCompare) * 0.34) + (((spellcost - magicBonusCompare) * 0.66) * magicBonusPerc));
+					magicBonusSum += magicBonusDiff;
+					spellcost = magicBonusCompare;
+				}
+				//mana above 4 is reduced at 33%
+				magicBonusCompare = 400;
+				if (spellcost > magicBonusCompare)
+				{
+					magicBonusDiff = (T_word16)(((spellcost - magicBonusCompare) * 0.66) + (((spellcost - magicBonusCompare) * 0.34) * magicBonusPerc));
+					magicBonusSum += magicBonusDiff;
+
+					spellcost = magicBonusCompare;
+				}
+
+				//add modified tiers back together.
+				spellcost += magicBonusSum;
+
 				/*
 				=== Experimenting with no mana reduction ===
 
