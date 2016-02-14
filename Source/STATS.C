@@ -1991,7 +1991,7 @@ T_byte8 StatsGetArmorPenaltySpeed()
 {
 	DebugRoutine("StatsGetArmorPenaltySpeed");
 	DebugEnd();
-	return GetArmorPenaltyValue(3,2,1);
+	return GetArmorPenaltyValue(3, 2, 0);
 }
 
 T_void StatsCalcAverageArmorValue (T_void)

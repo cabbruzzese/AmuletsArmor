@@ -579,15 +579,15 @@ T_spellStruct BerserkerSkillSpells[7] =
 
 T_spellStruct NinjaSkillSpells[9] =
 {
-	{ // water walking
+	{ // water walking = 0
 		0,0,0,0,0,0,0,0,
 		0,0,500
 	},
-	{ // Night vision
+	{ // Night vision = 1
 		0,0,0,0,0,0,0,0,
 		0,0,750
 	},
-	{ // Jump stat 1
+	{ // Jump stat 1 = 2
 		0,0,0,0,0,0,0,0,
 		0,0,1000
 	},
@@ -595,19 +595,19 @@ T_spellStruct NinjaSkillSpells[9] =
 		0,0,0,0,0,0,0,0,
 		0,0,1000
 	},
-	{ // poison hands
+	{ // poison hands = 4
 		0,0,0,0,0,0,0,0,
 		0,0,1500
 	},
-	{ // lava walk
+	{ // lava walk = 5
 		0,0,0,0,0,0,0,0,
 		0,0,1000
 	},
-	{ // speed
+	{ // speed = 6
 		0,0,0,0,0,0,0,0,
 		0,0,2000
 	},
-	{ // spirit warrior stat 1
+	{ // spirit warrior stat 1 = 7
 		0,0,0,0,0,0,0,0,
 		0,0,3500
 	},
@@ -1818,9 +1818,20 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 if (spellpower > MAX_EFFECT_POWER) spellpower = MAX_EFFECT_POWER;
 
                 /* figure casting cost of spell */
-                spellcost = (T_sword16)(p_spell->cost + (p_spell->costmod*charlevel) - (magicBonus * 10));
-				if (spellcost < 150)
+				spellcost = (T_sword16)p_spell->cost + (p_spell->costmod*charlevel);
+				
+				/*
+				=== Experimenting with no mana reduction ===
+
+				spellcost -= (magicBonus * 10);
+				
+				//Spellcost can never be less than half
+				if (spellcost < p_spell->cost / 2)
+					spellcost = p_spell->cost / 2;
+				//Spellcost can never be less than 150
+				else if (spellcost < 150)
 					spellcost = 150;
+				*/
 
                 /* figure difficulty of spell */
                 spelldif = charmagic + p_spell->hardness + (2 * charlevel);

@@ -8,7 +8,7 @@
 #include "BUTTON.H"
 #include "SPELTYPE.H"
 
-#define SPELL_CAST_TIMEOUT 24
+#define SPELL_CAST_TIMEOUT 36
 static T_word32 SpellTimeout;
 static T_word32 WandTimeout;
 
