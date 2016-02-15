@@ -3432,8 +3432,8 @@ T_void ClientDoSteal(T_void)
                     if ((rand() % 100) < stealPickSkill)  {
                         /* Is the door absolutely locked? */
                         if (doorLock == DOOR_ABSOLUTE_LOCK)  {
-                            /* Give a 4% chance to open door without key. */
-                            if ((rand() % 100) > 4)  {
+                            /* Give a 7% chance to open door without key. */
+                            if ((rand() % 100) < 7)  {
                                 MessageAdd("Picking lock ... ") ;
                                 ClientSyncSendActionPickLock(
                                     doorSector,

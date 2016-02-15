@@ -4145,6 +4145,11 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							{
 								damageAmt *= 2;
 							}
+							//less damage for daggars
+							else if (IsDaggerWeapon())
+							{
+								damageAmt = (T_word32)((double)damageAmt * 0.75);
+							}
 							//less damage for blades
 							else if (IsBladeWeapon())
 							{
@@ -4159,6 +4164,11 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							if (IsAxeWeapon() || IsBluntWeapon())
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.25);
+							}
+							//less damage for daggars
+							else if (IsDaggerWeapon())
+							{
+								damageAmt = (T_word32)((double)damageAmt * 0.8);
 							}
 							//blades cause less damage
 							else if (IsBladeWeapon())
@@ -4177,7 +4187,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//daggers cause third damage
 							else if (IsDaggerWeapon())
 							{
-								damageAmt = (T_word32)((double)damageAmt * 0.33);
+								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
 						}
 					}

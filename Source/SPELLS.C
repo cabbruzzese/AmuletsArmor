@@ -1510,9 +1510,9 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 
 		case KEY_SCAN_CODE_KEYPAD_2:
 			spellcost = 0;//500;
-			spellpower = 400 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
+			spellpower = 500 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
 			//duration used as range
-			spellduration = StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH)*2;
+			spellduration = 100;
 
 			if (manaleft >= spellcost)
 			{
@@ -1819,19 +1819,27 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                 if (spellduration > MAX_EFFECT_DURATION) spellduration = MAX_EFFECT_DURATION;
 
                 /* figure power of spell */
-                spellpower = p_spell->power + (p_spell->powermod*charlevel) + (magicBonus / 2);
+				spellpower = p_spell->power + (p_spell->powermod*charlevel);
                 if (spellpower > MAX_EFFECT_POWER) spellpower = MAX_EFFECT_POWER;
 
                 /* figure casting cost of spell */
 				spellcost = (T_sword16)p_spell->cost;// +(p_spell->costmod*charlevel);
 				
 				//Reduce mana cost at tiers. Higher level spells get higher mana reduction.
-				//Any mana above 18 can be reduced at 100%
 				magicBonusSum = 0;
-				magicBonusCompare = 1800;
+				//Any mana above 27 can be reduced at 100%
+				magicBonusCompare = 2700;
 				if (spellcost > magicBonusCompare)
 				{
 					magicBonusDiff = (T_word16)((spellcost - magicBonusCompare) * magicBonusPerc);
+					magicBonusSum += magicBonusDiff;
+					spellcost = magicBonusCompare;
+				}
+				//Any mana above 18 can be reduced at 80%
+				magicBonusCompare = 1800;
+				if (spellcost > magicBonusCompare)
+				{
+					magicBonusDiff = (T_word16)(((spellcost - magicBonusCompare) * 0.2) + (((spellcost - magicBonusCompare) * 0.8) * magicBonusPerc));
 					magicBonusSum += magicBonusDiff;
 					spellcost = magicBonusCompare;
 				}
@@ -1913,12 +1921,11 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 						{
 							p_spell_obj = NULL;
 							
-							//remove bonus power value from all attack spelltypes
-							spellpower -= 1;
 							//scales bonus up to a reasonable damage modifier
+							spellpower += (magicBonus / 2) - 1;
 							spellpower *= 30;
 							
-							//max spell level damage is original magic cost
+							//max spell bonus damage is original magic cost
 							if (spellpower > p_spell->cost)
 							{
 								spellpower = p_spell->cost;

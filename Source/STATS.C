@@ -1338,15 +1338,15 @@ T_void StatsUpdatePlayerStatistics (T_void)
 				if (PlayerIsMoving() == FALSE)
 				{
 					//big regen boost
-					mregen *= (float)2.5;
-					hregen *= (float)2.5;
+					mregen *= (float)1.7;
+					hregen *= (float)1.7;
 				}
 				//otherwise
 				else
 				{
 					//small regen boost
-					mregen *= (float)1.7;
-					hregen *= (float)1.7;
+					mregen *= (float)1.3;
+					hregen *= (float)1.3;
 				}
 			}
 

@@ -117,14 +117,12 @@ T_void BankUIStart  (T_word32 formNum)
         StoreAddItem (408,1);
         /* Ring of Speed 2 */
         StoreAddItem (430,1);
-        /* Amulet of Hiding */
-        StoreAddItem (609,1);
         /* Amulet of Quickness */
         StoreAddItem (611,1);
+		/* Amulet of Hiding */
+		StoreAddItem(609, 1);
 
         case ADVENTURE_6:
-        /* Ring of Regen 1 */
-        StoreAddItem (405,1);
         /* Amulet of Speed */
         StoreAddItem (602,1);
         /* Amulet of Mana Regeneration */
@@ -133,15 +131,17 @@ T_void BankUIStart  (T_word32 formNum)
         case ADVENTURE_5:
         /* Amulet of Accuracy */
         StoreAddItem (605,1);
-        /* Amulet of Stealth */
-        StoreAddItem (603,1);
-        /* Ring of Armor 1 */
+        /* Ring of Stealth */
+		StoreAddItem(438, 1);
+		/* Ring of Armor 1 */
         StoreAddItem (415,1);
         /* Amulet of Spell Focus */
         StoreAddItem (600,1);
 
         case ADVENTURE_4:
-        /* Ring of Speed 1 */
+		/* Ring of Regen 2 */
+		StoreAddItem(406, 1);
+		/* Ring of Speed 1 */
         StoreAddItem (429,1);
         /* Ring of Accuracy 2 */
         StoreAddItem (421,1);
@@ -157,8 +157,10 @@ T_void BankUIStart  (T_word32 formNum)
         StoreAddItem (420,1);
 
         case ADVENTURE_1:
-        /* Ring of Stealth */
-        StoreAddItem (438,1);
+		/* Amulet of Stealth */
+		StoreAddItem(603, 1);
+		/* Ring of Regen 1 */
+		StoreAddItem(405, 1);
 
         case ADVENTURE_NONE:
         default:
