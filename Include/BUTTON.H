@@ -99,6 +99,8 @@ T_void ButtonSetCallbacks (T_buttonID buttonID, T_buttonHandler callback1, T_but
 E_buttonAction ButtonGetAction (T_void);
 E_Boolean ButtonIsMouseOverButton (T_void);
 
+T_void DisplayButtonDescription(T_buttonID uiObj);
+
 #if 0
 T_void ButtonDisableAll(T_void) ;
 T_void ButtonEnableAll(T_void) ;

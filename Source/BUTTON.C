@@ -20,6 +20,9 @@
 #include "PICS.H"
 #include "SOUND.H"
 #include "SOUNDS.H"
+#include "BANNER.H"
+#include "MESSAGE.H"
+#include "SPELLS.H"
 
 #define BUTTON_TAG 12345
 
@@ -1101,6 +1104,25 @@ T_void ButtonSetStateBlock(T_void *p_state)
 {
     memcpy(G_buttonarray, p_state, sizeof(G_buttonarray));
 }
+
+T_void DisplayButtonDescription(T_buttonID uiObj)
+{
+	T_buttonStruct *p_button;
+	T_byte8 *msg;
+
+	DebugRoutine("DisplayButtonDescription");
+
+	if (isRuneButton(uiObj)){
+		p_button = (T_buttonStruct *)uiObj;
+		msg = GetRuneText((T_byte8)p_button->scancode);
+
+		if (msg != NULL)
+			MessageAdd(msg);
+	}
+
+	DebugEnd();
+}
+
 
 /* @} */
 /*-------------------------------------------------------------------------*

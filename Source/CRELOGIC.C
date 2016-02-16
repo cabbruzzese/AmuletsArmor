@@ -3881,6 +3881,7 @@ T_void CreatureTakeDamage(
 	T_word16 acidDmgMin;
     T_word16 numEffects ;
     T_word16 numResists ;
+	//T_word16 calcResult;
 
     DebugRoutine("CreatureTakeDamage") ;
 
@@ -3954,13 +3955,23 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             }
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_CONFUSE:
-                            ObjectSetAngle(p_creature->p_obj, (RandomValue()<<2)) ;
-                            p_creature->targetID = 0 ;   /* Loose target */
-                            p_creature->targetAcquired = FALSE ;
-                            p_creature->moveBlocked = TRUE ;
+							//ObjectSetAngle(p_creature->p_obj, (RandomValue()<<2)) ;
+                            //p_creature->targetID = 0 ;   /* Loose target */
+                            //p_creature->targetAcquired = FALSE ;
+                            //p_creature->moveBlocked = TRUE ;
 
-                            /* You don't know who the owner is. */
-                            ownerID = 0 ;
+							/* You don't know who the owner is. */
+							//ownerID = 0;
+							
+							//make monsters flee
+							IFleeDirect(p_creature, p_logic, p_obj);
+							p_creature->isFleeing = TRUE;
+
+							//If they have a different target, don't make them seek this target
+							// otherwise it's ok to know they got attacked again
+							if (p_creature->targetID != ownerID)
+								ownerID = 0;
+
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_SLOW:
                             /* Make creature no longer fly */

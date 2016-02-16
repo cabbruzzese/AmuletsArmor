@@ -46,4 +46,5 @@ T_void SpellsSetRune (E_spellsRuneType type);
 T_void SpellsClearRune (E_spellsRuneType type);
 T_void SpellsFinishSpell (T_void);
 T_void SpellsMakeNextSound (T_void* p_data);
+T_byte8* GetRuneText(T_byte8 runecode);
 #endif

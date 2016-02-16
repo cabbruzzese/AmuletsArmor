@@ -409,7 +409,6 @@ T_void SpellsBackspace (T_buttonID buttonID)
 }
 
 
-
 /*-------------------------------------------------------------------------*
  * Routine:  SpellsDrawRuneBox
  *-------------------------------------------------------------------------*/
@@ -1119,7 +1118,7 @@ T_void PerformNinjaSkill(T_byte8 runenum)
 			break;
 		case KEY_SCAN_CODE_KEYPAD_5:
 			spellpower = 1;
-			spellduration = StatsGetPlayerStealthTotal() * 3;
+			spellduration = 92;
 			spellcost = 950;
 
 			if (manaleft >= spellcost)
@@ -2091,6 +2090,150 @@ T_void SpellsClearRune (E_spellsRuneType type)
     }
 
     DebugEnd();
+}
+
+T_byte8* GetRuneText(T_byte8 runecode)
+{
+	T_byte8* msg;
+	DebugRoutine("GetRuneText");
+	if (StatsGetPlayerSkillLogic()->UsesRunes)
+	{
+		switch (StatsGetPlayerSkillSystem())
+		{
+		case SKILL_SYSTEM_BARBARIAN:
+			switch (runecode)
+			{
+				case KEY_SCAN_CODE_KEYPAD_1:
+					msg = "Battle rage";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_2:
+					msg = "Break Free";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_3:
+					msg = "Giant Leap";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_4:
+					msg = "Attract";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_5:
+					msg = "Hurl Insults";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_6:
+					msg = "Smash Armor";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_7:
+					msg = "Shout of Courage";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_8:
+					msg = "Rush";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_9:
+					msg = "Fury of the Gods";
+				}
+				break;
+		case SKILL_SYSTEM_NINJA:
+			switch (runecode)
+			{
+				case KEY_SCAN_CODE_KEYPAD_1:
+					msg = "Serpent Feet";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_2:
+					msg = "Night Eyes";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_3:
+					msg = "Ninja Jump";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_4:
+					msg = "Snake Form";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_5:
+					msg = "Smoke Cloud";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_6:
+					msg = "Dragon Feet";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_7:
+					msg = "Great Wind";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_8:
+					msg = "Demon Warrior";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_9:
+					msg = "Dragon's Breath";
+					break;
+			}
+			break;
+		case SKILL_SYSTEM_MONK:
+			switch (runecode)
+			{
+				case KEY_SCAN_CODE_KEYPAD_1:
+					msg = "Meditation";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_2:
+					msg = "Dragon Fist";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_3:
+					msg = "Spirit Shield";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_4:
+					msg = "Iron Skin";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_5:
+					msg = "Healing Energy";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_6:
+					msg = "Body Shield";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_7:
+					msg = "Spirit Blast";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_8:
+					msg = "Acension";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_9:
+					msg = "Divine Intervention";
+					break;
+			}
+			break;
+		case SKILL_SYSTEM_NECRO:
+			switch (runecode)
+			{
+				case KEY_SCAN_CODE_KEYPAD_1:
+					msg = "Bloodletting";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_2:
+					msg = "Summon Beast";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_3:
+					msg = "The Bargain";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_4:
+					msg = "Necrosis";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_5:
+					msg = "Summon Undead";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_6:
+					msg = "Ghost Form";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_7:
+					msg = "Foul Air";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_8:
+					msg = "Demon Form";
+					break;
+				case KEY_SCAN_CODE_KEYPAD_9:
+					msg = "Summon Hellspawn";
+					break;
+			}
+		default:
+			msg = NULL;
+			break;
+		}
+	}
+	DebugEnd();
+
+	return msg;
 }
 
 /* @} */

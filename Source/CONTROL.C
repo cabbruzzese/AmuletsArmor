@@ -66,7 +66,7 @@ static T_sword16 G_lookAngle = 0;
 static T_sword16 G_lookOffset = 0;
 static E_Boolean G_autoID = FALSE;
 static T_3dObject* ControlLookAt(T_word16 x, T_word16 y);
-static T_void ControlExamineObject(T_3dObject *p_obj);
+static T_void ControlExamineObject(T_3dObject *p_obj, T_buttonID uiObj);
 static T_word16 ControlSetMovePointer(T_word16 mx, T_word16 my);
 
 /* LES:  Added to ensure no double init's */
@@ -191,6 +191,7 @@ static T_void ControlMouseControlForGame(
         T_buttonClick button)
 {
     T_3dObject *p_obj = NULL;
+	T_buttonID uiObj = NULL;
     T_word16 vx1, vy1, vx2, vy2, vcx, vcy;
     T_word16 dir;
     T_inventoryItemStruct *itemToUse;
@@ -329,8 +330,10 @@ static T_void ControlMouseControlForGame(
                     if (G_spellWasCast == FALSE) {
                         /* See if we have a valid object currently */
                         p_obj = ControlLookAt(x, y);
+						/* See if there is a valid UI object*/
+						uiObj = ButtonGetByLoc(x, y);
                         /* examine object (null is ok here) */
-                        ControlExamineObject(p_obj);
+						ControlExamineObject(p_obj, uiObj);
                     } else
                         G_spellWasCast = FALSE;
                 } else if (G_mouse.mode == CONTROL_MOUSE_MODE_MOVE) {
@@ -505,7 +508,7 @@ T_void ControlFinish(T_void)
 static T_3dObject *ControlLookAt(T_word16 x, T_word16 y)
 {
     T_3dObject *retvalue = NULL;
-    E_inventoryType whichInv;
+	E_inventoryType whichInv;
     DebugRoutine("ControlLookAt");
 
     /* so, where are we looking */
@@ -718,7 +721,7 @@ static T_word16 ControlSetMovePointer(T_word16 mx, T_word16 my)
     return qnum;
 }
 
-static T_void ControlExamineObject(T_3dObject *p_obj)
+static T_void ControlExamineObject(T_3dObject *p_obj, T_buttonID uiObj)
 {
     T_word16 objtype;
     T_byte8 *desc1;
@@ -852,7 +855,11 @@ static T_void ControlExamineObject(T_3dObject *p_obj)
             }
         }
     } else {
-        MessageAdd("^011I don't see anything special there.");
+		//check if there is a UI object with a message
+		if (uiObj != NULL)
+			DisplayButtonDescription(uiObj);
+		else
+	        MessageAdd("^011I don't see anything special there.");
     }
     DebugEnd();
 }

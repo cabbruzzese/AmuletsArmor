@@ -91,6 +91,8 @@ T_void BannerUIModeOff (T_void);
 T_void BannerInitSoundOptions (T_void);
 E_Boolean BannerButtonsOk (T_void);
 
+E_Boolean isRuneButton(T_buttonID buttonID);
+
 #endif
 
 /****************************************************************************/

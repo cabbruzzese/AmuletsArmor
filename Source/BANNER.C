@@ -97,6 +97,24 @@ static T_void BannerGetCoin(T_buttonID buttonID);
 static T_void BannerSelectAmmo(T_buttonID buttonID);
 static T_void BannerGetAmmo(T_buttonID buttonID);
 
+E_Boolean isRuneButton(T_buttonID buttonID)
+{
+	E_Boolean retval = FALSE;
+	int i = 0;
+
+	DebugRoutine("isRuneButton");
+
+	for (i = 0; i < NUMBER_RUNE_BUTTONS; i++)
+	{
+		if (G_runeButtons[i] == buttonID)
+			retval = TRUE;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
 /*-------------------------------------------------------------------------*
  * Routine:  BannerInit
  *-------------------------------------------------------------------------*/
