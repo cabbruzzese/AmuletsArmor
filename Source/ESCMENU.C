@@ -312,6 +312,20 @@ static T_keyToStr  G_keyToStr[] = {
  * Routines:
  *--------------------------------------------------------------------------*/
 
+T_void ExitBackToTown()
+{
+	DebugRoutine("ExitBackToTown");
+
+	/* Declare this as no longer an adventure */
+	ClientSetAdventureNumber(0);
+
+	/* Return to guild. */
+	MouseRelativeModeOff();
+	ClientSetNextPlace(20004, 0);
+
+	DebugEnd();
+}
+
 T_void EscapeMenuFormControl(
         E_formObjectType objtype,
         T_word16 objstatus,
@@ -380,12 +394,7 @@ T_void EscapeMenuFormControl(
                 TxtboxSetData(textID, "Forced abort!");
                 G_escMenuAbortCount = 4;
 
-                /* Declare this as no longer an adventure */
-                ClientSetAdventureNumber(0);
-
-                /* Return to guild. */
-                MouseRelativeModeOff();
-                ClientSetNextPlace(20004, 0);
+				ExitBackToTown();
             }
         } else if (objID == 5999) {
             // Directly stop immediately and once

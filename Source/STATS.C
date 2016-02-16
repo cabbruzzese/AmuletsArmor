@@ -833,6 +833,21 @@ T_void StatsCalcPlayerRunes (T_void)
 	DebugEnd();
 }
 
+T_word32 StatsNextLevelExperienceDiff(T_byte8 level)
+{
+	T_word32 NextLevel;
+
+	DebugRoutine("StatsNextLevelExperienceDiff");
+
+	NextLevel = 2000;
+	NextLevel += 10000 * (level);
+	NextLevel += 3000 * (level * level);
+
+	DebugEnd();
+
+	return NextLevel;
+}
+
 T_void StatsChangePlayerExperience (T_sword32 amt)
 {
     T_word32 NextLevel;
@@ -852,9 +867,7 @@ T_void StatsChangePlayerExperience (T_sword32 amt)
             G_activeStats->Level++;
 
             NextLevel = G_activeStats->ExpNeeded;
-            NextLevel += 2000;
-            NextLevel += 10000*(G_activeStats->Level);
-            NextLevel += 3000*(G_activeStats->Level * G_activeStats->Level);
+			NextLevel += StatsNextLevelExperienceDiff(G_activeStats->Level);
 
             G_activeStats->ExpNeeded=NextLevel;
             if (EffectSoundIsOn())

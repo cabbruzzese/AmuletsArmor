@@ -3229,9 +3229,41 @@ void ClientDropAll(void)
     StatsCalcPlayerMovementSpeed();
 }
 
+T_void ApplyPlayerXPPenalty()
+{
+	T_word32 nextXPEarned;
+	T_word32 nextXPDiff;
+	T_sword32 xpPenalty;
+
+	DebugRoutine("ApplyPlayerXPPenalty");
+
+	//Take XP penalty by percentage (but never go lower than xp at start of this level)
+	//Never take XP form 1st level characters. There's math errors and it's kind of mean.
+	if (StatsGetPlayerLevel() > 1)
+	{
+		//get difference of what's needed for level
+		nextXPDiff = StatsNextLevelExperienceDiff(StatsGetPlayerLevel());
+		//get current XP towards next level (by finding out last level's total needed xp and subtracting from total xp)
+		nextXPEarned = StatsGetPlayerExperience() - (StatsGetPlayerExpNeeded() - nextXPDiff);
+		//subtract 25%
+		xpPenalty = (T_sword32)(nextXPEarned * -0.25);
+		//If penalty is too low, remove 1000 increments of 1000 up to remaining xp
+		if (xpPenalty > -1000)
+		{
+			if (nextXPEarned < 1000)
+				xpPenalty = (T_sword32)(nextXPEarned * -1);
+			else
+				xpPenalty = -1000;
+		}
+		StatsChangePlayerExperience(xpPenalty);
+	}
+
+	DebugEnd();
+}
+
 T_void ClientDied(T_void)
 {
-    E_Boolean isFake ;
+    E_Boolean isFake;
 
     DebugRoutine("ClientDied") ;
     /* This player just died!  We need to take appropriate actions. */
@@ -3317,7 +3349,10 @@ T_void ClientRevive(T_void)
     if (isFake)
         PlayerSetFakeMode() ;
 
-    MessageAdd("^005You are revived from the dead.") ;
+    //MessageAdd("^005You are revived from the dead.") ;
+	ApplyPlayerXPPenalty();
+	MessageAdd("^005Your body is saved from the reaper...");
+	MessageAdd("^005but his icy hands take a piece of your soul.");
 
     DebugEnd() ;
 }
