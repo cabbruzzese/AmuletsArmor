@@ -3439,7 +3439,7 @@ T_void ClientDoSteal(T_void)
                                     doorSector,
                                     ObjectGetServerId(PlayerGetObject())-100) ;
 								//grant xp
-								StatsChangePlayerExperience((T_sword16) stealPickSkill * 50);
+								StatsChangePlayerExperience(6000);
 
                             } else {
                                 MessageAdd("^005Door appears to have a superior lock") ;
@@ -3451,7 +3451,7 @@ T_void ClientDoSteal(T_void)
                                 ObjectGetServerId(PlayerGetObject())-100);
 
 							//grant xp
-							StatsChangePlayerExperience((T_sword16) stealPickSkill * 35);
+							StatsChangePlayerExperience(1000);
                         }
                     } else {
                         MessageAdd("^005You failed to pick the lock") ;
@@ -3487,7 +3487,7 @@ T_void ClientDoSteal(T_void)
                         ObjectGetServerId(PlayerGetObject())-100,
                         FALSE) ;
 					//Add Exp
-					StatsChangePlayerExperience((T_sword16) stealPickSkill * 35);
+					StatsChangePlayerExperience(1000);
                 } else {
                     /* See if we failed badly. */
                     if ((rand() % 100) - stealPickSkill > 25)  {

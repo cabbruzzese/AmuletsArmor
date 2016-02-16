@@ -3878,6 +3878,7 @@ T_void CreatureTakeDamage(
     T_creatureState *p_creature ;
     T_creatureLogic *p_logic ;
     T_word32 damageAmt ;
+	T_word16 acidDmgMin;
     T_word16 numEffects ;
     T_word16 numResists ;
 
@@ -4002,18 +4003,19 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             numResists++ ;
                         
 						//acid lowers melee weapon damage. 
-						// (But never below 1)
-						if (p_creature->meleeDamage > 100)
+						// (But never below minimum)
+						acidDmgMin = 200;
+						if (p_creature->meleeDamage > acidDmgMin)
 						{	
 							if (AttackerIsPlayer(p_creature, ownerID))
 								MessageAdd("Your foe's weapon crumbles.");
 
-							if ((T_sword32)p_creature->meleeDamage - (damageAmt / 5) < 100)
-								p_creature->meleeDamage = 100;
-							else
-								p_creature->meleeDamage -= (damageAmt / 5);
-						}
+							//reduce by 20% until minimum is reached
+							p_creature->meleeDamage = (T_word16)(p_creature->meleeDamage * 0.8);
 
+							if (p_creature->meleeDamage < acidDmgMin)
+								p_creature->meleeDamage = acidDmgMin;
+						}
                     }
 
                     if (type & EFFECT_DAMAGE_POISON)  {
