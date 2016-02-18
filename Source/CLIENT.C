@@ -1522,11 +1522,11 @@ T_void ClientUpdateHealth()
  *  @param amount -- Amount of damage to give
  *
  *<!-----------------------------------------------------------------------*/
-T_void ClientTakeDamage(T_word16 amount)
+T_void ClientTakeDamage(T_word16 amount, T_word16 ownerID)
 {
     DebugRoutine("ClientTakeDamage") ;
 
-    StatsTakeDamage (EFFECT_DAMAGE_NORMAL,(T_sword16)amount);
+    StatsTakeDamage (EFFECT_DAMAGE_NORMAL,(T_sword16)amount, ownerID);
 
     DebugEnd() ;
 }

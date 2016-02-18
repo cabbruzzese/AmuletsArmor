@@ -690,7 +690,7 @@ for (i=0; i<numSectors; i++)  {
     /* Check to see if we are being crushed! */
     if (ObjectIsBeingCrushed(G_playerObject))
 //        StatsChangePlayerHealth(delta * -10) ;
-        StatsTakeDamage (EFFECT_DAMAGE_NORMAL,(delta*30));
+        StatsTakeDamage (EFFECT_DAMAGE_NORMAL,(delta*30), NULL);
 
     IPlayerUpdateStealth() ;
     ObjectUnlinkCollisionLink(G_playerObject) ;

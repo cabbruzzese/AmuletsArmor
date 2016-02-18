@@ -741,7 +741,7 @@ T_void PerformNecroSkill(T_byte8 runenum)
 				if (InventoryHasDagger())
 				{
 					MessageAdd("Bloodletting Activated");
-					StatsTakeDamage(EFFECT_DAMAGE_NORMAL, spellpower);
+					StatsTakeDamage(EFFECT_DAMAGE_NORMAL, spellpower, NULL);
 
 					StatsChangePlayerMana(spellpower * 2);
 				}

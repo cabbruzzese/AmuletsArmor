@@ -150,7 +150,8 @@ E_Boolean ServerDamageObjectXYZ(
 
                 StatsTakeDamage(
                     p_damageInfo->type,
-                    p_damageInfo->damage) ;
+                    p_damageInfo->damage,
+					p_damageInfo->ownerID);
             }
         }
     }

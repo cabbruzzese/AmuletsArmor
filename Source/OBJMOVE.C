@@ -1703,7 +1703,8 @@ T_void ObjMoveUpdateZVel(
                                     square = 32000 ;
                                 StatsTakeDamage (
                                      EFFECT_DAMAGE_NORMAL,
-                                     square) ;
+                                     square,
+									 NULL) ;
                             }
                         }
                     }

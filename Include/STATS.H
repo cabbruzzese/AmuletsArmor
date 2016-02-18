@@ -262,7 +262,7 @@ T_void StatsSetPlayerMana(T_word16 value);
 T_void StatsSetPlayerHealth(T_word16 value);
 T_void StatsChangePlayerMana(T_sword16 amt);
 T_void StatsChangePlayerHealth(T_sword16 amt);
-T_void StatsTakeDamage(T_word16 type, T_word16 amt);
+T_void StatsTakeDamage(T_word16 type, T_word16 amt, T_word16 ownerID);
 T_word32 StatsNextLevelExperienceDiff(T_byte8 level);
 T_void StatsChangePlayerExperience(T_sword32 amt);
 T_void StatsChangePlayerLoad(T_sword16 amt);

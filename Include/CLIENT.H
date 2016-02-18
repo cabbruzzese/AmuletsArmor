@@ -51,7 +51,7 @@ T_void ClientLogoff(T_void);
 
 E_clientDialResult ClientDialIn(T_byte8 *p_init, T_byte8 *p_dial);
 
-T_void ClientTakeDamage(T_word16 amount);
+T_void ClientTakeDamage(T_word16 amount, T_word16 ownerID);
 
 T_void ClientHasGrabbedObject(T_word16 objNum);
 

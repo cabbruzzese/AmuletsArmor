@@ -3960,7 +3960,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             }
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_CONFUSE:
-							//ObjectSetAngle(p_creature->p_obj, (RandomValue()<<2)) ;
+							ObjectSetAngle(p_creature->p_obj, (RandomValue()<<2)) ;
                             //p_creature->targetID = 0 ;   /* Loose target */
                             //p_creature->targetAcquired = FALSE ;
                             //p_creature->moveBlocked = TRUE ;
@@ -4268,7 +4268,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 
                 /* Check if this damage is different than our current target */
                 /* and is not 0. */
-                if ((type != (EFFECT_DAMAGE_SPECIAL|EFFECT_DAMAGE_SPECIAL_CONFUSE)) &&
+                if (//(type != (EFFECT_DAMAGE_SPECIAL|EFFECT_DAMAGE_SPECIAL_CONFUSE)) &&
                     (type != (EFFECT_DAMAGE_SPECIAL|EFFECT_DAMAGE_SPECIAL_BERSERK))) {
                     if ((ownerID != 0) && (ownerID != p_creature->targetID))  {
                         /* Consider changing targets. */

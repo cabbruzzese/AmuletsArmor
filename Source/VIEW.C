@@ -380,11 +380,13 @@ T_void ViewUpdatePlayer(T_void)
                                      EFFECT_DAMAGE_UNKNOWN)  {
                                     StatsTakeDamage(
                                         EFFECT_DAMAGE_FIRE,
-                                        G_3dSectorInfoArray[areaSector].damage) ;
+                                        G_3dSectorInfoArray[areaSector].damage,
+										NULL) ;
                                 } else {
                                     StatsTakeDamage(
                                         G_3dSectorInfoArray[areaSector].damageType,
-                                        G_3dSectorInfoArray[areaSector].damage) ;
+                                        G_3dSectorInfoArray[areaSector].damage,
+										NULL) ;
                                 }
                             }
                         }
@@ -403,7 +405,7 @@ T_void ViewUpdatePlayer(T_void)
                     PlayerGetObject(),
                     &damageAmount,
                     &damageType))
-                StatsTakeDamage(damageType, damageAmount) ;
+                StatsTakeDamage(damageType, damageAmount, NULL) ;
         }
     } else {
         lastUpdate = TickerGet() ;

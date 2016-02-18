@@ -419,7 +419,7 @@ T_void StatsChangePlayerHealth (T_sword16 amt)
 /* note that all physical damage calls (i.e. lava, attacks, fireballs, */
 /* eating a poison apple, ect. should use this routine. */
 
-T_void StatsTakeDamage (T_word16 type, T_word16 amt)
+T_void StatsTakeDamage(T_word16 type, T_word16 amt, T_word16 ownerID)
 {
     static T_word16 acidcount=0;
     T_word16 chance;
@@ -447,95 +447,100 @@ T_void StatsTakeDamage (T_word16 type, T_word16 amt)
     }
 
     /* Check to see if we are doing a special type of "damage" */
-    if (type & EFFECT_DAMAGE_SPECIAL)  {
-        /* Do a special effect */
-        switch(type & (~EFFECT_DAMAGE_SPECIAL))  {
-            case EFFECT_DAMAGE_SPECIAL_LOCK:
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_UNLOCK:
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_PUSH:
-                PlayerMakeSoundLocal (SOUND_PLAYER_CONFUSED);
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_PULL:
-                PlayerMakeSoundLocal (SOUND_PLAYER_CONFUSED);
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_BERSERK:
-//                MessageAdd("Berserk damage") ;
-                PlayerMakeSoundLocal (SOUND_PLAYER_PISSED);
-                /* These special types don't affect player stats. */
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_DISPEL_MAGIC:
-//                MessageAdd("Dispel magic damage") ;
-                PlayerMakeSoundLocal (SOUND_PLAYER_DRAINED);
-                /* Loose one of those magical effects. */
-                Effect(
-                    EFFECT_REMOVE_RANDOM_SPELL,
-                    EFFECT_TRIGGER_NONE,
-                    0,
-                    0,
-                    0,
-                    NULL) ;
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_EARTHBIND:
-//                MessageAdd("earthbind magic damage") ;
-                /* You don't fly anymore. */
-                Effect(
-                    EFFECT_REMOVE_SPECIFIC_SPELL,
-                    EFFECT_TRIGGER_NONE,
-                    PLAYER_EFFECT_FLY,
-                    0,
-                    0,
-                    NULL) ;
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_CONFUSE:
-                PlayerMakeSoundLocal (SOUND_PLAYER_CONFUSED);
-//                MessageAdd("Confuse magic damage") ;
-                /* Spin around little buddy. */
-                Effect(
-                    EFFECT_REORIENT,
-                    EFFECT_TRIGGER_NONE,
-                    0,
-                    0,
-                    0,
-                    NULL) ;
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_SLOW:
-//                MessageAdd("Slow damage") ;
-                PlayerMakeSoundLocal (SOUND_PLAYER_POISONED);
-                G_playNextHurtSound=FALSE;
-                /* Slow down for a little while. */
-                Effect(
-                    EFFECT_ADD_PLAYER_EFFECT,
-                    EFFECT_TRIGGER_NONE,
-                    PLAYER_EFFECT_SPEED_MOD,
-                    2100,    /* Slowed for 30 seconds. */
-                    -20,
-                    StatsTakeDamage) ;
-                break ;
-            case EFFECT_DAMAGE_SPECIAL_PARALYZE:
-//                MessageAdd("Paralyze damage") ;
-                PlayerMakeSoundLocal (SOUND_PLAYER_POISONED);
-                /* Slow down to a halt. */
-                Effect(
-                    EFFECT_ADD_PLAYER_EFFECT,
-                    EFFECT_TRIGGER_NONE,
-                    PLAYER_EFFECT_SPEED_MOD,
-                    700,    /* Paralyzed for 10 seconds. */
-                    -120,
-                    StatsTakeDamage) ;
-                break ;
-            default:
-                DebugCheck(FALSE) ;
-                break ;
-        }
+	if (type & EFFECT_DAMAGE_SPECIAL)  
+	{
+		if (ownerID != ObjectGetServerId(PlayerGetObject()))
+		{
+			/* Do a special effect */
+			switch (type & (~EFFECT_DAMAGE_SPECIAL))
+			{
+				case EFFECT_DAMAGE_SPECIAL_LOCK:
+					break;
+				case EFFECT_DAMAGE_SPECIAL_UNLOCK:
+					break;
+				case EFFECT_DAMAGE_SPECIAL_PUSH:
+					PlayerMakeSoundLocal(SOUND_PLAYER_CONFUSED);
+					break;
+				case EFFECT_DAMAGE_SPECIAL_PULL:
+					PlayerMakeSoundLocal(SOUND_PLAYER_CONFUSED);
+					break;
+				case EFFECT_DAMAGE_SPECIAL_BERSERK:
+					//                MessageAdd("Berserk damage") ;
+					PlayerMakeSoundLocal(SOUND_PLAYER_PISSED);
+					/* These special types don't affect player stats. */
+					break;
+				case EFFECT_DAMAGE_SPECIAL_DISPEL_MAGIC:
+					//                MessageAdd("Dispel magic damage") ;
+					PlayerMakeSoundLocal(SOUND_PLAYER_DRAINED);
+					/* Loose one of those magical effects. */
+					Effect(
+						EFFECT_REMOVE_RANDOM_SPELL,
+						EFFECT_TRIGGER_NONE,
+						0,
+						0,
+						0,
+						NULL);
+					break;
+				case EFFECT_DAMAGE_SPECIAL_EARTHBIND:
+					//                MessageAdd("earthbind magic damage") ;
+					/* You don't fly anymore. */
+					Effect(
+						EFFECT_REMOVE_SPECIFIC_SPELL,
+						EFFECT_TRIGGER_NONE,
+						PLAYER_EFFECT_FLY,
+						0,
+						0,
+						NULL);
+					break;
+				case EFFECT_DAMAGE_SPECIAL_CONFUSE:
+					PlayerMakeSoundLocal(SOUND_PLAYER_CONFUSED);
+					//                MessageAdd("Confuse magic damage") ;
+					/* Spin around little buddy. */
+					Effect(
+						EFFECT_REORIENT,
+						EFFECT_TRIGGER_NONE,
+						0,
+						0,
+						0,
+						NULL);
+					break;
+				case EFFECT_DAMAGE_SPECIAL_SLOW:
+					//                MessageAdd("Slow damage") ;
+					PlayerMakeSoundLocal(SOUND_PLAYER_POISONED);
+					G_playNextHurtSound = FALSE;
+					/* Slow down for a little while. */
+					Effect(
+						EFFECT_ADD_PLAYER_EFFECT,
+						EFFECT_TRIGGER_NONE,
+						PLAYER_EFFECT_SPEED_MOD,
+						2100,    /* Slowed for 30 seconds. */
+						-20,
+						StatsTakeDamage);
+					break;
+				case EFFECT_DAMAGE_SPECIAL_PARALYZE:
+					//                MessageAdd("Paralyze damage") ;
+					PlayerMakeSoundLocal(SOUND_PLAYER_POISONED);
+					/* Slow down to a halt. */
+					Effect(
+						EFFECT_ADD_PLAYER_EFFECT,
+						EFFECT_TRIGGER_NONE,
+						PLAYER_EFFECT_SPEED_MOD,
+						700,    /* Paralyzed for 10 seconds. */
+						-120,
+						StatsTakeDamage);
+					break;
+				default:
+					DebugCheck(FALSE);
+					break;
+			}
+		}
     } else if (EffectPlayerEffectIsActive(PLAYER_EFFECT_INVULNERABLE)==FALSE) {
-        /* first, cause the effect specified */
-        if (type & EFFECT_DAMAGE_NORMAL)
-        {
-            effects++;
-        }
-        if (type & EFFECT_DAMAGE_FIRE)
+		/* first, cause the effect specified */
+		if (type & EFFECT_DAMAGE_NORMAL)
+		{
+			effects++;
+		}
+		if (type & EFFECT_DAMAGE_FIRE)
         {
   //        printf ("fire\n");
             effects++;

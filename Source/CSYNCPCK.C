@@ -1103,7 +1103,7 @@ T_void ClientSyncSendActionAreaOfEffect(
            T_word16 range,
 		   T_word16 power)
 {
-    DebugRoutine("ClientSyncSendActionMissileAttack") ;
+    DebugRoutine("ClientSyncSendActionAreaOfEffect") ;
 
     IClientSyncSendAction(
         PLAYER_ACTION_AREA_OF_EFFECT,

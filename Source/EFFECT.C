@@ -299,7 +299,7 @@ E_Boolean Effect(E_effectType effecttype,
 				if (EffectPlayerEffectIsActive(PLAYER_EFFECT_ELECTRICITY_ATTACK))
 				{
 					//shock player
-					StatsTakeDamage(EFFECT_DAMAGE_ELECTRICITY, 200);
+					StatsTakeDamage(EFFECT_DAMAGE_ELECTRICITY, 100, NULL);
 					MessageAdd ("^004Drinking the water shocks you.");
 				}
 				
@@ -583,35 +583,35 @@ E_Boolean Effect(E_effectType effecttype,
 
 
         case EFFECT_TAKE_NORMAL_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_NORMAL,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_NORMAL, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_FIRE_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_FIRE,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_FIRE, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_ACID_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_ACID,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_ACID, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_POISON_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_POISON,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_POISON, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_ELECTRICITY_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_ELECTRICITY,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_ELECTRICITY, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_PIERCING_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_PIERCING,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_PIERCING, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_MANA_DRAIN_DAMAGE:
-        StatsTakeDamage (EFFECT_DAMAGE_MANA_DRAIN,(T_word16)power);
+			StatsTakeDamage(EFFECT_DAMAGE_MANA_DRAIN, (T_word16)power, NULL);
         break;
 
         case EFFECT_TAKE_MULTIPLE_DAMAGE:
-        StatsTakeDamage ((T_word16)subtype,(T_word16)power);
+        StatsTakeDamage ((T_word16)subtype,(T_word16)power, NULL);
         break;
 
         case EFFECT_PLAY_AREA_SOUND:
