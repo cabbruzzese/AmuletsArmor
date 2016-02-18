@@ -62,6 +62,7 @@
 #include "TICKER.H"
 #include "TOWNUI.H"
 #include "VIEW.H"
+#include "INVENTOR.H"
 
 /*---------------------------------------------------------------------------
  * Constants:
@@ -556,7 +557,8 @@ static E_Boolean IClientGainExperienceIfHit(
                 ClientSyncSendActionMeleeAttack(
                     StatsGetPlayerAttackDamage(),
                     StatsGetPlayerDamageType(),
-                    ObjectGetServerId(p_obj)) ;
+                    ObjectGetServerId(p_obj),
+					GetEquippedWeaponType());
 
                 if (StatsHitWasCritical())
                 {

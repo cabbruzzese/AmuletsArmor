@@ -174,6 +174,8 @@ T_void InventoryPlayWeaponHitSound(T_void);
 T_void InventoryReadItemsList(FILE *fp);
 T_void InventoryWriteItemsList(FILE *fp);
 
+T_byte8 GetEquippedWeaponType();
+
 /* LES: 03/28/96  Routine to update all the weapons and items */
 /* on a character. */
 T_void InventoryUpdatePlayerEquipmentBodyParts(T_void);
@@ -265,10 +267,10 @@ E_Boolean InventoryDoEffect_Load(
         E_equipLocations location,
 		E_Boolean playerLoad);
 
-E_Boolean IsBluntWeapon();
-E_Boolean IsDaggerWeapon();
-E_Boolean IsBladeWeapon();
-E_Boolean IsAxeWeapon();
+E_Boolean IsBluntWeapon(T_byte8 weaponType);
+E_Boolean IsDaggerWeapon(T_byte8 weaponType);
+E_Boolean IsBladeWeapon(T_byte8 weaponType);
+E_Boolean IsAxeWeapon(T_byte8 weaponType);
 
 #endif
 

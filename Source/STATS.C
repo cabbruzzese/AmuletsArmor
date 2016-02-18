@@ -3355,7 +3355,6 @@ E_effectDamageType StatsGetPlayerDamageType (T_void)
     return (damageType);
 }
 
-
 static T_void StatsReorientPlayerView (T_void)
 {
     T_sword32 angle;

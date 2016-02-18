@@ -1718,7 +1718,9 @@ T_void ObjMoveUpdateZVel(
                             square,
                             EFFECT_DAMAGE_NORMAL,
                             0,
-							EFFECT_ATTACKTYPE_MISC);
+							EFFECT_ATTACKTYPE_MISC,
+							EQUIP_WEAPON_TYPE_UNKNOWN
+							);
                     }
                 }
 

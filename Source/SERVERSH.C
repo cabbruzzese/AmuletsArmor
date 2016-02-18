@@ -110,7 +110,8 @@ E_Boolean ServerDamageObjectXYZ(
                     p_damageInfo->damage,
                     p_damageInfo->type,
                     p_damageInfo->ownerID,
-					p_damageInfo->objectType) ;
+					p_damageInfo->objectType,
+					p_damageInfo->WeaponType) ;
             } else if (p_obj == PlayerGetObject())  {
                 /* If it is me, hurt me (and push as well). */
                 isFake = PlayerInFakeMode() ;

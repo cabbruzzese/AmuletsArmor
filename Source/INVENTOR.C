@@ -5332,17 +5332,13 @@ T_byte8 GetEquippedWeaponType()
 	return retval;
 }
 
-E_Boolean IsBluntWeapon()
+E_Boolean IsBluntWeapon(T_byte8 weaponType)
 {
-	E_Boolean retval;
-	T_byte8 weaponType;
-	T_inventoryItemStruct *p_inv = NULL;
-
+	E_Boolean retval;	
 	DebugRoutine("IsBluntWeapon");
 
 	retval = FALSE;
 
-	weaponType = GetEquippedWeaponType();
 	switch (weaponType)
 	{
 	case EQUIP_WEAPON_TYPE_MACE:
@@ -5356,17 +5352,13 @@ E_Boolean IsBluntWeapon()
 	return retval;
 }
 
-E_Boolean IsDaggerWeapon()
+E_Boolean IsDaggerWeapon(T_byte8 weaponType)
 {
 	E_Boolean retval;
-	T_byte8 weaponType;
-	T_inventoryItemStruct *p_inv = NULL;
-
 	DebugRoutine("IsDaggerWeapon");
 
 	retval = FALSE;
 
-	weaponType = GetEquippedWeaponType();
 	switch (weaponType)
 	{
 	case EQUIP_WEAPON_TYPE_DAGGER:
@@ -5379,17 +5371,13 @@ E_Boolean IsDaggerWeapon()
 	return retval;
 }
 
-E_Boolean IsBladeWeapon()
+E_Boolean IsBladeWeapon(T_byte8 weaponType)
 {
 	E_Boolean retval;
-	T_byte8 weaponType;
-	T_inventoryItemStruct *p_inv = NULL;
-
 	DebugRoutine("IsBladeWeapon");
 
 	retval = FALSE;
 
-	weaponType = GetEquippedWeaponType();
 	switch (weaponType)
 	{
 	case EQUIP_WEAPON_TYPE_DAGGER:
@@ -5404,17 +5392,13 @@ E_Boolean IsBladeWeapon()
 	return retval;
 }
 
-E_Boolean IsAxeWeapon()
+E_Boolean IsAxeWeapon(T_byte8 weaponType)
 {
 	E_Boolean retval;
-	T_byte8 weaponType;
-	T_inventoryItemStruct *p_inv = NULL;
-
 	DebugRoutine("IsAxeWeapon");
 
 	retval = FALSE;
 
-	weaponType = GetEquippedWeaponType();
 	switch (weaponType)
 	{
 	case EQUIP_WEAPON_TYPE_AXE:

@@ -9,6 +9,7 @@ typedef struct {
     T_word16 damage ;
     T_byte8 type ;
 	T_sword16 objectType;
+	T_byte8 WeaponType;
 } T_damageObjInfo ;
 
 extern T_sword32 G_sourceX ;

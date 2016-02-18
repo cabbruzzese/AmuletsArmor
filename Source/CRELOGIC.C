@@ -984,7 +984,8 @@ T_sword32 lx, ly, lz ;
                         damageAmount,
                         damageType,
                         0,
-						EFFECT_ATTACKTYPE_MISC);
+						EFFECT_ATTACKTYPE_MISC,
+						EQUIP_WEAPON_TYPE_UNKNOWN);
                 }
             }
 
@@ -1046,7 +1047,8 @@ T_sword32 lx, ly, lz ;
                                 p_creature->poisonLevel*2,
                                 EFFECT_DAMAGE_NORMAL,
                                 0,
-								EFFECT_ATTACKTYPE_MISC);
+								EFFECT_ATTACKTYPE_MISC,
+								EQUIP_WEAPON_TYPE_UNKNOWN);
 
                             if (p_creature->poisonLevel > 5)
                                 p_creature->poisonLevel -= 5 ;
@@ -1070,7 +1072,8 @@ T_sword32 lx, ly, lz ;
 								p_creature->healthDecayRate * HEALTH_DECAY_RATE_TICKS,
 								EFFECT_DAMAGE_NORMAL,
 								0,
-								EFFECT_ATTACKTYPE_MISC);
+								EFFECT_ATTACKTYPE_MISC,
+								EQUIP_WEAPON_TYPE_UNKNOWN);
 
 							p_creature->healthDecayRateLast = 0;
 						}
@@ -1196,7 +1199,8 @@ updateTime += (updateTime>>1) ;
                                 (updateTime)*30,
                                 EFFECT_DAMAGE_NORMAL,
                                 0,
-								EFFECT_ATTACKTYPE_MISC);
+								EFFECT_ATTACKTYPE_MISC,
+								EQUIP_WEAPON_TYPE_UNKNOWN);
                             /* Creature just died.  Nothing else to */
                             /* do here. */
                             if (p_creature->markedForDestroy)
@@ -3873,7 +3877,8 @@ T_void CreatureTakeDamage(
            T_word32 damage,         /* Amount of damage to do. */
            T_word16 type,            /* Type of damage to do. */
            T_word16 ownerID,
-		   T_sword16 damageObjectType) /* what projectile type is doing the damage. */
+		   T_sword16 damageObjectType,
+		   T_byte8 weaponType) /* what projectile type is doing the damage. */
 {
     T_creatureState *p_creature ;
     T_creatureLogic *p_logic ;
@@ -4135,7 +4140,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						AtackIsMelee(damageObjectType) &&
 						ClientIsDead() == FALSE) // cant sneakattack with dying blow
 					{
-						if (IsDaggerWeapon())
+						if (IsDaggerWeapon(weaponType))
 						{
 							damageAmt *= 7;
 							MessageAdd("Sneak attack!");
@@ -4154,17 +4159,17 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						if (IsUndead(p_creature))
 						{
 							//bonus damage for blunt weapons
-							if (IsBluntWeapon())
+							if (IsBluntWeapon(weaponType))
 							{
 								damageAmt *= 2;
 							}
 							//less damage for daggars
-							else if (IsDaggerWeapon())
+							else if (IsDaggerWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.75);
 							}
 							//less damage for blades
-							else if (IsBladeWeapon())
+							else if (IsBladeWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.33);
 							}
@@ -4174,17 +4179,17 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						if (IsPlateArmored(p_creature))
 						{
 							//axes cause more damage
-							if (IsAxeWeapon() || IsBluntWeapon())
+							if (IsAxeWeapon(weaponType) || IsBluntWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.25);
 							}
 							//less damage for daggars
-							else if (IsDaggerWeapon())
+							else if (IsDaggerWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.8);
 							}
 							//blades cause less damage
-							else if (IsBladeWeapon())
+							else if (IsBladeWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
@@ -4193,12 +4198,12 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						//Vs Large
 						if (IsLarge(p_creature))
 						{
-							if (IsAxeWeapon(p_creature, ownerID))
+							if (IsAxeWeapon(weaponType))
 							{
 								damageAmt *= 2;
 							}
 							//daggers cause third damage
-							else if (IsDaggerWeapon())
+							else if (IsDaggerWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
@@ -5335,7 +5340,7 @@ static T_void CreatureTakeSectorDamage(
                 /* Take the damage unless the creature is allowed */
                 /* on these type of sectors. */
                 if (MapGetSectorType(areaSector) & (~p_logic->stayOnSectorType))  {
-					CreatureTakeDamage(p_obj, damage, damageType, 0, EFFECT_ATTACKTYPE_MISC);
+					CreatureTakeDamage(p_obj, damage, damageType, 0, EFFECT_ATTACKTYPE_MISC, EQUIP_WEAPON_TYPE_UNKNOWN);
                 }
             }
         }

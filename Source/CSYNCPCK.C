@@ -624,6 +624,7 @@ static T_void IClientSyncDoPlayerAction(
                 damageInfo.type = (T_byte8)p_actionData[1] /* damage type */ ;
                 damageInfo.ownerID = ObjectGetServerId(p_playerObj) ;
 				damageInfo.objectType = EFFECT_ATTACKTYPE_MELEE;
+				damageInfo.WeaponType = (T_byte8)p_actionData[3];
                 ServerDamageObjectXYZ(
                     p_target,
                     (T_word32)(&damageInfo)) ;
@@ -1082,7 +1083,8 @@ T_void ClientSyncSendActionChangeSelf(
 T_void ClientSyncSendActionMeleeAttack(
            T_word16 damageAmount,
            E_effectDamageType damageType,
-           T_word16 targetId)
+           T_word16 targetId,
+		   T_byte8 weaponType)
 {
     DebugRoutine("ClientSyncSendActionMeleeAttack") ;
 
@@ -1091,7 +1093,7 @@ T_void ClientSyncSendActionMeleeAttack(
         damageAmount,
         (T_word16)damageType,
         targetId,
-        0) ;
+		(T_word16)weaponType);
 
     DebugEnd() ;
 }

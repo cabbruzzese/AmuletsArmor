@@ -21,7 +21,8 @@ T_void ClientSyncSendActionChangeSelf(
 T_void ClientSyncSendActionMeleeAttack(
            T_word16 damageAmount,
            E_effectDamageType damageType,
-           T_word16 target) ;
+           T_word16 target,
+		   T_byte8 weaponType) ;
 
 T_void ClientSyncSendSummonMonster(
            T_word16 monstertype,
