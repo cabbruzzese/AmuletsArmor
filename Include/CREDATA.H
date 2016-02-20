@@ -50,6 +50,9 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,    //Special effect when dies
         CRELOGIC_DFT_BLOOD_EFFECT,    //Special effect for blood
         CRELOGIC_DFT_CAN_OPEN_DOORS,  // If can open the door
+		---New pwmod values--
+		CREATURE_FACTION_NONE,			//Which faction for infighting
+		MONSTER_TYPE_NONE,				//Type of monster for damage calculations
     },
         ---------------------------------------------------------------
 */
@@ -98,6 +101,8 @@ static T_creatureLogic G_creatureLogics[] =
         EFX_POWER_EXPLOSION,
         2,
         False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Fire Cloud */
@@ -144,7 +149,9 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
         False,
-    },
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
+	},
     {
         /* Poison Cloud */
         89,
@@ -190,6 +197,8 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
         False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Normal Effect Bolt */
@@ -236,6 +245,8 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
         False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Poison Effect Bolt */
@@ -281,7 +292,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Piercing Effect Bolt */
@@ -327,7 +340,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Electricity Effect Bolt */
@@ -373,7 +388,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Fire Effect Bolt */
@@ -419,7 +436,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Mana Drain Effect Bolt */
@@ -465,7 +484,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Acid Effect Bolt */
@@ -511,7 +532,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Stefan */
@@ -558,6 +581,8 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
         True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Blue Wizard */
@@ -603,7 +628,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Poltergeist/Shadow */
@@ -649,7 +676,9 @@ static T_creatureLogic G_creatureLogics[] =
         50,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_UNDEAD,
     },
     {
         /* Wyvern */
@@ -695,7 +724,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Evil Orange Wizard */
@@ -741,7 +772,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Biff/Gargoyle */
@@ -787,7 +820,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Knights of Andreas on Horseback */
@@ -833,7 +868,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_KNIGHTS_OF_ANDREW,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Knights of Andreas (Crossbowman) */
@@ -879,7 +916,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_KNIGHTS_OF_ANDREW,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Apollo */
@@ -925,7 +964,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Legionaires/Roman */
@@ -971,7 +1012,9 @@ static T_creatureLogic G_creatureLogics[] =
         40,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Banshee */
@@ -1017,7 +1060,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_UNDEAD,
+		MONSTER_TYPE_UNDEAD,
     },
     {
         /* Evil/Eastern Archer */
@@ -1063,7 +1108,9 @@ static T_creatureLogic G_creatureLogics[] =
         25,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Giant Archer / Mighty Hunger */
@@ -1109,7 +1156,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Elk */
@@ -1155,7 +1204,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Wolf */
@@ -1201,7 +1252,9 @@ static T_creatureLogic G_creatureLogics[] =
         60,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Elf Archer */
@@ -1247,7 +1300,9 @@ static T_creatureLogic G_creatureLogics[] =
         20,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Druid */
@@ -1293,7 +1348,9 @@ static T_creatureLogic G_creatureLogics[] =
         15,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_DRUID,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Lich */
@@ -1339,7 +1396,9 @@ static T_creatureLogic G_creatureLogics[] =
         25,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Orange Dragon */
@@ -1385,7 +1444,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_DRAGON,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Hydra */
@@ -1431,7 +1492,9 @@ static T_creatureLogic G_creatureLogics[] =
         30,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Griffon */
@@ -1477,7 +1540,9 @@ static T_creatureLogic G_creatureLogics[] =
         80,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Skeleton (Electric) */
@@ -1523,7 +1588,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         1,
-        True,
+		True,
+		CREATURE_FACTION_UNDEAD,
+		MONSTER_TYPE_UNDEAD,
     },
     {
         /* Boulder */
@@ -1569,7 +1636,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Exiguus/Orange Cemetary Wizard */
@@ -1616,6 +1685,8 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
         True,
+		CREATURE_FACTION_UNDEAD,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Skeleton Knight (no-electricity) */
@@ -1661,7 +1732,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         1,
-        True,
+		True,
+		CREATURE_FACTION_UNDEAD,
+		MONSTER_TYPE_UNDEAD,
     },
     {
         /* Wolf/dog */
@@ -1707,7 +1780,9 @@ static T_creatureLogic G_creatureLogics[] =
         80,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Bad Knight */
@@ -1753,7 +1828,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_EVIL_KNIGHTS,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Elmore */
@@ -1800,6 +1877,8 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
         True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Momma Dragon */
@@ -1845,7 +1924,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_DRAGON,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Bronze Barbarian */
@@ -1891,7 +1972,9 @@ static T_creatureLogic G_creatureLogics[] =
         75,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_BARBARIAN,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Black Barbarian / Gus */
@@ -1937,7 +2020,9 @@ static T_creatureLogic G_creatureLogics[] =
         75,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_BARBARIAN,
+		MONSTER_TYPE_NONE,
     },
     {
         /* White Barbarian / Phil */
@@ -1983,7 +2068,9 @@ static T_creatureLogic G_creatureLogics[] =
         75,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_BARBARIAN,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Blue barbarian */
@@ -2029,7 +2116,9 @@ static T_creatureLogic G_creatureLogics[] =
         75,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_BARBARIAN,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Berserk Missile */
@@ -2075,7 +2164,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Mana Drain Missile */
@@ -2121,7 +2212,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Pull Missile */
@@ -2167,7 +2260,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POWER_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Homing Death Ball Missle */
@@ -2213,7 +2308,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_FIRE_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Acid Ball Missile */
@@ -2259,7 +2356,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_ACID_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Fire Ball Missle */
@@ -2305,7 +2404,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_FIRE_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Lighting Bolt Missle */
@@ -2351,7 +2452,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_ELECTRIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Dispell Magic Missile */
@@ -2397,7 +2500,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Earth Bind Missile */
@@ -2443,7 +2548,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Slow Effect Missile */
@@ -2489,7 +2596,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Confusion Missile */
@@ -2535,7 +2644,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Magic Dart Missile */
@@ -2581,7 +2692,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POWER_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Lock Door Missile */
@@ -2627,7 +2740,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POWER_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Unlock Door Missle */
@@ -2673,7 +2788,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POWER_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Earth Smite Missle */
@@ -2719,7 +2836,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_ACID_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Poison Missile */
@@ -2765,7 +2884,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POISON_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Paralyze Effect Missile */
@@ -2811,7 +2932,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_MAGIC_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Plasma Ball */
@@ -2857,7 +2980,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POWER_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Homing Magic Dart */
@@ -2903,7 +3028,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_POWER_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Homing Acid ball */
@@ -2949,7 +3076,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_ACID_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Homing Fireball */
@@ -2995,7 +3124,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_FIRE_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Evil Knight */
@@ -3041,7 +3172,9 @@ static T_creatureLogic G_creatureLogics[] =
         15,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_EVIL_KNIGHTS,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Fireface fireball */
@@ -3087,7 +3220,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         EFX_FIRE_EXPLOSION,
         2,
-        False,
+		False,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Bronze Evil Knight */
@@ -3133,7 +3268,9 @@ static T_creatureLogic G_creatureLogics[] =
         20,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_EVIL_KNIGHTS,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Silver Evil Knight */
@@ -3179,7 +3316,9 @@ static T_creatureLogic G_creatureLogics[] =
         5,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_EVIL_KNIGHTS,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Mithril poison Druid */
@@ -3225,7 +3364,9 @@ static T_creatureLogic G_creatureLogics[] =
         10,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_DRUID,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Mithril Bad Knight */
@@ -3271,7 +3412,9 @@ static T_creatureLogic G_creatureLogics[] =
         15,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_EVIL_KNIGHTS,
+		MONSTER_TYPE_PLATE_ARMOR,
     },
     {
         /* Obsidian Blue Wizard */
@@ -3317,7 +3460,9 @@ static T_creatureLogic G_creatureLogics[] =
         0,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_NONE,
     },
     {
         /* Vitorix */
@@ -3364,6 +3509,8 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
         True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Obsidian Hydra */
@@ -3409,7 +3556,9 @@ static T_creatureLogic G_creatureLogics[] =
         20,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LARGE,
     },
     {
         /* Jugurtha */
@@ -3455,7 +3604,9 @@ static T_creatureLogic G_creatureLogics[] =
         15,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_DRUID,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Elymus / Red Evil Or Wiz */
@@ -3501,7 +3652,9 @@ static T_creatureLogic G_creatureLogics[] =
         20,
         CRELOGIC_DFT_EFX_AT_DEATH,
         0,
-        True,
+		True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
     {
         /* Mattan the Lich */
@@ -3548,5 +3701,7 @@ static T_creatureLogic G_creatureLogics[] =
         CRELOGIC_DFT_EFX_AT_DEATH,
         2,
         True,
+		CREATURE_FACTION_NONE,
+		MONSTER_TYPE_LOW_ARMOR,
     },
 } ;

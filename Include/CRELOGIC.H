@@ -92,6 +92,27 @@ typedef enum {
     TARGET_LOGIC_PACKAGE_UNKNOWN
 } E_targetLogicPackage ;
 
+typedef enum {
+	CREATURE_FACTION_NONE,
+	CREATURE_FACTION_DRUID,
+	CREATURE_FACTION_KNIGHTS_OF_ANDREW,
+	CREATURE_FACTION_BARBARIAN,
+	CREATURE_FACTION_UNDEAD,
+	CREATURE_FACTION_EVIL_KNIGHTS,
+	CREATURE_FACTION_DARK_KNIGHTS,
+	CREATURE_FACTION_DRAGON,
+	CREATURE_FACTION_UNKNOWN
+} E_creatureFaction;
+
+typedef enum {
+	MONSTER_TYPE_NONE,
+	MONSTER_TYPE_LOW_ARMOR,
+	MONSTER_TYPE_PLATE_ARMOR,
+	MONSTER_TYPE_UNDEAD,
+	MONSTER_TYPE_LARGE,
+	MONSTER_TYPE_UNKNOWN
+} E_monsterType;
+
 typedef T_void (*T_monsterUpdateCallback)(T_void *p_data) ;
 
 
@@ -174,7 +195,6 @@ typedef struct {
     T_word32 missileAttackDelay ;
     T_word16 hitPoints ;
     T_word16 regenRate ;
-//    E_effectMissileType missileType ;
     T_word16 missileType ;
     E_effectDamageType damageType ;
     T_word16 meleeDamage;
@@ -202,6 +222,9 @@ typedef struct {
     T_word16 efxAtDeath ;
     T_byte8 bloodEffect ;
     E_Boolean canOpenDoors ;
+	//pwmod creature values
+	T_byte8 FactionType;
+	T_byte8 MonsterType;
 } T_creatureLogic ;
 
 typedef struct {
@@ -312,6 +335,9 @@ typedef struct {
 	float missileDelayMod;
 	T_word16 meleeDamage;
 	E_effectDamageType damageResist;
+
+	//Charmed - Special damage types currently active
+	T_word16 CharmValue;
 
 } T_creatureState ;
 

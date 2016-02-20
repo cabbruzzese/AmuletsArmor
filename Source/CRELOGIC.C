@@ -467,27 +467,61 @@ E_Boolean CreatureIsSummoned (T_creatureState *p_creature)
 	return retvalue;
 }
 
+E_Boolean SameFaction(T_creatureState *p_creature, T_creatureState *p_creatureTarget)
+{
+	T_byte8 selfFaction;
+	T_byte8 targetFaction;
+	E_Boolean retvalue;
+
+	DebugRoutine("SameFaction");
+
+	retvalue = FALSE;
+	selfFaction = p_creature->p_logic->FactionType;
+	targetFaction = p_creatureTarget->p_logic->FactionType;
+
+	//If same faction
+	if (selfFaction != CREATURE_FACTION_NONE &&
+		selfFaction != CREATURE_FACTION_UNKNOWN)
+	{
+		retvalue = selfFaction == targetFaction;
+	}
+
+	//If creature is summoned, completely different logic
+	if (CreatureIsSummoned(p_creature))
+	{
+		//Both summoned, must be friends
+		if (CreatureIsSummoned(p_creatureTarget))
+		{
+			if (p_creature->p_obj->ownerID == p_creatureTarget->p_obj->ownerID)
+			{
+				retvalue = TRUE;
+			}
+		}
+		//Summoned monsters are enemies with all NPCs
+		else
+		{
+			retvalue = FALSE;
+		}
+	}
+	//If target is summoned and current monster is NPC
+	else if (CreatureIsSummoned(p_creatureTarget))
+	{
+		//It's always our enemy!
+		retvalue = FALSE;
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
 E_Boolean IsLarge(T_creatureState *p_creature)
 {
 	E_Boolean retvalue;
 
 	DebugRoutine("IsLarge");
 
-	retvalue = FALSE;
-
-	switch (p_creature->p_obj->objectType)
-	{
-	case 1022: //Hydra
-	case 1037: //Momma Dragon
-	case 1021: //orange dragon
-	case 37886: //Obsidian Hydra
-	case 1005: //Wyvern
-	case 1007: //Gargoyle
-	case 1008: //Horseback Knight
-	case 1015: //Giant Archer
-		retvalue = TRUE;
-		break;
-	}
+	retvalue = p_creature->p_logic->MonsterType == MONSTER_TYPE_LARGE;
 
 	DebugEnd();
 
@@ -500,31 +534,7 @@ E_Boolean IsLowArmor(T_creatureState *p_creature)
 
 	DebugRoutine("IsLowArmor");
 
-	retvalue = FALSE;
-
-	switch (p_creature->p_obj->objectType)
-	{
-	case 1001: //Citizen
-	case 1002: //Blue Mage
-	case 1004: //Carniverous Ape???
-	case 1006: //Orange wizard
-	case 1016: //Elk???
-	case 1017: //Wolf
-	case 1018: //Errol Flynn (Elf)
-	case 1019: //Druid
-	case 1020: //Lich (Purple wizard)
-	case 1023: //Griffon
-	case 1032: //Exiguus
-	case 1034: //Also wolf???
-	case 3002: //Barbarian Mage
-	case 33787: //Poison Druid
-	case 37866: //Blue Wizard 2???
-	case 46075: //Jugurtha
-	case 50158: //Elymus (fire boss)
-	case 54268: //Mattan the lich???
-		retvalue = TRUE;
-		break;
-	}
+	retvalue = p_creature->p_logic->MonsterType == MONSTER_TYPE_LOW_ARMOR;
 
 	DebugEnd();
 
@@ -537,14 +547,7 @@ E_Boolean IsPlateArmored(T_creatureState *p_creature)
 
 	DebugRoutine("IsPlateArmored");
 
-	retvalue = FALSE;
-
-	switch (p_creature->p_logic->armorType)
-	{
-	case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
-		retvalue = TRUE;
-		break;
-	}
+	retvalue = p_creature->p_logic->MonsterType == MONSTER_TYPE_PLATE_ARMOR;
 
 	DebugEnd();
 
@@ -557,19 +560,7 @@ E_Boolean IsUndead(T_creatureState *p_creature)
 
 	DebugRoutine("IsUndead");
 
-	retvalue = FALSE;
-
-	switch (p_creature->p_obj->objectType)
-	{
-		case 1025: //lightning skeleton
-		case 1033: //skeleton
-		case 1012: //Banshee
-		case 1003: //ghost/shadow
-			retvalue = TRUE;
-			break;
-	}
-
-	DebugEnd();
+	retvalue = p_creature->p_logic->MonsterType == MONSTER_TYPE_UNDEAD;
 
 	return retvalue;
 }
@@ -732,6 +723,7 @@ T_void CreatureAttachToObject(T_3dObject *p_obj)
 				p_creature->missileDelayMod = 1;
 				p_creature->meleeDamage = p_logic->meleeDamage;
 				p_creature->damageResist = p_logic->damageResist;
+				p_creature->CharmValue = 0;//Clear any spell effects
 
                 Collide3dUpdateLineOfSightLast(
                     &p_creature->sight,
@@ -3879,7 +3871,7 @@ static T_void ICreatureDelayedAttack(T_creatureState *p_creature)
 
     if (p_creature)  {
         p_obj = p_creature->p_obj ;
-        p_logic = p_creature->p_logic ;
+		p_logic = p_creature->p_logic;
 
         /* Attack up close if player is nearer */
         attackDist = p_logic->maxMeleeRange ;
@@ -4028,6 +4020,11 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             DebugCheck(FALSE) ;
                             break ;
                     }
+				
+					//If not a regular hit, just give flat XP bonus
+					if (ownerID == ObjectGetServerId(PlayerGetObject()))  {
+						StatsChangePlayerExperience(XP_TOHIT_BONUS);
+					}
 
                     /* Do no physical damage. */
                     damageAmt = 0 ;
@@ -4305,13 +4302,6 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             }
                         }
                     }
-					//If not a regular hit, just give flat XP bonus
-					else if (type & EFFECT_DAMAGE_SPECIAL)
-					{
-						if (ownerID == ObjectGetServerId(PlayerGetObject()))  {
-							StatsChangePlayerExperience(XP_TOHIT_BONUS);
-						}
-					}
                 }
 
                 /* Check if this damage is different than our current target */
@@ -4429,6 +4419,7 @@ static T_void IConsiderTargetChange(
     T_sword16 targetX, targetY ;
     T_3dObject *p_target;
     T_3dObject *p_oldTarget ;
+	T_byte8 chanceAttackCreature;
     E_Boolean isOldBlocked, isNewBlocked ;
     E_Boolean newTargetTaken = FALSE ;
 
@@ -4514,6 +4505,18 @@ static T_void IConsiderTargetChange(
         if ((newTargetTaken == TRUE) && (ObjectIsCreature(p_target)))  {
             /* We have just agreed to attack a fellow creature.  Is this */
             /* generally ok? */
+			chanceAttackCreature = p_logic->chanceAttackCreature;
+			//If monsters are same faction they are half as likely to pick a fight
+			if (SameFaction(p_creature, (T_creatureState *)ObjectGetExtraData(p_target)))
+			{
+				chanceAttackCreature = (T_byte8)(chanceAttackCreature / 2);
+			}
+			//If charmed, always pick another monster
+			if (p_creature->CharmValue & EFFECT_DAMAGE_SPECIAL_BERSERK)
+			{
+				chanceAttackCreature = 0;
+			}
+
             if ((RandomValue() % 100) >= p_logic->chanceAttackCreature)  {
                 /* No.  Ignore the request to change. */
                 newTargetTaken = FALSE ;
