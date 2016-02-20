@@ -494,6 +494,43 @@ E_Boolean IsLarge(T_creatureState *p_creature)
 	return retvalue;
 }
 
+E_Boolean IsLowArmor(T_creatureState *p_creature)
+{
+	E_Boolean retvalue;
+
+	DebugRoutine("IsLowArmor");
+
+	retvalue = FALSE;
+
+	switch (p_creature->p_obj->objectType)
+	{
+	case 1001: //Citizen
+	case 1002: //Blue Mage
+	case 1004: //Carniverous Ape???
+	case 1006: //Orange wizard
+	case 1016: //Elk???
+	case 1017: //Wolf
+	case 1018: //Errol Flynn (Elf)
+	case 1019: //Druid
+	case 1020: //Lich (Purple wizard)
+	case 1023: //Griffon
+	case 1032: //Exiguus
+	case 1034: //Also wolf???
+	case 3002: //Barbarian Mage
+	case 33787: //Poison Druid
+	case 37866: //Blue Wizard 2???
+	case 46075: //Jugurtha
+	case 50158: //Elymus (fire boss)
+	case 54268: //Mattan the lich???
+		retvalue = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retvalue;
+}
+
 E_Boolean IsPlateArmored(T_creatureState *p_creature)
 {
 	E_Boolean retvalue;
@@ -4161,15 +4198,10 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//bonus damage for blunt weapons
 							if (IsBluntWeapon(weaponType))
 							{
-								damageAmt *= 2;
-							}
-							//less damage for daggars
-							else if (IsDaggerWeapon(weaponType))
-							{
-								damageAmt = (T_word32)((double)damageAmt * 0.75);
+								damageAmt = (T_word32)((double)damageAmt * 1.5);
 							}
 							//less damage for blades
-							else if (IsBladeWeapon(weaponType))
+							else if (IsBladeWeapon(weaponType) || IsDaggerWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.33);
 							}
@@ -4183,13 +4215,8 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.25);
 							}
-							//less damage for daggars
-							else if (IsDaggerWeapon(weaponType))
-							{
-								damageAmt = (T_word32)((double)damageAmt * 0.8);
-							}
 							//blades cause less damage
-							else if (IsBladeWeapon(weaponType))
+							else if (IsBladeWeapon(weaponType) || IsDaggerWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
@@ -4200,12 +4227,26 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						{
 							if (IsAxeWeapon(weaponType))
 							{
-								damageAmt *= 2;
+								damageAmt = (T_word32)((double)damageAmt * 1.5);
 							}
 							//daggers cause third damage
 							else if (IsDaggerWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
+							}
+						}
+
+						if (IsLowArmor(p_creature))
+						{
+							//extra damage for blades
+							if (IsBladeWeapon(weaponType))
+							{
+								damageAmt = (T_word32)((double)damageAmt * 1.33);
+							}
+							//padded against blunt weapons
+							else if (IsBluntWeapon(weaponType))
+							{
+								damageAmt = (T_word32)((double)damageAmt * 0.75);
 							}
 						}
 					}
@@ -4264,6 +4305,13 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             }
                         }
                     }
+					//If not a regular hit, just give flat XP bonus
+					else if (type & EFFECT_DAMAGE_SPECIAL)
+					{
+						if (ownerID == ObjectGetServerId(PlayerGetObject()))  {
+							StatsChangePlayerExperience(XP_TOHIT_BONUS);
+						}
+					}
                 }
 
                 /* Check if this damage is different than our current target */
