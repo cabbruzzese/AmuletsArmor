@@ -1943,6 +1943,17 @@ T_void SpellsCastSpell (T_buttonID buttonID)
                             (T_word16)spellpower,
                             p_spell_obj);
 
+						/*send healing to other players*/
+						if (p_spell->type == EFFECT_MOD_PLAYER_HEALTH)
+						{
+							Effect(EFFECT_AREA_OF_EFFECT,
+								EFFECT_TRIGGER_CAST,
+								EFFECT_MOD_PLAYER_HEALTH,
+								90,
+								(T_word16)(spellpower / 2),
+								NULL);
+						}
+
                         /* trigger the spell sound */
                         if (p_spell->sound != 0)
                         {
