@@ -562,6 +562,8 @@ E_Boolean IsUndead(T_creatureState *p_creature)
 
 	retvalue = p_creature->p_logic->MonsterType == MONSTER_TYPE_UNDEAD;
 
+	DebugEnd();
+
 	return retvalue;
 }
 
@@ -3945,6 +3947,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                 numEffects = 0 ;
                 numResists = 0 ;
 
+				//Mark this creature as charmed by this spell
+				p_creature->CharmValue = p_creature->CharmValue | type & (~EFFECT_DAMAGE_SPECIAL);
+
                 /* Is this a special type of damage? */
                 if (type & EFFECT_DAMAGE_SPECIAL)  {
                     switch(type & (~EFFECT_DAMAGE_SPECIAL))  {
@@ -4514,10 +4519,13 @@ static T_void IConsiderTargetChange(
 			//If charmed, always pick another monster
 			if (p_creature->CharmValue & EFFECT_DAMAGE_SPECIAL_BERSERK)
 			{
-				chanceAttackCreature = 0;
+				chanceAttackCreature = 100;
+
+				//remove berserk trait now that it has been applied
+				p_creature->CharmValue = p_creature->CharmValue & ~EFFECT_DAMAGE_SPECIAL_BERSERK;
 			}
 
-            if ((RandomValue() % 100) >= p_logic->chanceAttackCreature)  {
+			if ((RandomValue() % 100) >= chanceAttackCreature)  {
                 /* No.  Ignore the request to change. */
                 newTargetTaken = FALSE ;
             } else {
