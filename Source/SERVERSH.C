@@ -94,14 +94,14 @@ E_Boolean ServerDamageObjectXYZ(
                         /* Pull the creature. */
                         ObjectAccelFlat(
                             p_obj,
-                            -(p_damageInfo->damage/90),
+                            -(p_damageInfo->damage/45),
                             angle) ;
                         ObjectForceUpdate(p_obj) ;
                     } else {
                         /* Push the creature. */
                         ObjectAccelFlat(
                             p_obj,
-                            p_damageInfo->damage/90,
+                            p_damageInfo->damage/45,
                             angle) ;
                         ObjectForceUpdate(p_obj) ;
                     }

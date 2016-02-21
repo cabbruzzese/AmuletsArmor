@@ -2001,19 +2001,19 @@ T_byte8 StatsGetArmorPenaltyMagic()
 {
 	DebugRoutine("StatsGetArmorPenaltyMagic");
 	DebugEnd();
-	return GetArmorPenaltyValue(5, 3, 0);
+	return GetArmorPenaltyValue(3, 1, 0);
 }
 T_byte8 StatsGetArmorPenaltyStealth()
 {
 	DebugRoutine("StatsGetArmorPenaltyStealth");
 	DebugEnd();
-	return GetArmorPenaltyValue(7, 4, 0);
+	return GetArmorPenaltyValue(6, 3, 0);
 }
 T_byte8 StatsGetArmorPenaltySpeed()
 {
 	DebugRoutine("StatsGetArmorPenaltySpeed");
 	DebugEnd();
-	return GetArmorPenaltyValue(3, 2, 0);
+	return GetArmorPenaltyValue(4, 2, 0);
 }
 
 T_void StatsCalcAverageArmorValue (T_void)
