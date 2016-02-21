@@ -4021,6 +4021,10 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         case EFFECT_DAMAGE_SPECIAL_PARALYZE:
                             /* Does not affect creatures. */
                             break ;
+						case EFFECT_DAMAGE_SPECIAL_HEAL:
+							//Can't heal enemies. Do nothing
+							break;
+
                         default:
                             DebugCheck(FALSE) ;
                             break ;

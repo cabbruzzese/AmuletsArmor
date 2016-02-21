@@ -529,6 +529,10 @@ T_void StatsTakeDamage(T_word16 type, T_word16 amt, T_word16 ownerID)
 						-120,
 						StatsTakeDamage);
 					break;
+				case EFFECT_DAMAGE_SPECIAL_HEAL:
+					//Heal
+					StatsChangePlayerHealth(amt);
+					break;
 				default:
 					DebugCheck(FALSE);
 					break;

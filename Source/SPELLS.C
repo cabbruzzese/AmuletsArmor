@@ -1948,7 +1948,7 @@ T_void SpellsCastSpell (T_buttonID buttonID)
 						{
 							Effect(EFFECT_AREA_OF_EFFECT,
 								EFFECT_TRIGGER_CAST,
-								EFFECT_MOD_PLAYER_HEALTH,
+								EFFECT_DAMAGE_SPECIAL | EFFECT_DAMAGE_SPECIAL_HEAL,
 								90,
 								(T_word16)(spellpower / 2),
 								NULL);

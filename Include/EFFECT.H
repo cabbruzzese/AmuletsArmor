@@ -38,7 +38,8 @@ typedef T_byte8 E_effectDamageType ;
 #define EFFECT_DAMAGE_SPECIAL_SLOW               8
 #define EFFECT_DAMAGE_SPECIAL_PARALYZE           9
 #define EFFECT_DAMAGE_SPECIAL_DAGGER			 10
-#define EFFECT_DAMAGE_SPECIAL_UNKNOWN            11
+#define EFFECT_DAMAGE_SPECIAL_HEAL				 11
+#define EFFECT_DAMAGE_SPECIAL_UNKNOWN            12
 
 typedef enum
 {
