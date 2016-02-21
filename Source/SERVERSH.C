@@ -54,22 +54,24 @@ E_Boolean ServerDamageObjectXYZ(
     if ((!(ObjectIsCreature(p_obj))) || (p_damageInfo->ownerID != ObjectGetServerId(p_obj)))  {
         /* If it is a creature, damage it. */
         if (!ObjectIsPassable(p_obj))  {
-            /* TESTING */
+            /* Always create splat */
+			if (ObjectIsCreature(p_obj))  {
+				CreatureGoSplat(
+					p_obj,
+					p_damageInfo->damage,
+					p_damageInfo->type);
+			}
+			else {
+				ClientMakeObjectGoSplat(
+					p_obj,
+					p_damageInfo->damage,
+					p_damageInfo->type,
+					0,
+					BLOOD_EFFECT_NORMAL);
+			}
+
             if (!(p_damageInfo->type & EFFECT_DAMAGE_SPECIAL))  {
     //            printf("(%d) ServerDamageObjectXYZ %d for %d by %s\n", SyncTimeGet(), ObjectGetServerId(p_obj), p_damageInfo->damage, DebugGetCallerName()) ;
-                if (ObjectIsCreature(p_obj))  {
-                    CreatureGoSplat(
-                        p_obj,
-                        p_damageInfo->damage,
-                        p_damageInfo->type) ;
-                } else {
-                    ClientMakeObjectGoSplat(
-                        p_obj,
-                        p_damageInfo->damage,
-                        p_damageInfo->type,
-                        0,
-                        BLOOD_EFFECT_NORMAL) ;
-                }
                 /* Give experience to me if I hit a creature that */
                 /* was not a special type. */
                 if (p_damageInfo->ownerID == ObjectGetServerId(PlayerGetObject()))  {

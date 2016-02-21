@@ -1201,8 +1201,8 @@ T_sword32 lx, ly, lz ;
 #endif
 
                     updateTime = p_logic->updateTime ;
-/* TESTING */
-updateTime += (updateTime>>1) ;
+					/* TESTING */
+					updateTime += (updateTime>>1) ;
                     if (p_creature->isSlowed)  {
                         if (p_creature->timeSlowEnds < SyncTimeGet())  {
                             p_creature->isSlowed = FALSE ;
@@ -5589,8 +5589,23 @@ T_void CreatureGoSplat(
         p_creature = (T_creatureState *)DoubleLinkListElementGetData(element) ;
 
         /* Take out any resistances (if not special) */
-        if ((damageType & EFFECT_DAMAGE_SPECIAL) == 0)
-            damageType &= (~(p_creature->damageResist)) ;
+		if ((damageType & EFFECT_DAMAGE_SPECIAL) == 0)
+		{
+			damageType &= (~(p_creature->damageResist));
+		}
+		else
+		{
+			//Can't splat with some special types
+			switch (damageType & ~EFFECT_DAMAGE_SPECIAL)
+			{
+				case EFFECT_DAMAGE_SPECIAL_HEAL:
+					damageType = 0;
+					break;
+
+				default:
+					break;
+			}
+		}
 
         if (damageType != 0)  {
             /* Go ahead and go splat on everything else */

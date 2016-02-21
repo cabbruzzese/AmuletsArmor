@@ -609,33 +609,76 @@ T_void ClientMakeObjectGoSplat(
     /* Determine what type of damage to do. */
     damageType &= (~defenseType) ;
 
-    if (damageType & EFFECT_DAMAGE_NORMAL)
-    {
-        if (bloodType == BLOOD_EFFECT_NORMAL)
-            splatTypes[typeCount++]=EFX_BLOOD_SHRAPNEL ;
-        else if (bloodType == BLOOD_EFFECT_BONE)
-            splatTypes[typeCount++]=EFX_BONE_SHRAPNEL ;
-    }
-    if (damageType & EFFECT_DAMAGE_POISON)
-    {
-        splatTypes[typeCount++]=EFX_POISON_SHRAPNEL;
-    }
-    if (damageType & EFFECT_DAMAGE_ACID)
-    {
-        splatTypes[typeCount++]=EFX_ACID_SHRAPNEL;
-    }
-    if (damageType & EFFECT_DAMAGE_FIRE)
-    {
-        splatTypes[typeCount++]=EFX_FIRE_SHRAPNEL;
-    }
-    if (damageType & EFFECT_DAMAGE_ELECTRICITY)
-    {
-        splatTypes[typeCount++]=EFX_ELECTRIC_SHRAPNEL;
-    }
-    if (damageType & EFFECT_DAMAGE_MANA_DRAIN)
-    {
-        splatTypes[typeCount++]=EFX_MAGIC_SHRAPNEL;
-    }
+	if ((T_word16)damageType & EFFECT_DAMAGE_SPECIAL)
+	{
+		switch ((T_word16)damageType & ~EFFECT_DAMAGE_SPECIAL)
+		{
+			case EFFECT_DAMAGE_SPECIAL_BERSERK:
+			case EFFECT_DAMAGE_SPECIAL_CONFUSE:
+			case EFFECT_DAMAGE_SPECIAL_PULL:
+			case EFFECT_DAMAGE_SPECIAL_PUSH:
+			case EFFECT_DAMAGE_SPECIAL_SLOW:
+				splatTypes[typeCount++] = EFX_WALL_HIT;
+				break;
+			case EFFECT_DAMAGE_SPECIAL_EARTHBIND:
+				splatTypes[typeCount++] = EFX_ACID_SHRAPNEL;
+				break;
+
+			case EFFECT_DAMAGE_SPECIAL_HEAL:
+				splatTypes[typeCount++] = EFX_BONE_SHRAPNEL;
+				break;
+
+			case EFFECT_DAMAGE_SPECIAL_DISPEL_MAGIC:
+				splatTypes[typeCount++] = EFX_MAGIC_SHRAPNEL;
+				break;
+
+			case EFFECT_DAMAGE_SPECIAL_DAGGER:
+				{
+					if (bloodType == BLOOD_EFFECT_NORMAL)
+						splatTypes[typeCount++] = EFX_BLOOD_SHRAPNEL;
+					else if (bloodType == BLOOD_EFFECT_BONE)
+						splatTypes[typeCount++] = EFX_BONE_SHRAPNEL;
+				}
+				break;
+
+			case EFFECT_DAMAGE_SPECIAL_PARALYZE:
+			case EFFECT_DAMAGE_SPECIAL_LOCK:
+			case EFFECT_DAMAGE_SPECIAL_UNLOCK:
+				break;
+			default:
+				break;
+		}
+	}
+	else
+	{
+		if (damageType & EFFECT_DAMAGE_NORMAL)
+		{
+			if (bloodType == BLOOD_EFFECT_NORMAL)
+				splatTypes[typeCount++] = EFX_BLOOD_SHRAPNEL;
+			else if (bloodType == BLOOD_EFFECT_BONE)
+				splatTypes[typeCount++] = EFX_BONE_SHRAPNEL;
+		}
+		if (damageType & EFFECT_DAMAGE_POISON)
+		{
+			splatTypes[typeCount++] = EFX_POISON_SHRAPNEL;
+		}
+		if (damageType & EFFECT_DAMAGE_ACID)
+		{
+			splatTypes[typeCount++] = EFX_ACID_SHRAPNEL;
+		}
+		if (damageType & EFFECT_DAMAGE_FIRE)
+		{
+			splatTypes[typeCount++] = EFX_FIRE_SHRAPNEL;
+		}
+		if (damageType & EFFECT_DAMAGE_ELECTRICITY)
+		{
+			splatTypes[typeCount++] = EFX_ELECTRIC_SHRAPNEL;
+		}
+		if (damageType & EFFECT_DAMAGE_MANA_DRAIN)
+		{
+			splatTypes[typeCount++] = EFX_MAGIC_SHRAPNEL;
+		}
+	}
 
     if (ObjectIsFullyPassable(p_obj))
         amount = 0 ;
