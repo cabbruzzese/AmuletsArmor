@@ -13,6 +13,8 @@
 #define MAX_EFFECT_POWER 28000
 #define MAX_EFFECT_DURATION 28000
 
+#define REGEN_BONUS_MODIFIER 3
+
 typedef T_byte8 E_effectDamageType ;
 #define EFFECT_DAMAGE_UNKNOWN 0
 #define EFFECT_DAMAGE_NORMAL 1

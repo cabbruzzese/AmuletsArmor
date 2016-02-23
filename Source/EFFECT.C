@@ -1344,7 +1344,7 @@ static T_void EffectStartPlayerEffect (T_playerEffectStruct *p_effect)
             ClientSyncSendActionAreaSound(2002,500,FALSE);
             ColorAddGlobal (20,0,20);
         }
-        StatsChangePlayerHealthRegen ((T_sword16)power);
+        StatsChangePlayerHealthRegen ((T_sword16)(power * REGEN_BONUS_MODIFIER));
         break;
 
         case PLAYER_EFFECT_MANA_REGEN_MOD:
@@ -1652,7 +1652,7 @@ static T_void EffectStopPlayerEffect (T_playerEffectStruct *p_effect)
 
          case PLAYER_EFFECT_HEALTH_REGEN_MOD:
          if (power > 0) MessageAdd("^014You feel different somehow.");
-         StatsChangePlayerHealthRegen (-(T_sword16)power);
+		 StatsChangePlayerHealthRegen(-(T_sword16)(power * REGEN_BONUS_MODIFIER));
          break;
 
          case PLAYER_EFFECT_MANA_REGEN_MOD:
