@@ -1246,7 +1246,7 @@ T_void PerformMonkSkill(T_byte8 runenum)
 	switch (runenum)
 	{
 		case KEY_SCAN_CODE_KEYPAD_1:
-			spellpower = StatsGetPlayerMagicTotal() * (4); //was 8, reduced to 4 because of regen bonus to fix items/spells
+			spellpower = StatsGetPlayerMagicTotal() * (3); //was 8, reduced to 3 because of regen bonus to fix items/spells
 			spellduration = (100 * StatsGetPlayerMagicTotal());
 			spellcost = MonkSkillSpells[0].cost;
 
