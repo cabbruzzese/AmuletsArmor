@@ -770,16 +770,26 @@ static T_void ControlExamineObject(T_3dObject *p_obj, T_buttonID uiObj)
                 if (value > 0)
                 {
                     StoreConvertCurrencyToString (stmp2,value);
-                    MessagePrintf("^001%s ^007[%s]",desc2,stmp2);
+					if (EffectPlayerEffectIsActive(PLAYER_EFFECT_GOD_MODE) == TRUE)
+						MessagePrintf("^001%s ^007[%s] %d", desc2, stmp2, p_obj->objServerId);
+					else
+						MessagePrintf("^001%s ^007[%s]",desc2,stmp2);
+					
                 }
                 else
                 {
-                    MessagePrintf("^001%s",desc2);
+					if (EffectPlayerEffectIsActive(PLAYER_EFFECT_GOD_MODE) == TRUE)
+						MessagePrintf("^001%s %d", desc2,  p_obj->objServerId);
+					else
+						MessagePrintf("^001%s", desc2);
                 }
             }
             else
             {
-                MessagePrintf ("^001%s",desc2);
+				if (EffectPlayerEffectIsActive(PLAYER_EFFECT_GOD_MODE) == TRUE)
+					MessagePrintf("^001%s %d", desc2, p_obj->objServerId);
+				else
+					MessagePrintf("^001%s", desc2);
             }
             MemFree (desc2);
             PictureUnlockAndUnfind(res);
@@ -818,7 +828,10 @@ static T_void ControlExamineObject(T_3dObject *p_obj, T_buttonID uiObj)
                 }
                 else
                 {
-                    MessagePrintf("^007%s",desc2);
+					if (EffectPlayerEffectIsActive(PLAYER_EFFECT_GOD_MODE) == TRUE)
+						MessagePrintf("^007%s %d", desc2, p_obj->objServerId);
+					else
+						MessagePrintf("^007%s", desc2);
                 }
             }
             else
@@ -826,7 +839,10 @@ static T_void ControlExamineObject(T_3dObject *p_obj, T_buttonID uiObj)
                 /* don't display for creatures */
                 if (ObjectIsCreature(p_obj)==FALSE)
                 {
-                    MessagePrintf ("^007%s",desc2);
+					if (EffectPlayerEffectIsActive(PLAYER_EFFECT_GOD_MODE) == TRUE)
+						MessagePrintf("^007%s %d", desc2, p_obj->objServerId);
+					else
+						MessagePrintf("^007%s", desc2);
                 }
             }
             MemFree (desc2);
