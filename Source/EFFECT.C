@@ -1369,13 +1369,16 @@ static T_void EffectStartPlayerEffect (T_playerEffectStruct *p_effect)
         break;
 
         case PLAYER_EFFECT_NIGHT_VISION:
-        ViewSetDarkSight ((T_byte8)power);
-        if (G_effectSoundOn)
-        {
-//            SoundPlayByNumber (2005,255);
-            ClientSyncSendActionAreaSound(2005,500,FALSE);
-            ColorAddGlobal (-30,-30,-30);
-        }
+			if ((T_byte8)power > 127)
+				power = 127;
+
+			ViewSetDarkSight ((T_byte8)power);
+			if (G_effectSoundOn)
+			{
+		//            SoundPlayByNumber (2005,255);
+				ClientSyncSendActionAreaSound(2005,500,FALSE);
+				ColorAddGlobal (-30,-30,-30);
+			}
         break;
 
         case PLAYER_EFFECT_MAGIC_MAP:
