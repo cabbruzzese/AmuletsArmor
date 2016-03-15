@@ -236,6 +236,7 @@ T_void PeopleHereGetPlayerIDSelfStruct(T_playerIDSelf *p_self)
     p_self->state = G_ourState;
     p_self->groupID = ClientSyncGetGameGroupID();
     p_self->adventure = PeopleHereGetOurAdventure();
+	p_self->quest = StatsGetCurrentQuestNumber();
 
     DebugEnd();
 }
@@ -541,7 +542,8 @@ T_void PeopleHereUpdatePlayer(T_playerIDSelf *p_playerID)
                                 == PLAYER_ID_STATE_JOINING_GAME))) {
                     if (p_playerID->state == PLAYER_ID_STATE_CREATING_GAME) {
                         GuildUIAddGame(p_playerID->adventure,
-                                p_playerID->groupID);
+                                p_playerID->groupID,
+								p_playerID->quest);
                         PeopleHereGeneratePeopleInGame(p_playerID->groupID);
                     } else if (p_find->state == PLAYER_ID_STATE_CREATING_GAME) {
                         GuildUIRemoveGame(p_playerID->adventure,

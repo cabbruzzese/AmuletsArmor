@@ -309,7 +309,7 @@ T_void ClientReceiveGameStartPacket(
 				if (G_SuccessPlayers > 0)
 					levelStatus |= LEVEL_STATUS_SUCCESS;
 
-				TownUIFinishedQuest(levelStatus, p_start->numPlayers, p_start->adventure);
+				TownUIFinishedQuest(levelStatus, p_start->numPlayers, StatsGetCurrentQuestNumber());
 
 				//once all players respond, quit the game
 				ClientSyncSetGameGroupID(*DirectTalkGetNullBlankUniqueAddress());

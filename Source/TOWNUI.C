@@ -456,6 +456,40 @@ E_Boolean TownUIIsOpen(T_void)
     return (G_townIsOpen);
 }
 
+
+/* Checks if person is in chat area */
+E_Boolean TownPersonInChat(T_byte8 *personName)
+{
+	T_doubleLinkListElement element, nextElement;
+	T_byte8 *data;
+	T_word32 tocmp;
+	E_Boolean retval = FALSE;
+
+	DebugRoutine("TownPersonInChat");
+
+	if (G_isOnePlayer == FALSE) {
+		DebugCheck(G_chatList != DOUBLE_LINK_LIST_BAD);
+		/* search list for this string */
+		element = DoubleLinkListGetFirst(G_chatList);
+		while (element != DOUBLE_LINK_LIST_ELEMENT_BAD) {
+			nextElement = DoubleLinkListElementGetNext(element);
+			data = DoubleLinkListElementGetData(element);
+			tocmp = TxtboxCanFit(G_userListBox, data);
+
+			if (strncmp(data, personName, tocmp) == 0) {
+				retval = TRUE;
+				break;
+			}
+
+			element = nextElement;
+		}
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
 /* routine should be called by server - adds personName to list of people */
 /* in town hall chat area */
 T_void TownAddPerson(T_byte8 *personName)
@@ -468,20 +502,25 @@ T_void TownAddPerson(T_byte8 *personName)
 
     if (G_isOnePlayer == FALSE) {
         DebugCheck(G_chatList != DOUBLE_LINK_LIST_BAD);
-        /* alloc memory for string */
-        size = strlen(personName);
 
-        data = NULL;
-        data = MemAlloc(size + 1);
-        DebugCheck(data != NULL);
-        tocpy = TxtboxCanFit(G_userListBox, personName);
-        strncpy(data, personName, tocpy);
-        data[tocpy] = '\0';
-        /* add personName to list */
-        DoubleLinkListAddElementAtEnd(G_chatList, data);
+		//Only add player if not already in list
+		if (TownPersonInChat(personName) == FALSE)
+		{
+			/* alloc memory for string */
+			size = strlen(personName);
 
-        /* redraw list */
-        TownRedrawChatList();
+			data = NULL;
+			data = MemAlloc(size + 1);
+			DebugCheck(data != NULL);
+			tocpy = TxtboxCanFit(G_userListBox, personName);
+			strncpy(data, personName, tocpy);
+			data[tocpy] = '\0';
+			/* add personName to list */
+			DoubleLinkListAddElementAtEnd(G_chatList, data);
+
+			/* redraw list */
+			TownRedrawChatList();
+		}
     }
 
     DebugEnd();
@@ -976,6 +1015,7 @@ E_Boolean TownUIFinishedQuest(T_word16 multiplayerStatus, T_byte8 numPlayers, T_
 		//Completed quest has been reported by all players
 		//	Reset them and show them in town
 		PeopleHereReset();
+		TownRedrawChatList();
 	}
 
 //  GraphicUpdateAllGraphicsForced();
