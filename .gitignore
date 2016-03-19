@@ -20,3 +20,5 @@ Build/Windows/VC2013/AA/Debug Multiplayer/AA.tlog/rc.read.1.tlog
 Build/Windows/VC2013/AA/Debug Multiplayer/AA.tlog/rc.write.1.tlog
 Build/Windows/VC2013/AA/Debug Multiplayer/app.res
 Build/Windows/VC2013/AA/Debug Multiplayer/vc120.idb
+*.opensdf
+*.sdf
