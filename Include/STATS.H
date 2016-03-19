@@ -408,6 +408,8 @@ T_byte8 StatsGetPlayerSkillLevel(T_void);
 
 E_FullArmorType GetFullArmorType(T_void);
 
+char* StatsGetClassTitle(T_byte8 classType);
+
 #endif /* SERVER_ONLY */
 
 #endif

@@ -3713,6 +3713,14 @@ T_SkillLogic *StatsGetPlayerSkillLogic(T_void)
 	return retvalue;
 }
 
+char* StatsGetClassTitle(T_byte8 classType)
+{
+	DebugRoutine("StatsGetClassTitle");
+	DebugEnd();
+
+	return (CreateClassDatas[classType].Title);
+}
+
 /* @} */
 /*-------------------------------------------------------------------------*
  * End of File:  STATS.C
