@@ -5,11 +5,11 @@ Armor Types:Leather
 Weapon Types:Mace/Axe
 Magik System: Mage
 ~
-40,30,10,10,10,35~
-3,3,1,1,1,3~
+40,20,15,30,15,15~
+4,2,1,3,1,1~
 Highway Man,Outcast,Pariah,Philistine,Goblin,Brute,Troll,Ogre,Blasphemer,Heathen,Heretic,Unholy Warrior,Dark Maurauder,Pillager,Death Bringer,Black Death,Knight of the Damned,Warlord,BURNiNATOR,Leader of the Horde~
 4,1024~
-3,1,1,1,1,0,3~
+1,1,1,1,1,0,3~
 1,1,0,0,0,1,0,0,0~
 1,0,0~
 healingpotion 2,

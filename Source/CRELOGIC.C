@@ -4084,6 +4084,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         } else {
                             /* Poison is transferred into the poison level. */
                             p_creature->poisonLevel += damage/10 ;
+
+							//minor bonus
+							damageAmt = (T_word32)((double)damageAmt * 1.1);
                         }
                     }
 
@@ -4092,11 +4095,15 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         if (p_creature->damageResist & EFFECT_DAMAGE_ELECTRICITY)  {
                             numResists++ ;
                         } else {
+
+							//Elctricity adds small bonus
+							damageAmt = (T_word32)((double)damageAmt * 1.1);
+
                             /* Electricity does additional damage based */
                             /* on the armor of the enemy. */
                             switch (p_logic->armorType)  {
                                 case EQUIP_ARMOR_TYPE_BREASTPLATE_CLOTH:
-                                    /* Cloth is normal. */
+                                    /* Cloth is minor bonus. */
                                     break ;
                                 case EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN:
                                     /* Chain adds 25% damage. */
@@ -4107,8 +4114,8 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                                     damageAmt += (damage>>1) ;
                                     break ;
                                 default:
-                                    /* Nothing special here. */
-                                    break ;
+                                    /* Noarmor is minor bonus. */
+									break;
                             }
                         }
                     }
@@ -4209,7 +4216,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//less damage for blades
 							else if (IsBladeWeapon(weaponType) || IsDaggerWeapon(weaponType))
 							{
-								damageAmt = (T_word32)((double)damageAmt * 0.33);
+								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
 						}
 
@@ -4219,24 +4226,24 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//axes cause more damage
 							if (IsAxeWeapon(weaponType) || IsBluntWeapon(weaponType))
 							{
-								damageAmt = (T_word32)((double)damageAmt * 1.25);
+								damageAmt = (T_word32)((double)damageAmt * 1.1);
 							}
 							//blades cause less damage
 							else if (IsBladeWeapon(weaponType) || IsDaggerWeapon(weaponType))
 							{
-								damageAmt = (T_word32)((double)damageAmt * 0.5);
+								damageAmt = (T_word32)((double)damageAmt * 0.9);
 							}
 						}
 
 						//Vs Large
 						if (IsLarge(p_creature))
 						{
-							if (IsAxeWeapon(weaponType))
+							if (IsLongswordWeapon(weaponType))
 							{
-								damageAmt = (T_word32)((double)damageAmt * 1.5);
+								damageAmt = (T_word32)((double)damageAmt * 1.2);
 							}
 							//daggers cause third damage
-							else if (IsDaggerWeapon(weaponType))
+							else if (IsShortBladeWeapon(weaponType))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
@@ -4247,7 +4254,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//extra damage for blades
 							if (IsBladeWeapon(weaponType))
 							{
-								damageAmt = (T_word32)((double)damageAmt * 1.33);
+								damageAmt = (T_word32)((double)damageAmt * 1.25);
 							}
 							//padded against blunt weapons
 							else if (IsBluntWeapon(weaponType))

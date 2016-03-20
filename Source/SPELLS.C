@@ -1492,7 +1492,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 						EFFECT_TRIGGER_CAST,
 						PLAYER_EFFECT_STRENGTH_MOD,
 						spellduration,
-						spellpower,
+						spellpower / 2,
 						&BerserkerSkillSpells[0]);
 				//speed boost
 				Effect (EFFECT_ADD_PLAYER_EFFECT,
@@ -1610,7 +1610,7 @@ T_void PerformBarbarianSkill(T_byte8 runenum)
 			break;
 		case KEY_SCAN_CODE_KEYPAD_7:
 			spellcost = BerserkerSkillSpells[6].cost;
-			spellpower = 2 * StatsGetPlayerMagicTotal();
+			spellpower = (T_sword16)(1.25 * StatsGetPlayerMagicTotal());
 			spellduration = 25 * StatsGetPlayerAttribute(ATTRIBUTE_STRENGTH);
 
 			if (manaleft >= spellcost)

@@ -269,6 +269,8 @@ E_Boolean InventoryDoEffect_Load(
 
 E_Boolean IsBluntWeapon(T_byte8 weaponType);
 E_Boolean IsDaggerWeapon(T_byte8 weaponType);
+E_Boolean IsLongswordWeapon(T_byte8 weaponType);
+E_Boolean IsShortBladeWeapon(T_byte8 weaponType);
 E_Boolean IsBladeWeapon(T_byte8 weaponType);
 E_Boolean IsAxeWeapon(T_byte8 weaponType);
 

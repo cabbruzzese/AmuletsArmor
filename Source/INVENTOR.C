@@ -5371,6 +5371,45 @@ E_Boolean IsDaggerWeapon(T_byte8 weaponType)
 	return retval;
 }
 
+E_Boolean IsLongswordWeapon(T_byte8 weaponType)
+{
+	E_Boolean retval;
+	DebugRoutine("IsLongswordWeapon");
+
+	retval = FALSE;
+
+	switch (weaponType)
+	{
+	case EQUIP_WEAPON_TYPE_LONGSWORD:
+		retval = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
+E_Boolean IsShortBladeWeapon(T_byte8 weaponType)
+{
+	E_Boolean retval;
+	DebugRoutine("IsShortBladeWeapon");
+
+	retval = FALSE;
+
+	switch (weaponType)
+	{
+	case EQUIP_WEAPON_TYPE_DAGGER:
+	case EQUIP_WEAPON_TYPE_SHORTSWORD:
+		retval = TRUE;
+		break;
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
 E_Boolean IsBladeWeapon(T_byte8 weaponType)
 {
 	E_Boolean retval;
