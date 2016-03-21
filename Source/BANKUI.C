@@ -147,18 +147,22 @@ T_void BankUIStart  (T_word32 formNum)
         StoreAddItem (421,1);
 
         case ADVENTURE_3:
+		/* Amulet of Stealth */
+		StoreAddItem(603, 1);
+
         /* Ring of Strength 1 */
         StoreAddItem (407,1);
         /* Ring of Map */
         StoreAddItem (435,1);
 
         case ADVENTURE_2:
+		/*amulet of falling*/
+		StoreAddItem(614, 1);
+			
         /* Ring of Accuracy 1 */
         StoreAddItem (420,1);
 
         case ADVENTURE_1:
-		/* Amulet of Stealth */
-		StoreAddItem(603, 1);
 		/* Ring of Regen 1 */
 		StoreAddItem(405, 1);
 
