@@ -2144,21 +2144,72 @@ T_void StatsCalcPlayerAttackDamage (T_void)
     DebugEnd();
 }
 
+//Gets weapon type in ready hand.
+// Returns 0 if no weapon in ready hand
+T_byte8 StatsGetPlayerWeapon(T_void)
+{
+	T_byte8 retval = EQUIP_WEAPON_TYPE_NONE;
+	T_inventoryItemStruct *p_inv;
 
+	DebugRoutine("StatsGetPlayerWeapon");
+
+	//get item in ready hand
+	p_inv = InventoryCheckItemInReadyHand();
+	//if it exists and is a weapon
+	if (p_inv != NULL && p_inv->itemdesc.type == EQUIP_OBJECT_TYPE_WEAPON)
+	{
+		DebugCheck(p_inv->object != NULL);
+		DebugCheck(ObjectIsValid(p_inv->object));
+
+		//get the type
+		retval = p_inv->itemdesc.subtype;
+	}		
+	DebugEnd();
+
+	return retval;
+}
 T_word16 StatsGetPlayerAttackDamage (T_void)
 {
-    T_word16 retvalue;
+	float damageSpread;
+	float critBonus;
+	T_word16 retvalue;
+	T_word16 critChance;
+	T_byte8 weaponType = EQUIP_WEAPON_TYPE_NONE;
     DebugRoutine ("StatsGetPlayerAttackDamage");
 
-    /* figure base damage + random modifer */
-    retvalue=G_activeStats->AttackDamage + (rand()%G_activeStats->AttackDamage);
+	retvalue = G_activeStats->AttackDamage;
+	weaponType = StatsGetPlayerWeapon();
+	if (IsAxeWeapon(weaponType) || IsShortBladeWeapon(weaponType))
+	{
+		damageSpread = (rand() % 50 + rand() % 50) / 100.0f;
+		critChance = (T_word16)(StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY) * 1);
+		critBonus = 0.85f;
+	}
+	else if (IsBluntWeapon(weaponType))
+	{
+		damageSpread = (rand() % 25 + rand() % 25 + rand() % 25 + rand() % 25) / 100.0f;
+		critChance = (T_word16)(StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY) * 1.5f);
+		critBonus = 0.5f;
+	}
+	else //default for longsword and fist
+	{
+		/* figure base damage + random modifer */
+		damageSpread = (rand() % 100) / 100.0f;
+		critChance = (T_word16)(StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY) * 0.5f);
+		critBonus = 1.2f;
+	}
+	retvalue += (T_word16)(damageSpread * G_activeStats->AttackDamage);
+
+	//never go above 75%
+	if (critChance > 150)
+		critChance = 150;
 
     /* check for critical hit */
-    if (rand()%200 < StatsGetPlayerAttribute (ATTRIBUTE_ACCURACY))
+	if (rand() % 200 < critChance)
     {
-        /* critical hit is damage plus accuracy stat times 2*/
+        /* critical hit is damage plus damage modified by crit bonus*/
         G_hitWasCritical=TRUE;
-		retvalue = (G_activeStats->AttackDamage + StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY)) * 2;
+		retvalue += (T_word16)(G_activeStats->AttackDamage * critBonus);
     }
     else G_hitWasCritical=FALSE;
 

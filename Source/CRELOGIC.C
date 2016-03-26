@@ -4074,6 +4074,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 
 							if (p_creature->meleeDamage < acidDmgMin)
 								p_creature->meleeDamage = acidDmgMin;
+
+							//minor bonus
+							damageAmt = (T_word32)((double)damageAmt * 1.1);
 						}
                     }
 
@@ -4097,7 +4100,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         } else {
 
 							//Elctricity adds small bonus
-							damageAmt = (T_word32)((double)damageAmt * 1.1);
+							damageAmt = (T_word32)((double)damageAmt * 1.2);
 
                             /* Electricity does additional damage based */
                             /* on the armor of the enemy. */
@@ -4106,12 +4109,12 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                                     /* Cloth is minor bonus. */
                                     break ;
                                 case EQUIP_ARMOR_TYPE_BREASTPLATE_CHAIN:
-                                    /* Chain adds 25% damage. */
-                                    damageAmt += (damage>>2) ;
+                                    /* Chain adds 10% damage. */
+									damageAmt += (T_word32)((double)damageAmt * 1.1);
                                     break ;
                                 case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
-                                    /* Plate adds 50% damage. */
-                                    damageAmt += (damage>>1) ;
+                                    /* Plate adds 15% damage. */
+									damageAmt += (T_word32)((double)damageAmt * 1.15);
                                     break ;
                                 default:
                                     /* Noarmor is minor bonus. */
@@ -4139,6 +4142,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 								//reset current attack delay
 								p_creature->missileDelayCount = (T_word16)((float)p_logic->missileAttackDelay * p_creature->missileDelayMod);
 							}
+
+							//minor bonus
+							damageAmt = (T_word32)((double)damageAmt * 1.1);
                         }
                     }
 
