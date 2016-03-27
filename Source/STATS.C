@@ -2171,9 +2171,7 @@ T_byte8 StatsGetPlayerWeapon(T_void)
 T_word16 StatsGetPlayerAttackDamage (T_void)
 {
 	float damageSpread;
-	float critBonus;
 	T_word16 retvalue;
-	T_word16 critChance;
 	T_byte8 weaponType = EQUIP_WEAPON_TYPE_NONE;
     DebugRoutine ("StatsGetPlayerAttackDamage");
 
@@ -2182,34 +2180,24 @@ T_word16 StatsGetPlayerAttackDamage (T_void)
 	if (IsAxeWeapon(weaponType) || IsShortBladeWeapon(weaponType))
 	{
 		damageSpread = (rand() % 50 + rand() % 50) / 100.0f;
-		critChance = (T_word16)(StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY) * 1);
-		critBonus = 0.85f;
 	}
 	else if (IsBluntWeapon(weaponType))
 	{
 		damageSpread = (rand() % 25 + rand() % 25 + rand() % 25 + rand() % 25) / 100.0f;
-		critChance = (T_word16)(StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY) * 1.5f);
-		critBonus = 0.5f;
 	}
 	else //default for longsword and fist
 	{
 		/* figure base damage + random modifer */
 		damageSpread = (rand() % 100) / 100.0f;
-		critChance = (T_word16)(StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY) * 0.5f);
-		critBonus = 1.2f;
 	}
 	retvalue += (T_word16)(damageSpread * G_activeStats->AttackDamage);
 
-	//never go above 75%
-	if (critChance > 150)
-		critChance = 150;
-
-    /* check for critical hit */
-	if (rand() % 200 < critChance)
+	//if (rand() % 200 < critChance)
+	if (rand() % 200 < StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY))
     {
         /* critical hit is damage plus damage modified by crit bonus*/
         G_hitWasCritical=TRUE;
-		retvalue += (T_word16)(G_activeStats->AttackDamage * critBonus);
+		retvalue = (G_activeStats->AttackDamage + StatsGetPlayerAttribute(ATTRIBUTE_ACCURACY)) * 2;
     }
     else G_hitWasCritical=FALSE;
 

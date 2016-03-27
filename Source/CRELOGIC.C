@@ -3917,7 +3917,7 @@ T_void CreatureTakeDamage(
 	T_word16 acidDmgMin;
     T_word16 numEffects ;
     T_word16 numResists ;
-	//T_word16 calcResult;
+	E_Boolean isThisPlayer;
 
     DebugRoutine("CreatureTakeDamage") ;
 
@@ -3950,6 +3950,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 				//Mark this creature as charmed by this spell
 				p_creature->CharmValue = p_creature->CharmValue | type & (~EFFECT_DAMAGE_SPECIAL);
 
+				//Check if this is from the current client
+				isThisPlayer = ownerID == ObjectGetServerId(PlayerGetObject());
+
                 /* Is this a special type of damage? */
                 if (type & EFFECT_DAMAGE_SPECIAL)  {
                     switch(type & (~EFFECT_DAMAGE_SPECIAL))  {
@@ -3977,7 +3980,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         case EFFECT_DAMAGE_SPECIAL_DISPEL_MAGIC:
 							//remove immunities
 							if (p_creature->damageResist > 0)
-								if (AttackerIsPlayer(p_creature, ownerID))
+								if (AttackerIsPlayer(p_creature, ownerID) && isThisPlayer)
 									MessageAdd("Your enemy appears less threatening.");
 							p_creature->damageResist = 0;
                             break ;
@@ -4031,7 +4034,8 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                     }
 				
 					//If not a regular hit, just give flat XP bonus
-					if (ownerID == ObjectGetServerId(PlayerGetObject()))  {
+					if (isThisPlayer)  
+					{
 						StatsChangePlayerExperience(XP_TOHIT_BONUS);
 					}
 
@@ -4066,7 +4070,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						acidDmgMin = 200;
 						if (p_creature->meleeDamage > acidDmgMin)
 						{	
-							if (AttackerIsPlayer(p_creature, ownerID))
+							if (AttackerIsPlayer(p_creature, ownerID) && isThisPlayer)
 								MessageAdd("Your foe's weapon crumbles.");
 
 							//reduce by 20% until minimum is reached
@@ -4114,7 +4118,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                                     break ;
                                 case EQUIP_ARMOR_TYPE_BREASTPLATE_PLATE:
                                     /* Plate adds 15% damage. */
-									damageAmt += (T_word32)((double)damageAmt * 1.15);
+									damageAmt += (T_word32)((double)damageAmt * 1.1);
                                     break ;
                                 default:
                                     /* Noarmor is minor bonus. */
@@ -4132,9 +4136,17 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 							//if this monster has an attack delay
 							if (p_logic->missileAttackDelay > 0)
 							{
-								//only display message for player if this is the first hit
-								if (AttackerIsPlayer(p_creature, ownerID) && p_creature->missileDelayMod == 1)
-									MessageAdd("The enemy's voice stutters.");
+								if (isThisPlayer)
+								{
+									//only display message for player if this is the first hit
+									if (AttackerIsPlayer(p_creature, ownerID) && p_creature->missileDelayMod == 1)
+									{
+										MessageAdd("The enemy's voice stutters.");
+									}
+
+									//Restore some mana
+									StatsChangePlayerMana(damageAmt >> 1);
+								}
 
 								//increase attack delay by 50%
 								p_creature->missileDelayMod += (float)0.5;
@@ -4199,7 +4211,8 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						if (IsDaggerWeapon(weaponType))
 						{
 							damageAmt *= 7;
-							MessageAdd("Sneak attack!");
+							if (isThisPlayer)
+								MessageAdd("Sneak attack!");
 						}
 						else
 						{
@@ -4291,7 +4304,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                     /* Also, only bother if any damage. */
                     if (damageAmt)  {
 //printf("%d actually done.\n", damageAmt) ;  fflush(stdout) ;
-                        if (ownerID == ObjectGetServerId(PlayerGetObject()))  {
+						if (isThisPlayer)  {
                             if (!(type & EFFECT_DAMAGE_SPECIAL))
                                 StatsChangePlayerExperience(damageAmt + XP_TOHIT_BONUS);
                         }
