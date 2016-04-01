@@ -4134,22 +4134,26 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         } else 
 						{
 							//if this monster has an attack delay
-							if (p_logic->missileAttackDelay > 0)
+							if (p_logic->missileAttackDelay > 0 && p_creature->p_logic->missileType != 0)
 							{
 								if (isThisPlayer)
 								{
+
 									//only display message for player if this is the first hit
+									//	(all monsters start with missiledelaymod of 1)
 									if (AttackerIsPlayer(p_creature, ownerID) && p_creature->missileDelayMod == 1)
 									{
 										MessageAdd("The enemy's voice stutters.");
 									}
 
-									//Restore some mana
-									StatsChangePlayerMana(damageAmt >> 1);
+									//Restore some mana (30%) if monster has magic
+									//	We're assuming anyone with a missile type has magic. But this is obviously
+									//	not true for knights of andrew and maybe not true for creatures.
+									StatsChangePlayerMana((T_word32)(damageAmt * 0.3));
 								}
 
 								//increase attack delay by 50%
-								p_creature->missileDelayMod += (float)0.5;
+								p_creature->missileDelayMod += (float)0.25;
 
 								//reset current attack delay
 								p_creature->missileDelayCount = (T_word16)((float)p_logic->missileAttackDelay * p_creature->missileDelayMod);
@@ -4191,7 +4195,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         }
                     }
 
-                    if (numEffects>0)  {
+                    if (numEffects>0) {
                         damageAmt -= (damageAmt * numResists) / numEffects ;
                     } else {
                         damageAmt = 0 ;
