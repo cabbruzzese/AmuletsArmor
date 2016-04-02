@@ -3918,6 +3918,7 @@ T_void CreatureTakeDamage(
     T_word16 numEffects ;
     T_word16 numResists ;
 	E_Boolean isThisPlayer;
+	T_byte8 weaponTypeLocal;
 
     DebugRoutine("CreatureTakeDamage") ;
 
@@ -3937,6 +3938,9 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 */
             p_logic = p_creature->p_logic ;
             DebugCheck(p_logic != NULL) ;
+
+			//Get weapon type information without silver flag
+			weaponTypeLocal = weaponType & ~EQUIP_WEAPON_TYPE_FLAG_SILVER;
 
             /* Make sure this is not damage of our own (if the */
             /* flag that says so is TRUE */
@@ -4121,7 +4125,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 									damageAmt += (T_word32)((double)damageAmt * 1.1);
                                     break ;
                                 default:
-                                    /* Noarmor is minor bonus. */
+                                    /* No armor is minor bonus. */
 									break;
                             }
                         }
@@ -4195,6 +4199,16 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         }
                     }
 
+					//No monster can be immune to silver or mithril
+					if (ownerID != 0 && ownerID != p_creature->targetID &&
+						p_creature->p_obj->ownerID != ownerID &&
+						AttackerIsPlayer(p_creature, ownerID) &&
+						AtackIsMelee(damageObjectType) &&
+						weaponType & EQUIP_WEAPON_TYPE_FLAG_SILVER)
+					{
+						numEffects++;
+					}
+
                     if (numEffects>0) {
                         damageAmt -= (damageAmt * numResists) / numEffects ;
                     } else {
@@ -4212,7 +4226,7 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						AtackIsMelee(damageObjectType) &&
 						ClientIsDead() == FALSE) // cant sneakattack with dying blow
 					{
-						if (IsDaggerWeapon(weaponType))
+						if (IsDaggerWeapon(weaponTypeLocal))
 						{
 							damageAmt *= 7;
 							if (isThisPlayer)
@@ -4232,14 +4246,20 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						if (IsUndead(p_creature))
 						{
 							//bonus damage for blunt weapons
-							if (IsBluntWeapon(weaponType))
+							if (IsBluntWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.5);
 							}
 							//less damage for blades
-							else if (IsBladeWeapon(weaponType) || IsDaggerWeapon(weaponType))
+							else if (IsBladeWeapon(weaponTypeLocal) || IsDaggerWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
+							}
+
+							//damage bonus for silver and mithril
+							if (weaponType & EQUIP_WEAPON_TYPE_FLAG_SILVER)
+							{
+								damageAmt = (T_word32)((double)damageAmt * 1.15);
 							}
 						}
 
@@ -4247,12 +4267,12 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						if (IsPlateArmored(p_creature))
 						{
 							//axes cause more damage
-							if (IsAxeWeapon(weaponType) || IsBluntWeapon(weaponType))
+							if (IsAxeWeapon(weaponTypeLocal) || IsBluntWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.1);
 							}
 							//blades cause less damage
-							else if (IsBladeWeapon(weaponType) || IsDaggerWeapon(weaponType))
+							else if (IsBladeWeapon(weaponTypeLocal) || IsDaggerWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.9);
 							}
@@ -4261,12 +4281,12 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						//Vs Large
 						if (IsLarge(p_creature))
 						{
-							if (IsLongswordWeapon(weaponType))
+							if (IsLongswordWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.2);
 							}
 							//daggers cause third damage
-							else if (IsShortBladeWeapon(weaponType))
+							else if (IsShortBladeWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.5);
 							}
@@ -4275,12 +4295,12 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
 						if (IsLowArmor(p_creature))
 						{
 							//extra damage for blades
-							if (IsBladeWeapon(weaponType))
+							if (IsBladeWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 1.25);
 							}
 							//padded against blunt weapons
-							else if (IsBluntWeapon(weaponType))
+							else if (IsBluntWeapon(weaponTypeLocal))
 							{
 								damageAmt = (T_word32)((double)damageAmt * 0.75);
 							}

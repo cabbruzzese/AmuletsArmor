@@ -174,6 +174,7 @@ T_void InventoryPlayWeaponHitSound(T_void);
 T_void InventoryReadItemsList(FILE *fp);
 T_void InventoryWriteItemsList(FILE *fp);
 
+T_byte8 GetEquippedWeaponTypeWithSilverFlag();
 T_byte8 GetEquippedWeaponType();
 
 /* LES: 03/28/96  Routine to update all the weapons and items */

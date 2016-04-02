@@ -5307,6 +5307,52 @@ T_byte8 InventoryFindWeaponDamage(T_inventoryItemStruct *p_inv)
 	return 0;
 }
 
+T_byte8 GetEquippedWeaponTypeWithSilverFlag()
+{
+	T_byte8 retval;
+	T_inventoryItemStruct *p_inv = NULL;
+
+	DebugRoutine("GetEquippedWeaponTypeWithSilverFlag");
+
+	if (G_inventoryLocations[EQUIP_LOCATION_READY_HAND] != NULL)
+	{
+		p_inv = (T_inventoryItemStruct *)DoubleLinkListElementGetData
+			(G_inventoryLocations[EQUIP_LOCATION_READY_HAND]);
+
+		retval = EQUIP_WEAPON_TYPE_NONE;
+
+		if (p_inv != NULL)
+		{
+			retval = p_inv->itemdesc.subtype;
+
+			switch (p_inv->objecttype)
+			{
+				//silver weapons
+				case 20680:
+				case 20681:
+				case 20682:
+				case 20683:
+				case 20684:
+				case 20685:
+				//mithril weapons
+				case 32968:
+				case 32969:
+				case 32970:
+				case 32971:
+				case 32972:
+				case 32973:
+					retval |= EQUIP_WEAPON_TYPE_FLAG_SILVER;
+					break;
+			}
+		}
+	}
+
+	DebugEnd();
+
+	return retval;
+}
+
+
 T_byte8 GetEquippedWeaponType()
 {
 	T_byte8 retval;

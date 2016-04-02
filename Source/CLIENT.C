@@ -558,7 +558,7 @@ static E_Boolean IClientGainExperienceIfHit(
                     StatsGetPlayerAttackDamage(),
                     StatsGetPlayerDamageType(),
                     ObjectGetServerId(p_obj),
-					GetEquippedWeaponType());
+					GetEquippedWeaponTypeWithSilverFlag());
 
                 if (StatsHitWasCritical())
                 {
