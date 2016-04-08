@@ -22,3 +22,7 @@ Build/Windows/VC2013/AA/Debug Multiplayer/app.res
 Build/Windows/VC2013/AA/Debug Multiplayer/vc120.idb
 *.opensdf
 *.sdf
+Build/Windows/VC2013/AA/Debug Multiplayer/RANDOM.obj
+*.user
+Build/Windows/VC2013/AA/Debug Multiplayer/
+*.suo
