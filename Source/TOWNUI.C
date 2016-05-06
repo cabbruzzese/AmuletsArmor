@@ -1024,7 +1024,7 @@ E_Boolean TownUIFinishedQuest(T_word16 multiplayerStatus, T_byte8 numPlayers, T_
 			//Completed quest has been reported by all players
 			//	Reset them and show them in town
 			PeopleHereReset();
-			if (IsTownHallChatActive)
+			if (IsTownHallChatActive())
 				TownRedrawChatList();
 
 		}
