@@ -80,6 +80,7 @@ typedef enum
 
 #define EFFECT_ATTACKTYPE_MELEE 0
 #define EFFECT_ATTACKTYPE_MISC -1
+#define EFFECT_ATTACKTYPE_HEALTHDRAIN -2
 
 typedef enum
 {

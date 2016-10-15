@@ -726,6 +726,8 @@ T_void CreatureAttachToObject(T_3dObject *p_obj)
 				p_creature->meleeDamage = p_logic->meleeDamage;
 				p_creature->damageResist = p_logic->damageResist;
 				p_creature->CharmValue = 0;//Clear any spell effects
+				p_creature->LastTouchedID = 0;
+				p_creature->TimeLastTouched = 0;
 
                 Collide3dUpdateLineOfSightLast(
                     &p_creature->sight,
@@ -1078,7 +1080,7 @@ T_sword32 lx, ly, lz ;
                                 p_creature->poisonLevel*2,
                                 EFFECT_DAMAGE_NORMAL,
                                 0,
-								EFFECT_ATTACKTYPE_MISC,
+								EFFECT_ATTACKTYPE_HEALTHDRAIN,
 								EQUIP_WEAPON_TYPE_UNKNOWN);
 
                             if (p_creature->poisonLevel > 5)
@@ -1103,7 +1105,7 @@ T_sword32 lx, ly, lz ;
 								p_creature->healthDecayRate * HEALTH_DECAY_RATE_TICKS,
 								EFFECT_DAMAGE_NORMAL,
 								0,
-								EFFECT_ATTACKTYPE_MISC,
+								EFFECT_ATTACKTYPE_HEALTHDRAIN,
 								EQUIP_WEAPON_TYPE_UNKNOWN);
 
 							p_creature->healthDecayRateLast = 0;
@@ -3913,7 +3915,7 @@ T_void CreatureTakeDamage(
 {
     T_creatureState *p_creature ;
     T_creatureLogic *p_logic ;
-    T_word32 damageAmt ;
+	T_word32 damageAmt, awardXP;
 	T_word16 acidDmgMin;
     T_word16 numEffects ;
     T_word16 numResists ;
@@ -3963,9 +3965,11 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                         case EFFECT_DAMAGE_SPECIAL_LOCK:
                         case EFFECT_DAMAGE_SPECIAL_UNLOCK:
                             break ;
+						//Mark this attacker as the last touch
                         case EFFECT_DAMAGE_SPECIAL_PUSH:
-                            break ;
                         case EFFECT_DAMAGE_SPECIAL_PULL:
+							p_creature->LastTouchedID = ownerID;
+							p_creature->TimeLastTouched = SyncTimeGet() + 140; //two seconds where indirect damage grants xp
                             break ;
                         case EFFECT_DAMAGE_SPECIAL_BERSERK:
                             /* Make the creature lose its target. */
@@ -4332,6 +4336,19 @@ printf("Creature %d (%d) takes damage %d (was health %d) by %s\n",
                             if (!(type & EFFECT_DAMAGE_SPECIAL))
                                 StatsChangePlayerExperience(damageAmt + XP_TOHIT_BONUS);
                         }
+						else if (damageObjectType == EFFECT_ATTACKTYPE_MISC && p_creature->TimeLastTouched > SyncTimeGet())
+						{
+							//If this player is the last to touch
+							if (p_creature->LastTouchedID == ObjectGetServerId(PlayerGetObject()))
+							{
+								awardXP = damageAmt;
+
+								if (awardXP < XP_TOHIT_BONUS)
+									awardXP = XP_TOHIT_BONUS;
+
+								StatsChangePlayerExperience(awardXP);
+							}
+						}
 
                         /* Are we going to die? */
                         if (damageAmt >= p_creature->health)  {

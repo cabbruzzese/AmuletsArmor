@@ -339,6 +339,8 @@ typedef struct {
 	//Charmed - Special damage types currently active
 	T_word16 CharmValue;
 
+	T_word32 LastTouchedID; //Variable for tracking last person to push or pull this monster so that fall damage XP can be awarded
+	T_word32 TimeLastTouched; //Timeout before falldamage XP no longer counts. (We have a small time to push them off a cliff, if they accidentally wander off 20 seconds later it wasn't our fault)
 } T_creatureState ;
 
 #ifdef SERVER_ONLY
